@@ -13,8 +13,11 @@ import {
   cilSpeedometer,
   cilStar,
 } from '@coreui/icons'
-import { LuLayoutDashboard, LuFileSpreadsheet, LuVerified } from 'react-icons/lu'
+import { LuLayoutDashboard, LuFileSpreadsheet, LuVerified, LuTag, LuLock } from 'react-icons/lu'
+import { HiOutlineIdentification } from 'react-icons/hi'
 import { ImStatsDots } from 'react-icons/im'
+import { MdOutlineCategory } from 'react-icons/md'
+import { TbMoodSmile } from 'react-icons/tb'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
@@ -45,6 +48,60 @@ const _nav = [
     name: 'Approve',
     to: '/theme/typography',
     icon: <LuVerified size={24} style={{ marginRight: '16px' }} />,
+  },
+  {
+    component: CNavTitle,
+    name: 'Employees',
+  },
+  {
+    component: CNavItem,
+    name: 'All Employees',
+    to: '/theme/colors',
+    icon: <LuFileSpreadsheet size={24} style={{ marginRight: '16px' }} />,
+  },
+  {
+    component: CNavTitle,
+    name: 'Users',
+  },
+  {
+    component: CNavItem,
+    name: 'All Users',
+    to: '/users',
+    icon: <LuFileSpreadsheet size={24} style={{ marginRight: '16px' }} />,
+  },
+  {
+    component: CNavTitle,
+    name: 'Features',
+  },
+  {
+    component: CNavItem,
+    name: 'Categories',
+    to: '/theme/colors',
+    icon: <MdOutlineCategory size={24} style={{ marginRight: '16px' }} />,
+  },
+  {
+    component: CNavItem,
+    name: 'Tags',
+    to: '/theme/colors',
+    icon: <LuTag size={24} style={{ marginRight: '16px' }} />,
+  },
+  {
+    component: CNavItem,
+    name: 'Mood',
+    to: '/theme/colors',
+    icon: <TbMoodSmile size={24} style={{ marginRight: '16px' }} />,
+  },
+  {
+    component: CNavItem,
+    name: 'Permissions',
+    to: '/theme/colors',
+    icon: <LuLock size={24} style={{ marginRight: '16px' }} />,
+  },
+  {
+    component: CNavItem,
+    name: 'Roles',
+    to: '/theme/colors',
+    icon: <HiOutlineIdentification size={24} style={{ marginRight: '16px' }} />,
   },
   // {
   //   component: CNavTitle,

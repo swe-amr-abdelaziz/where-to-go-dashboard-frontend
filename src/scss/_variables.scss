@@ -345,7 +345,7 @@ $secondary: #6e7787 !default;
 //
 // Style anchor elements.
 
-// $link-color:                              $primary !default;
+$link-color:                              $base !default;
 // $link-decoration:                         underline !default;
 // $link-shade-percentage:                   20% !default;
 // $link-hover-color:                        shift-color($link-color, $link-shade-percentage) !default;
@@ -1029,7 +1029,7 @@ $secondary: #6e7787 !default;
 // scss-docs-start nav-variables
 // $nav-link-padding-y:                .5rem !default;
 // $nav-link-padding-x:                1rem !default;
-$nav-link-margin:                .5rem !default;
+// $nav-link-margin:                .5rem !default;
 // $nav-link-font-size:                null !default;
 // $nav-link-font-weight:              null !default;
 $nav-link-color:                    $secondary !default;
@@ -1673,6 +1673,7 @@ $sidebar-nav-title-color:                  $secondary !default;
 // $sidebar-nav-link-padding-y:               .8445rem !default;
 // $sidebar-nav-link-padding-x:               1rem !default;
 $sidebar-nav-link-color:                   $secondary !default;
+$sidebar-nav-link-margin:                  1rem !default;
 // $sidebar-nav-link-bg:                      transparent !default;
 // $sidebar-nav-link-transition:              background .15s ease, color .15s ease !default;
 // $sidebar-nav-link-icon-color:              $medium-emphasis-inverse !default;

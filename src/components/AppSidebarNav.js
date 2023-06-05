@@ -25,6 +25,7 @@ export const AppSidebarNav = ({ items }) => {
     const Component = component
     return (
       <Component
+        style={{ borderRadius: '5px', margin: '10px 20px' }}
         {...(rest.to &&
           !rest.items && {
             component: NavLink,

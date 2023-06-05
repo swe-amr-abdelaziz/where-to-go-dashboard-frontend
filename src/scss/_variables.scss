@@ -1793,3 +1793,13 @@ $sidebar-nav-link-active-bg:               $base !default;
 // $kbd-bg:                            $gray-900 !default;
 
 // $pre-color:                         unset !default;
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba($base, .1);
+}
+::-webkit-scrollbar-thumb {
+  background: $base;
+}

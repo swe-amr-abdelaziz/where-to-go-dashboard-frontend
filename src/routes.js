@@ -51,8 +51,8 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 // Custom
-const Users = React.lazy(() => import('./views/pages/users/AllUsers'))
-const VendorAdd = React.lazy(() => import('./views/pages/vendor/vendorAdd/vendorAdd'))
+const Users = React.lazy(() => import('./Pages/users/AllUsers'))
+const VendorAdd = React.lazy(() => import('./Pages/vendor/vendorAdd/vendorAdd'))
 const EmployeeList = React.lazy(() => import('./Pages/Employee/employeeList/employeeList'))
 
 const routes = [

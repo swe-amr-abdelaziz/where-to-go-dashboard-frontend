@@ -12,7 +12,7 @@ import {
   CFormSelect,
   CRow,
 } from '@coreui/react'
-import UploadImage from './../../../../components/uploadImage/uploadImage'
+import UploadImage from './../../../components/uploadImage/uploadImage'
 
 const VendorAdd = () => {
   return (

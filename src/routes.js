@@ -52,6 +52,7 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 // Custom
 const Users = React.lazy(() => import('./views/pages/users/AllUsers'))
+const VendorAdd = React.lazy(() => import('./views/pages/vendor/vendorAdd/vendorAdd'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -100,6 +101,7 @@ const routes = [
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/users', name: 'Users', element: Users },
   { path: '/widgets', name: 'Widgets', element: Widgets },
+  { path: '/vendorAdd', name: 'VendorAdd', element: VendorAdd },
 ]
 
 export default routes

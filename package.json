@@ -29,10 +29,17 @@
     "@coreui/react": "^4.6.0",
     "@coreui/react-chartjs": "^2.1.2",
     "@coreui/utils": "^2.0.1",
+<<<<<<< HEAD
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.4",
+=======
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@reduxjs/toolkit": "^1.9.5",
+>>>>>>> a8081fd452fe134c94298dd695766412400f34fc
     "axios": "^1.4.0",
     "chart.js": "^3.9.1",
     "classnames": "^2.3.2",

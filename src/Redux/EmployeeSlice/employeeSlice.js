@@ -12,6 +12,7 @@ const initialState = {
 export const getEmployees = createAsyncThunk('employees/getEmployees', async (thunkAPI) => {
   try {
     const response = await axios.get(URL)
+    console.log(response)
     return response.data.data
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data)
@@ -43,7 +44,7 @@ export const updateEmployee = createAsyncThunk(
   'employees/updateEmployee',
   async (employee, thunkAPI) => {
     try {
-      const response = await axios.put(`${URL}/${employee._id}`, employee)
+      const response = await axios.put(`${URL}/${employee.get('_id')}`, employee)
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)
@@ -53,8 +54,8 @@ export const updateEmployee = createAsyncThunk(
 
 export const deleteEmployee = createAsyncThunk('employees/deleteEmployee', async (id, thunkAPI) => {
   try {
-    const response = await axios.delete(`/api/employees/${id}`)
-    return response.data
+    const response = await axios.delete(`${URL}/${id}`)
+    return response.data.oldData
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data)
   }
@@ -105,7 +106,14 @@ export const activateEmployee = createAsyncThunk(
 const employeeSlice = createSlice({
   name: 'employees',
   initialState,
-  reducers: {},
+  reducers: {
+    setEmployee: (state, action) => {
+      state.employee = action.payload
+    },
+    clearEmployee: (state, action) => {
+      state.employee = {}
+    },
+  },
   extraReducers: {
     [getEmployees.pending]: (state, action) => {
       state.loading = true
@@ -220,4 +228,5 @@ const employeeSlice = createSlice({
   },
 })
 
+export const { setEmployee, clearEmployee } = employeeSlice.actions
 export default employeeSlice.reducer

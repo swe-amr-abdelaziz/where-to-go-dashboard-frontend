@@ -50,14 +50,12 @@ const VendorList = () => {
   }
 
   return (
-    <CCard className="mb-4">
+    <CCard className="m-3 mb-5 p-4">
       <CCardBody>
         <div className="d-flex justify-content-between mb-4 mt-2">
-          <h4>
-            <strong>Vendors List</strong>
-          </h4>
+          <h3>Vendors List</h3>
           <div className="d-flex justify-content-between">
-            <CButton className="me-2 bg-success d-flex align-items-center">
+            <CButton className="me-2 bg-base d-flex align-items-center">
               <PlusCircleFill className="me-1" />
               New
             </CButton>

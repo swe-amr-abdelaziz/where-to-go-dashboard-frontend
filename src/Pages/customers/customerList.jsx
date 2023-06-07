@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 import {
   CAvatar,
@@ -9,6 +11,7 @@ import {
   CCardFooter,
   CCardHeader,
   CCol,
+  CFormInput,
   CProgress,
   CRow,
   CTable,
@@ -44,6 +47,16 @@ import {
   cilUserFemale,
 } from '@coreui/icons'
 
+import {
+  activateCustomer,
+  banCustomer,
+  deactivateCustomer,
+  deleteCustomer,
+  getCustomers,
+  getCustomer,
+  unbanCustomer,
+} from '../../Redux/CustomerSlice/customerSlice'
+
 import avatar1 from 'src/assets/images/avatars/1.jpg'
 import avatar2 from 'src/assets/images/avatars/2.jpg'
 import avatar3 from 'src/assets/images/avatars/3.jpg'
@@ -53,39 +66,20 @@ import avatar6 from 'src/assets/images/avatars/6.jpg'
 
 import WidgetsBrand from '../../views/widgets/WidgetsBrand'
 import WidgetsDropdown from '../../views/widgets/WidgetsDropdown'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircle } from '@fortawesome/free-solid-svg-icons'
+import { PlusCircleFill } from 'react-bootstrap-icons'
 
-const Dashboard = () => {
-  const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+const CustomerList = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const customers = useSelector((state) => state.customer.customers)
+  const [visible, setVisible] = React.useState(false)
+  const [dcustomer, setDcustomer] = React.useState(null)
 
-  const progressExample = [
-    { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
-    { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
-    { title: 'Pageviews', value: '78.706 Views', percent: 60, color: 'warning' },
-    { title: 'New Users', value: '22.123 Users', percent: 80, color: 'danger' },
-    { title: 'Bounce Rate', value: 'Average Rate', percent: 40.15, color: 'primary' },
-  ]
-
-  const progressGroupExample1 = [
-    { title: 'Monday', value1: 34, value2: 78 },
-    { title: 'Tuesday', value1: 56, value2: 94 },
-    { title: 'Wednesday', value1: 12, value2: 67 },
-    { title: 'Thursday', value1: 43, value2: 91 },
-    { title: 'Friday', value1: 22, value2: 73 },
-    { title: 'Saturday', value1: 53, value2: 82 },
-    { title: 'Sunday', value1: 9, value2: 69 },
-  ]
-
-  const progressGroupExample2 = [
-    { title: 'Male', icon: cilUser, value: 53 },
-    { title: 'Female', icon: cilUserFemale, value: 43 },
-  ]
-
-  const progressGroupExample3 = [
-    { title: 'Organic Search', icon: cibGoogle, percent: 56, value: '191,235' },
-    { title: 'Facebook', icon: cibFacebook, percent: 15, value: '51,223' },
-    { title: 'Twitter', icon: cibTwitter, percent: 11, value: '37,564' },
-    { title: 'LinkedIn', icon: cibLinkedin, percent: 8, value: '27,319' },
-  ]
+  useEffect(() => {
+    dispatch(getCustomers())
+  }, [])
 
   const tableExample = [
     {
@@ -181,66 +175,78 @@ const Dashboard = () => {
   return (
     <>
       {/* <WidgetsDropdown /> */}
-      <CCard className="mb-4">
+      <CCard className="m-3 mb-5 p-4">
         <CCardBody>
           <CRow>
-            <CCol sm={5}>
-              <h3 id="customers-list" className="card-title mb-0">
-                Customers List
-              </h3>
-            </CCol>
-            <CCol sm={7} className="d-none d-md-block">
-              <CButton color="primary" className="float-end">
-                <CIcon icon={cilCloudDownload} />
-              </CButton>
-            </CCol>
+            <div className="d-flex justify-content-between mb-4 mt-2">
+              <h3>Customers List</h3>
+              <div className="d-flex justify-content-between">
+                <CButton
+                  className="me-2 bg-base d-flex align-items-center"
+                  onClick={() => navigate('/employees')}
+                >
+                  <PlusCircleFill className="me-1" />
+                  New
+                </CButton>
+                <CFormInput type="search" className="me-2" placeholder="Search" />
+              </div>
+            </div>
           </CRow>
           <CTable align="middle" className="mt-4 mb-2 border" hover responsive>
             <CTableHead color="light">
               <CTableRow>
                 <CTableHeaderCell className="text-center">
-                  <CIcon icon={cilPeople} />
+                  {/* <CIcon icon={cilPeople} /> */}
                 </CTableHeaderCell>
-                <CTableHeaderCell>User</CTableHeaderCell>
-                <CTableHeaderCell className="text-center">Country</CTableHeaderCell>
-                <CTableHeaderCell>Usage</CTableHeaderCell>
-                <CTableHeaderCell className="text-center">Payment Method</CTableHeaderCell>
-                <CTableHeaderCell>Activity</CTableHeaderCell>
+                <CTableHeaderCell>Name</CTableHeaderCell>
+                <CTableHeaderCell className="text-center">Phone</CTableHeaderCell>
+                <CTableHeaderCell>Email</CTableHeaderCell>
+                <CTableHeaderCell className="text-center">Banned</CTableHeaderCell>
+                <CTableHeaderCell></CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {tableExample.map((item, index) => (
-                <CTableRow v-for="item in tableItems" key={index}>
+              {customers.map((customer) => (
+                <CTableRow key={customer.id}>
                   <CTableDataCell className="text-center">
-                    <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
+                    <CAvatar
+                      size="md"
+                      src={`http://localhost:8001/api/v1/images/customers/${customer.image}`}
+                    />
                   </CTableDataCell>
                   <CTableDataCell>
-                    <div>{item.user.name}</div>
-                    <div className="small text-medium-emphasis">
+                    <div>
+                      <strong>{`${customer.firstName} ${customer.lastName}`}</strong>
+                    </div>
+                    {/* <div className="small text-medium-emphasis">
                       <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
                       {item.user.registered}
-                    </div>
+                    </div> */}
                   </CTableDataCell>
                   <CTableDataCell className="text-center">
-                    <CIcon size="xl" icon={item.country.flag} title={item.country.name} />
+                    <div>{customer.phoneNumber}</div>
                   </CTableDataCell>
                   <CTableDataCell>
                     <div className="clearfix">
                       <div className="float-start">
-                        <strong>{item.usage.value}%</strong>
+                        <div>{customer.email}</div>
                       </div>
                       <div className="float-end">
-                        <small className="text-medium-emphasis">{item.usage.period}</small>
+                        {/* <small className="text-medium-emphasis">{item.usage.period}</small> */}
                       </div>
                     </div>
-                    <CProgress thin color={item.usage.color} value={item.usage.value} />
+                    {/* <CProgress thin color={item.usage.color} value={item.usage.value} /> */}
                   </CTableDataCell>
                   <CTableDataCell className="text-center">
-                    <CIcon size="xl" icon={item.payment.icon} />
+                    <FontAwesomeIcon
+                      size="xs"
+                      color={customer.bannedAt ? 'red' : 'green'}
+                      icon={faCircle}
+                    />
                   </CTableDataCell>
                   <CTableDataCell>
                     <div className="small text-medium-emphasis">Last login</div>
-                    <strong>{item.activity}</strong>
+                    {/* <strong>{item.activity}</strong> */}
                   </CTableDataCell>
                 </CTableRow>
               ))}
@@ -252,4 +258,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default CustomerList

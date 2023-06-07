@@ -17,25 +17,29 @@ import {
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createEmployee } from '../../../Redux/EmployeeSlice/employeeSlice'
-import { useNavigation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const EmployeeAdd = () => {
-  //const navigation = useNavigation()
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [validated, setValidated] = useState(false)
   const handleSubmit = (event) => {
-    event.preventDefault()
-    event.stopPropagation()
     const form = event.currentTarget
     if (form.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
     }
     setValidated(true)
+    if (form.checkValidity() === true) {
+      const data = new FormData(event.target)
+      dispatch(createEmployee(data)).then((res) => {
+        navigate('/employees')
+      })
+    }
+  }
 
-    const data = new FormData(event.target)
-
-    dispatch(createEmployee(data)).then((res) => {
-      //navigation.navigate('/employees')
-    })
+  const handleCancel = () => {
+    navigate('/employees')
   }
 
   return (
@@ -194,7 +198,7 @@ const EmployeeAdd = () => {
               required
             />
           </CCol>
-          <CCol md={9}>
+          <CCol md={11}>
             <CFormInput
               type="file"
               aria-describedby="validationCustom05Feedback"
@@ -205,9 +209,14 @@ const EmployeeAdd = () => {
               required
             />
           </CCol>
-          <CCol xs={12}>
+          <CCol xs={2}>
             <CButton color="primary" type="submit">
               Submit form
+            </CButton>
+          </CCol>
+          <CCol xs={1}>
+            <CButton onClick={handleCancel} color="danger">
+              Cancel
             </CButton>
           </CCol>
         </CForm>

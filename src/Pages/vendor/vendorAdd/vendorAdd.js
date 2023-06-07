@@ -18,11 +18,9 @@ const VendorAdd = () => {
   return (
     <CRow>
       <CCol xs={12}>
-        <CCard className="mb-4">
+        <CCard className="m-3 mb-5 p-4">
           <CCardBody>
-            <h4 className="mb-4 mt-2">
-              <strong>New Vendor</strong>
-            </h4>
+            <h3 className="mb-4 mt-2">New Vendor</h3>
             <CForm>
               <CFormLabel htmlFor="exampleFormControlInput1">Owner</CFormLabel>
               <div className="mb-3 d-flex">
@@ -125,7 +123,7 @@ const VendorAdd = () => {
                 <UploadImage></UploadImage>
               </div>
               <div>
-                <CButton>Submit</CButton>
+                <CButton className="bg-base">Submit</CButton>
               </div>
             </CForm>
           </CCardBody>

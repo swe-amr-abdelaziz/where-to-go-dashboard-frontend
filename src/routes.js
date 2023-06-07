@@ -56,6 +56,8 @@ const VendorAdd = React.lazy(() => import('./Pages/vendor/vendorAdd/vendorAdd'))
 const EmployeeList = React.lazy(() => import('./Pages/Employee/employeeList/employeeList'))
 const EmployeeAdd = React.lazy(() => import('./Pages/Employee/employeeAdd/employeeAdd'))
 const VendorList = React.lazy(() => import('./Pages/vendor/vendorList/vendorList'))
+const VendorDetails = React.lazy(() => import('./Pages/vendor/vendorDetails/vendorDetails'))
+// const Gallery = React.lazy(() => import('./components/gallery/gallery'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -108,6 +110,8 @@ const routes = [
   { path: '/widgets', name: 'Widgets', element: Widgets },
   { path: '/vendorAdd', name: 'VendorAdd', element: VendorAdd },
   { path: '/vendorList', name: 'VendorList', element: VendorList },
+  { path: '/vendorDetails', name: 'VendorDetails', element: VendorDetails },
+  // { path: '/Gallery', name: 'Gallery', element: Gallery },
 ]
 
 export default routes

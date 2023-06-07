@@ -4,6 +4,7 @@ import {
   CCard,
   CCardBody,
   CCol,
+  CFormInput,
   CModal,
   CModalBody,
   CModalFooter,
@@ -39,6 +40,7 @@ import {
   unbanEmployee,
 } from '../../../Redux/EmployeeSlice/employeeSlice'
 import { useNavigate } from 'react-router-dom'
+import { PlusCircleFill } from 'react-bootstrap-icons'
 
 const EmployeeList = () => {
   const navigate = useNavigate()
@@ -87,19 +89,22 @@ const EmployeeList = () => {
   }
 
   return (
-    <CCard className="mb-4">
+    <CCard className="m-3 mb-5 p-4">
       <CCardBody>
         <CRow>
-          <CCol sm={5}>
-            <h3 id="employees-list" className="card-title mb-0">
-              Employees List
-            </h3>
-          </CCol>
-          <CCol sm={7} className="d-none d-md-block">
-            <CButton color="primary" onClick={handleAddEmployee} className="float-end">
-              <FontAwesomeIcon icon={faPlus} />
-            </CButton>
-          </CCol>
+          <div className="d-flex justify-content-between mb-4 mt-2">
+            <h3>Employees List</h3>
+            <div className="d-flex justify-content-between">
+              <CButton
+                className="me-2 bg-success d-flex align-items-center"
+                onClick={() => navigate('/employees')}
+              >
+                <PlusCircleFill className="me-1" />
+                New
+              </CButton>
+              <CFormInput type="search" className="me-2" placeholder="Search" />
+            </div>
+          </div>
         </CRow>
         <CTable align="middle" className="border mt-4" hover responsive>
           <CTableHead color="light">

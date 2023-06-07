@@ -40,7 +40,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'All Vendors',
-    to: '/theme/colors',
+    to: '/vendors',
     icon: <LuFileSpreadsheet size={24} style={{ marginRight: '16px' }} />,
   },
   {

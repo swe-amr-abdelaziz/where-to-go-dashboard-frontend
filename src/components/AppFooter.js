@@ -3,7 +3,14 @@ import { CFooter } from '@coreui/react'
 
 const AppFooter = () => {
   return (
-    <CFooter style={{ backgroundColor: '#fff' }}>
+    <CFooter
+      style={{
+        backgroundColor: '#fff',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        paddingRight: '44px',
+      }}
+    >
       <div>
         <a
           href="https://github.com/mostafa2080/where-to-go-backend"

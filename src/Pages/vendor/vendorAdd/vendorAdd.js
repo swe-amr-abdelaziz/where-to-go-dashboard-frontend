@@ -18,7 +18,7 @@ const VendorAdd = () => {
   return (
     <CRow>
       <CCol xs={12}>
-        <CCard className="m-3 mb-5 p-4">
+        <CCard className="m-3 mb-5 p-4 shadow">
           <CCardBody>
             <h3 className="mb-4 mt-2">New Vendor</h3>
             <CForm>

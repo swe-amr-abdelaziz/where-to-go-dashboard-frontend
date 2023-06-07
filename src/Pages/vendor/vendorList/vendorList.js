@@ -37,7 +37,7 @@ const VendorList = () => {
   }
 
   return (
-    <CCard className="m-3 mb-5 p-4">
+    <CCard className="m-3 mb-5 p-4 shadow">
       <CCardBody>
         <div className="d-flex justify-content-between mb-4 mt-2">
           <h3>Vendors List</h3>

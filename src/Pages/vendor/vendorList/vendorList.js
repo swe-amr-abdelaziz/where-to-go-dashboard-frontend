@@ -8,7 +8,10 @@ import {
   CTableHeaderCell,
   CTableBody,
   CTableDataCell,
+  CFormInput,
+  CButton,
 } from '@coreui/react'
+import { PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons'
 
 import axiosInstance from 'src/Axios'
 
@@ -36,6 +39,18 @@ const VendorList = () => {
   return (
     <CCard className="mb-4">
       <CCardBody>
+        <div className="d-flex justify-content-between mb-4 mt-2">
+          <h4>
+            <strong>Vendors List</strong>
+          </h4>
+          <div className="d-flex justify-content-between">
+            <CButton className="me-2 bg-success d-flex align-items-center">
+              <PlusCircleFill className="me-1" />
+              New
+            </CButton>
+            <CFormInput type="search" className="me-2" placeholder="Search" />
+          </div>
+        </div>
         <CTable striped hover>
           <CTableHead>
             <CTableRow>
@@ -48,20 +63,18 @@ const VendorList = () => {
             </CTableRow>
           </CTableHead>
           <CTableBody>
-            {vendorList.map((vendor) => {
-              return (
-                <CTableRow key={vendor.id}>
-                  <CTableHeaderCell scope="row">1</CTableHeaderCell>
-                  <CTableDataCell>Mark</CTableDataCell>
-                  <CTableDataCell>Otto</CTableDataCell>
-                  <CTableDataCell>@mdo</CTableDataCell>
-                  <CTableDataCell>@mdo</CTableDataCell>
-                  <CTableDataCell>
-                    <KebabMenu></KebabMenu>
-                  </CTableDataCell>
-                </CTableRow>
-              )
-            })}
+            {vendorList.map((vendor) => (
+              <CTableRow key={vendor._id}>
+                <CTableHeaderCell scope="row">{vendor.placeName}</CTableHeaderCell>
+                <CTableDataCell>{vendor.firstName + ' ' + vendor.lastName}</CTableDataCell>
+                <CTableDataCell>{vendor.phoneNumber}</CTableDataCell>
+                <CTableDataCell>{vendor.email}</CTableDataCell>
+                <CTableDataCell>{vendor.isApproved}</CTableDataCell>
+                <CTableDataCell>
+                  <ThreeDotsVertical />
+                </CTableDataCell>
+              </CTableRow>
+            ))}
           </CTableBody>
         </CTable>
       </CCardBody>

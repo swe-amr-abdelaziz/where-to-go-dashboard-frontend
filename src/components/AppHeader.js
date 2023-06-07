@@ -18,6 +18,9 @@ import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
 import { logo } from 'src/assets/brand/logo'
 
+import LogoIcon from './../assets/brand/Icon.svg'
+import LogoText from './../assets/brand/Text.svg'
+
 const AppHeader = () => {
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
@@ -32,7 +35,9 @@ const AppHeader = () => {
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">
-          <CIcon icon={logo} height={48} alt="Logo" />
+          {/* <CIcon icon={logo} height={48} alt="Logo" /> */}
+          <img src={LogoIcon} alt="Logo Icon" className="sidebar-brand-icon" />
+          <img src={LogoText} alt="Logo Text" className="sidebar-brand-text" />
         </CHeaderBrand>
         <CHeaderNav className="d-none d-md-flex me-auto">
           {/* <CNavItem>

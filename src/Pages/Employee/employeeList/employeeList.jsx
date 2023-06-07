@@ -4,6 +4,11 @@ import {
   CCard,
   CCardBody,
   CCol,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
   CRow,
   CTable,
   CTableBody,
@@ -25,14 +30,22 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  activateEmployee,
   banEmployee,
+  deactivateEmployee,
+  deleteEmployee,
   getEmployees,
+  setEmployee,
   unbanEmployee,
 } from '../../../Redux/EmployeeSlice/employeeSlice'
+import { useNavigate } from 'react-router-dom'
 
 const EmployeeList = () => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const employees = useSelector((state) => state.employee.employees)
+  const [visible, setVisible] = React.useState(false)
+  const [demployee, setDemployee] = React.useState(null)
 
   useEffect(() => {
     dispatch(getEmployees())
@@ -46,6 +59,33 @@ const EmployeeList = () => {
     }
   }
 
+  const handleActiveEmployee = (employee) => {
+    if (!employee.deactivatedAt) {
+      dispatch(deactivateEmployee(employee._id))
+    } else {
+      dispatch(activateEmployee(employee._id))
+    }
+  }
+
+  const handleAddEmployee = () => {
+    navigate('/employees/new')
+  }
+
+  const handleEditEmployee = (employee) => {
+    dispatch(setEmployee(employee))
+    navigate(`/employees/edit`)
+  }
+
+  const checkDeleteEmployee = (employee) => {
+    setVisible(true)
+    setDemployee(employee)
+  }
+
+  const handleDeleteEmployee = () => {
+    dispatch(deleteEmployee(demployee._id))
+    setVisible(false)
+  }
+
   return (
     <CCard className="mb-4">
       <CCardBody>
@@ -56,51 +96,75 @@ const EmployeeList = () => {
             </h3>
           </CCol>
           <CCol sm={7} className="d-none d-md-block">
-            <CButton color="primary" className="float-end">
+            <CButton color="primary" onClick={handleAddEmployee} className="float-end">
               <FontAwesomeIcon icon={faPlus} />
             </CButton>
           </CCol>
         </CRow>
-        <CTable align="middle" hover responsive>
-          <CTableHead>
+        <CTable align="middle" className="border mt-4" hover responsive>
+          <CTableHead color="light">
             <CTableRow>
-              <CTableHeaderCell scope={'col'}>Avatar</CTableHeaderCell>
-              <CTableHeaderCell scope={'col'}>Name</CTableHeaderCell>
-              <CTableHeaderCell scope={'col'}>Email</CTableHeaderCell>
-              <CTableHeaderCell scope={'col'}>Phone</CTableHeaderCell>
-              <CTableHeaderCell scope={'col'}>Active</CTableHeaderCell>
-              <CTableHeaderCell scope={'col'}>Banned</CTableHeaderCell>
-              <CTableHeaderCell scope={'col'}>Role</CTableHeaderCell>
-              <CTableHeaderCell scope={'col'}>Actions</CTableHeaderCell>
+              <CTableHeaderCell className="text-center" scope={'col'}>
+                Avatar
+              </CTableHeaderCell>
+              <CTableHeaderCell className="text-center" scope={'col'}>
+                Name
+              </CTableHeaderCell>
+              <CTableHeaderCell className="text-center" scope={'col'}>
+                Email
+              </CTableHeaderCell>
+              <CTableHeaderCell className="text-center" scope={'col'}>
+                Phone
+              </CTableHeaderCell>
+              <CTableHeaderCell className="text-center" scope={'col'}>
+                Active
+              </CTableHeaderCell>
+              <CTableHeaderCell className="text-center" scope={'col'}>
+                Banned
+              </CTableHeaderCell>
+              <CTableHeaderCell className="text-center" scope={'col'}>
+                Role
+              </CTableHeaderCell>
+              <CTableHeaderCell className="text-center" scope={'col'}>
+                Actions
+              </CTableHeaderCell>
             </CTableRow>
           </CTableHead>
           <CTableBody>
             {employees.map((employee) => (
               <CTableRow key={employee._id}>
-                <CTableHeaderCell scope={'row'}>
+                <CTableHeaderCell className="text-center" scope={'row'}>
                   <img
                     style={{ width: 60, height: 60, borderRadius: '50%' }}
                     src={`http://localhost:8001/api/v1/images/employees/${employee.image}`}
                     alt="employee avatar"
                   />
                 </CTableHeaderCell>
-                <CTableHeaderCell scope={'row'}>{employee.name}</CTableHeaderCell>
-                <CTableHeaderCell scope={'row'}>{employee.email}</CTableHeaderCell>
-                <CTableHeaderCell scope={'row'}>{employee.phoneNumber}</CTableHeaderCell>
-                <CTableHeaderCell scope={'row'}>
+                <CTableHeaderCell className="text-center" scope={'row'}>
+                  {employee.name}
+                </CTableHeaderCell>
+                <CTableHeaderCell className="text-center" scope={'row'}>
+                  {employee.email}
+                </CTableHeaderCell>
+                <CTableHeaderCell className="text-center" scope={'row'}>
+                  {employee.phoneNumber}
+                </CTableHeaderCell>
+                <CTableHeaderCell className="text-center" scope={'row'}>
                   <FontAwesomeIcon
                     color={employee.deactivatedAt ? 'red' : 'green'}
                     icon={faCircleDot}
                   />
                 </CTableHeaderCell>
-                <CTableHeaderCell scope={'row'}>
+                <CTableHeaderCell className="text-center" scope={'row'}>
                   <FontAwesomeIcon
                     color={employee.bannedAtt ? 'red' : 'green'}
                     icon={faCircleDot}
                   />
                 </CTableHeaderCell>
-                <CTableHeaderCell scope={'row'}>{employee.role.name}</CTableHeaderCell>
-                <CTableHeaderCell scope={'row'}>
+                <CTableHeaderCell className="text-center" scope={'row'}>
+                  {employee.role.name}
+                </CTableHeaderCell>
+                <CTableHeaderCell className="text-center" scope={'row'}>
                   <CButton
                     title={'Show Details'}
                     color="primary"
@@ -114,6 +178,7 @@ const EmployeeList = () => {
                     color="secondary"
                     variant={'outline'}
                     className="me-1"
+                    onClick={() => handleEditEmployee(employee)}
                   >
                     <FontAwesomeIcon icon={faPenToSquare} />
                   </CButton>
@@ -121,6 +186,7 @@ const EmployeeList = () => {
                     title={'Delete Employee'}
                     color="danger"
                     variant={'outline'}
+                    onClick={() => checkDeleteEmployee(employee)}
                     className="me-1"
                   >
                     <FontAwesomeIcon icon={faTrash} />
@@ -139,6 +205,7 @@ const EmployeeList = () => {
                     color="info"
                     variant={'outline'}
                     className="me-1"
+                    onClick={() => handleActiveEmployee(employee)}
                   >
                     <FontAwesomeIcon icon={faDollarSign} />
                   </CButton>
@@ -148,6 +215,26 @@ const EmployeeList = () => {
           </CTableBody>
         </CTable>
       </CCardBody>
+      <CModal visible={visible} onClose={() => setVisible(false)}>
+        <CModalHeader onClose={() => setVisible(false)}>
+          <CModalTitle>Warning !!! ????</CModalTitle>
+        </CModalHeader>
+        <CModalBody>You Sure Want To Delete : {demployee ? demployee.name : ''} ? </CModalBody>
+        <CModalFooter>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              setVisible(false)
+              setEmployee(null)
+            }}
+          >
+            Close
+          </CButton>
+          <CButton onClick={handleDeleteEmployee} color="danger">
+            Delete
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </CCard>
   )
 }

@@ -51,7 +51,7 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 // Custom
-const Users = React.lazy(() => import('./Pages/users/AllUsers'))
+const Customers = React.lazy(() => import('./Pages/customers/AllCustomers'))
 const VendorAdd = React.lazy(() => import('./Pages/vendor/vendorAdd/vendorAdd'))
 const EmployeeList = React.lazy(() => import('./Pages/Employee/employeeList/employeeList'))
 
@@ -100,7 +100,7 @@ const routes = [
   { path: '/notifications/badges', name: 'Badges', element: Badges },
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
-  { path: '/users', name: 'Users', element: Users },
+  { path: '/customers', name: 'Customers', element: Customers },
   { path: '/employees', name: 'Employees', element: EmployeeList },
   { path: '/widgets', name: 'Widgets', element: Widgets },
   { path: '/vendorAdd', name: 'VendorAdd', element: VendorAdd },

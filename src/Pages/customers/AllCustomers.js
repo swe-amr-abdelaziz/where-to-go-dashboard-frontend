@@ -51,8 +51,8 @@ import avatar4 from 'src/assets/images/avatars/4.jpg'
 import avatar5 from 'src/assets/images/avatars/5.jpg'
 import avatar6 from 'src/assets/images/avatars/6.jpg'
 
-import WidgetsBrand from './../../views/widgets/WidgetsBrand'
-import WidgetsDropdown from './../../views/widgets/WidgetsDropdown'
+import WidgetsBrand from '../../views/widgets/WidgetsBrand'
+import WidgetsDropdown from '../../views/widgets/WidgetsDropdown'
 
 const Dashboard = () => {
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
@@ -185,8 +185,8 @@ const Dashboard = () => {
         <CCardBody>
           <CRow>
             <CCol sm={5}>
-              <h3 id="users-list" className="card-title mb-0">
-                Users List
+              <h3 id="customers-list" className="card-title mb-0">
+                Customers List
               </h3>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">

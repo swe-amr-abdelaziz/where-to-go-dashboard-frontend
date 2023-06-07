@@ -51,7 +51,7 @@ const EmployeeList = () => {
       <CCardBody>
         <CRow>
           <CCol sm={5}>
-            <h3 id="users-list" className="card-title mb-0">
+            <h3 id="employees-list" className="card-title mb-0">
               Employees List
             </h3>
           </CCol>
@@ -81,6 +81,7 @@ const EmployeeList = () => {
                   <img
                     style={{ width: 60, height: 60, borderRadius: '50%' }}
                     src={`http://localhost:8001/api/v1/images/employees/${employee.image}`}
+                    alt="employee avatar"
                   />
                 </CTableHeaderCell>
                 <CTableHeaderCell scope={'row'}>{employee.name}</CTableHeaderCell>

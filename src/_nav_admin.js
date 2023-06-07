@@ -46,7 +46,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Approve',
-    to: '/theme/typography',
+    to: '/vendorAdd',
     icon: <LuVerified size={24} style={{ marginRight: '16px' }} />,
   },
   {
@@ -56,17 +56,17 @@ const _nav = [
   {
     component: CNavItem,
     name: 'All Employees',
-    to: '/theme/colors',
+    to: '/employees',
     icon: <LuFileSpreadsheet size={24} style={{ marginRight: '16px' }} />,
   },
   {
     component: CNavTitle,
-    name: 'Users',
+    name: 'Customers',
   },
   {
     component: CNavItem,
-    name: 'All Users',
-    to: '/users',
+    name: 'All Customers',
+    to: '/customers',
     icon: <LuFileSpreadsheet size={24} style={{ marginRight: '16px' }} />,
   },
   {

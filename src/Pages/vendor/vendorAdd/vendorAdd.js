@@ -123,7 +123,7 @@ const VendorAdd = () => {
                 <UploadImage></UploadImage>
               </div>
               <div>
-                <CButton>Submit</CButton>
+                <CButton className="bg-base">Submit</CButton>
               </div>
             </CForm>
           </CCardBody>

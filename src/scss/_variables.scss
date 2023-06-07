@@ -661,15 +661,15 @@ $table-hover-bg:              rgba($white, $table-hover-bg-factor) !default;
 // Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
 
 // scss-docs-start input-btn-variables
-// $input-btn-padding-y:         .375rem !default;
-// $input-btn-padding-x:         .75rem !default;
+$input-btn-padding-y:         .5rem !default;
+$input-btn-padding-x:         1rem !default;
 // $input-btn-font-family:       null !default;
 // $input-btn-font-size:         $font-size-base !default;
 // $input-btn-line-height:       $line-height-base !default;
 
 // $input-btn-focus-width:         .25rem !default;
-// $input-btn-focus-color-opacity: .25 !default;
-// $input-btn-focus-color:         rgba($component-active-bg, $input-btn-focus-color-opacity) !default;
+$input-btn-focus-color-opacity: .25 !default;
+$input-btn-focus-color:         rgba($base, $input-btn-focus-color-opacity) !default;
 // $input-btn-focus-blur:          0 !default;
 // $input-btn-focus-box-shadow:    0 0 $input-btn-focus-blur $input-btn-focus-width $input-btn-focus-color !default;
 
@@ -735,7 +735,7 @@ $btn-border-width:            0 !default;
 // $btn-active-border-tint-amount:   10% !default;
 
 // $button-variants: (
-//   "primary": btn-color-map($primary, $primary),
+//   "primary": $base,
 //   "secondary": btn-color-map($secondary, $secondary),
 //   "success": btn-color-map($success, $success),
 //   "danger": btn-color-map($danger, $danger),

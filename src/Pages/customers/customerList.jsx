@@ -182,7 +182,7 @@ const CustomerList = () => {
               <h3>Customers List</h3>
               <div className="d-flex justify-content-between">
                 <CButton
-                  className="me-2 bg-success d-flex align-items-center"
+                  className="me-2 bg-base d-flex align-items-center"
                   onClick={() => navigate('/employees')}
                 >
                   <PlusCircleFill className="me-1" />

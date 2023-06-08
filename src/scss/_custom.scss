@@ -20,3 +20,45 @@ th {
 .shadow {
   box-shadow: $box-shadow !important;
 }
+
+.three-dots {
+  width: fit-content !important;
+  padding: 0px !important;
+  display: flex !important;
+  align-self: center !important;
+  justify-self: center !important;
+  background-color: transparent !important;
+  color: #495057 !important;
+  border: none !important;
+}
+
+.three-dots:focus {
+  box-shadow: none !important;
+}
+
+.p-highlight {
+  color: #FFFFFF !important;
+  background-color: $base !important;
+}
+
+.p-paginator-element:hover {
+  color: $base !important;
+  background-color: rgba($color: $base, $alpha: .1) !important;
+}
+
+.p-highlight.p-paginator-element:focus,
+.p-paginator-element:focus:not(.p-highlight) {
+  box-shadow: none !important;
+}
+
+.p-dropdown:hover,
+.p-dropdown:active,
+.p-dropdown:focus-visible,
+.p-dropdown:not(.p-disabled).p-focus {
+  border-color: $base !important;
+}
+
+.p-dropdown:not(.p-disabled).p-focus {
+  box-shadow: 0 0 0 0.2rem rgba($color: $base, $alpha: .1) !important;
+
+}

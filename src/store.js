@@ -5,6 +5,7 @@ const initialState = {
 }
 
 const changeState = (state = initialState, { type, ...rest }) => {
+  console.log('entered')
   switch (type) {
     case 'set':
       return { ...state, ...rest }

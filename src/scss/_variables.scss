@@ -438,7 +438,7 @@ $link-color:                              $base !default;
 // scss-docs-end border-radius-variables
 
 // scss-docs-start box-shadow-variables
-// $box-shadow:                  0 .5rem 1rem rgba($black, .15) !default;
+$box-shadow:                  0 .25rem .5rem rgba($black, .15) !default;
 // $box-shadow-sm:               0 .125rem .25rem rgba($black, .075) !default;
 // $box-shadow-lg:               0 1rem 3rem rgba($black, .175) !default;
 // $box-shadow-inset:            inset 0 1px 2px rgba($black, .075) !default;
@@ -626,8 +626,8 @@ $link-color:                              $base !default;
 // $table-active-bg:             rgba($black, $table-active-bg-factor) !default;
 
 // $table-hover-color:           $table-color !default;
-// $table-hover-bg-factor:       .075 !default;
-// $table-hover-bg:              rgba($black, $table-hover-bg-factor) !default;
+$table-hover-bg-factor:       .075 !default;
+$table-hover-bg:              rgba($white, $table-hover-bg-factor) !default;
 
 // $table-border-factor:         .1 !default;
 // $table-border-width:          $border-width !default;
@@ -661,15 +661,15 @@ $link-color:                              $base !default;
 // Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
 
 // scss-docs-start input-btn-variables
-// $input-btn-padding-y:         .375rem !default;
-// $input-btn-padding-x:         .75rem !default;
+$input-btn-padding-y:         .5rem !default;
+$input-btn-padding-x:         1rem !default;
 // $input-btn-font-family:       null !default;
 // $input-btn-font-size:         $font-size-base !default;
 // $input-btn-line-height:       $line-height-base !default;
 
 // $input-btn-focus-width:         .25rem !default;
-// $input-btn-focus-color-opacity: .25 !default;
-// $input-btn-focus-color:         rgba($component-active-bg, $input-btn-focus-color-opacity) !default;
+$input-btn-focus-color-opacity: .25 !default;
+$input-btn-focus-color:         rgba($base, $input-btn-focus-color-opacity) !default;
 // $input-btn-focus-blur:          0 !default;
 // $input-btn-focus-box-shadow:    0 0 $input-btn-focus-blur $input-btn-focus-width $input-btn-focus-color !default;
 
@@ -705,7 +705,7 @@ $link-color:                              $base !default;
 // $btn-padding-x-lg:            $input-btn-padding-x-lg !default;
 // $btn-font-size-lg:            $input-btn-font-size-lg !default;
 
-// $btn-border-width:            $input-btn-border-width !default;
+$btn-border-width:            0 !default;
 
 // $btn-font-weight:             $font-weight-normal !default;
 // $btn-box-shadow:              inset 0 1px 0 rgba($white, .15), 0 1px 1px rgba($black, .075) !default;
@@ -735,7 +735,7 @@ $link-color:                              $base !default;
 // $btn-active-border-tint-amount:   10% !default;
 
 // $button-variants: (
-//   "primary": btn-color-map($primary, $primary),
+//   "primary": $base,
 //   "secondary": btn-color-map($secondary, $secondary),
 //   "success": btn-color-map($success, $success),
 //   "danger": btn-color-map($danger, $danger),
@@ -1803,3 +1803,4 @@ $sidebar-nav-link-active-bg:               $base !default;
 ::-webkit-scrollbar-thumb {
   background: $base;
 }
+

@@ -10,8 +10,21 @@ import {
   CTableDataCell,
   CFormInput,
   CButton,
+  CDropdown,
+  CDropdownToggle,
+  CDropdownMenu,
+  CDropdownItem,
+  CNav,
+  CNavItem,
+  CNavLink,
 } from '@coreui/react'
-import { PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons'
+import {
+  PlusCircleFill,
+  ThreeDotsVertical,
+  PencilSquare,
+  EyeFill,
+  Trash,
+} from 'react-bootstrap-icons'
 
 import axiosInstance from 'src/Axios'
 
@@ -37,20 +50,44 @@ const VendorList = () => {
   }
 
   return (
-    <CCard className="mb-4">
+    <CCard className="m-3 mb-5 p-4 shadow">
       <CCardBody>
         <div className="d-flex justify-content-between mb-4 mt-2">
-          <h4>
-            <strong>Vendors List</strong>
-          </h4>
+          <h3>Vendors List</h3>
           <div className="d-flex justify-content-between">
-            <CButton className="me-2 bg-success d-flex align-items-center">
+            <CButton className="me-2 bg-base d-flex align-items-center">
               <PlusCircleFill className="me-1" />
               New
             </CButton>
             <CFormInput type="search" className="me-2" placeholder="Search" />
           </div>
         </div>
+        <CNav variant="underline">
+          <CNavItem>
+            <CNavLink href="#" active>
+              Active
+            </CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink href="#">Link</CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink href="#">Link</CNavLink>
+          </CNavItem>
+        </CNav>
+        {/* <div className="d-flex justify-content-start">
+          <div>
+            <span className="badge badge-pill bg-success me-1 p-2">
+              <strong>All Vendors</strong>
+            </span>
+            <span className="badge badge-pill bg-primary mx-1 p-2">
+              <strong>Approved</strong>
+            </span>
+            <span className="badge badge-pill bg-secondary ms-1 p-2">
+              <strong>Not Approved</strong>
+            </span>
+          </div>
+        </div> */}
         <CTable striped hover>
           <CTableHead>
             <CTableRow>
@@ -71,7 +108,25 @@ const VendorList = () => {
                 <CTableDataCell>{vendor.email}</CTableDataCell>
                 <CTableDataCell>{vendor.isApproved}</CTableDataCell>
                 <CTableDataCell>
-                  <ThreeDotsVertical />
+                  <CDropdown>
+                    <CDropdownToggle color="secondary">
+                      <ThreeDotsVertical />
+                    </CDropdownToggle>
+                    <CDropdownMenu>
+                      <CDropdownItem href="#">
+                        <EyeFill className="me-2 text-primary" />
+                        View
+                      </CDropdownItem>
+                      <CDropdownItem href="#">
+                        <PencilSquare className="me-2 text-secondary" />
+                        Edit
+                      </CDropdownItem>
+                      <CDropdownItem href="#">
+                        <Trash className="me-2 text-danger" />
+                        Delete
+                      </CDropdownItem>
+                    </CDropdownMenu>
+                  </CDropdown>
                 </CTableDataCell>
               </CTableRow>
             ))}

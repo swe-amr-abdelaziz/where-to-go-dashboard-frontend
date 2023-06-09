@@ -12,6 +12,7 @@ const initialState = {
 export const getEmployees = createAsyncThunk('employees/getEmployees', async (thunkAPI) => {
   try {
     const response = await axios.get(URL)
+    console.log(response)
     return response.data.data
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data)

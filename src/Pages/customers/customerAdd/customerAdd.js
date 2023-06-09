@@ -12,28 +12,29 @@ import {
   CFormSelect,
   CRow,
 } from '@coreui/react'
-import UploadImage from './../../../components/uploadImage/uploadImage'
+import UploadImage from '../../../components/uploadImage/uploadImage'
 
-const VendorAdd = () => {
+const CustomerAdd = () => {
   return (
     <CRow>
       <CCol xs={12}>
         <CCard className="m-3 mb-5 p-4 shadow">
           <CCardBody>
-            <h3 className="mb-4 mt-2">New Vendor</h3>
+            <h3 className="mb-4 mt-2">New Customer</h3>
             <CForm>
-              <CFormLabel htmlFor="exampleFormControlInput1">Owner</CFormLabel>
+              <CFormLabel htmlFor="firstName">Name</CFormLabel>
               <div className="mb-3 d-flex">
                 <CFormInput
+                  id="firstName"
                   className="me-2"
                   type="text"
-                  placeholder="First Name"
+                  placeholder="First name"
                   aria-label="default input example"
                 />
                 <CFormInput
                   className="ms-2"
                   type="text"
-                  placeholder="Last Name"
+                  placeholder="Last name"
                   aria-label="default input example"
                 />
               </div>
@@ -133,4 +134,4 @@ const VendorAdd = () => {
   )
 }
 
-export default VendorAdd
+export default CustomerAdd

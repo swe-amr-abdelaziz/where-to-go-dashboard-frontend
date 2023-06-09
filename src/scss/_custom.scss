@@ -1,9 +1,4 @@
 // Here you can add other styles
-.sidebar-brand-icon {
-  height: 2rem;
-  margin-right: 0.5rem;
-}
-
 .sidebar-brand-text {
   height: 1rem;
 }
@@ -64,4 +59,21 @@ th {
 
 .p-dialog-header-close {
   box-shadow: none !important;
+}
+
+.green-logo, .blue-logo, .purple-logo {
+  height: 2rem;
+  margin-right: 0.5rem;
+}
+
+.green-logo {
+  filter: invert(42%) sepia(87%) saturate(1527%) hue-rotate(143deg) brightness(102%) contrast(101%);
+}
+
+.blue-logo {
+  filter: invert(25%) sepia(69%) saturate(6698%) hue-rotate(210deg) brightness(86%) contrast(101%);
+}
+
+.purple-logo {
+  filter: invert(22%) sepia(95%) saturate(7193%) hue-rotate(275deg) brightness(85%) contrast(106%);
 }

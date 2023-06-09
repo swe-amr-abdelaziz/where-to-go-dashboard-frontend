@@ -35,7 +35,7 @@ const AppSidebar = () => {
         style={{ paddingLeft: '36px' }}
         to="/"
       >
-        <img src={LogoIcon} alt="Logo Icon" className="sidebar-brand-icon" />
+        <img src={LogoIcon} alt="Logo Icon" className="green-logo" />
         <img src={LogoText} alt="Logo Text" className="sidebar-brand-text" />
         {/* <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} /> */}
         <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />

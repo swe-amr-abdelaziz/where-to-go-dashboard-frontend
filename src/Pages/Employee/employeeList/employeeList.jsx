@@ -147,7 +147,7 @@ const EmployeeList = () => {
             <div className="d-flex justify-content-between">
               <CButton
                 className="me-2 bg-base d-flex align-items-center"
-                onClick={() => navigate('/employees')}
+                onClick={handleAddEmployee}
               >
                 <PlusCircleFill className="me-1" />
                 New

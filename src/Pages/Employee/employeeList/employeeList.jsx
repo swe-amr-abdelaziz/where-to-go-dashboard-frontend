@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -11,14 +11,7 @@ import {
   CModalHeader,
   CModalTitle,
   CRow,
-  CTable,
-  CTableBody,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilCloudDownload, cilPeople } from '@coreui/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBan,
@@ -40,32 +33,40 @@ import {
   unbanEmployee,
 } from '../../../Redux/EmployeeSlice/employeeSlice'
 import { useNavigate } from 'react-router-dom'
-import { PlusCircleFill } from 'react-bootstrap-icons'
+import { PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons'
+import { Menu } from 'primereact/menu'
+import { Button } from 'primereact/button'
+import { Column } from 'primereact/column'
+import { DataTable } from 'primereact/datatable'
+import 'primereact/resources/themes/lara-light-indigo/theme.css'
+import 'primereact/resources/primereact.min.css'
 
 const EmployeeList = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const employees = useSelector((state) => state.employee.employees)
   const [visible, setVisible] = React.useState(false)
+  const [emp, setEmp] = useState(null)
   const [demployee, setDemployee] = React.useState(null)
+  const menu = useRef(null)
 
   useEffect(() => {
     dispatch(getEmployees())
   }, [])
 
-  const handleBanEmployee = (employee) => {
-    if (!employee.bannedAtt) {
-      dispatch(banEmployee(employee._id))
+  const handleBanEmployee = () => {
+    if (!emp.bannedAtt) {
+      dispatch(banEmployee(emp._id))
     } else {
-      dispatch(unbanEmployee(employee._id))
+      dispatch(unbanEmployee(emp._id))
     }
   }
 
-  const handleActiveEmployee = (employee) => {
-    if (!employee.deactivatedAt) {
-      dispatch(deactivateEmployee(employee._id))
+  const handleActiveEmployee = () => {
+    if (!emp.deactivatedAt) {
+      dispatch(deactivateEmployee(emp._id))
     } else {
-      dispatch(activateEmployee(employee._id))
+      dispatch(activateEmployee(emp._id))
     }
   }
 
@@ -73,19 +74,68 @@ const EmployeeList = () => {
     navigate('/employees/new')
   }
 
-  const handleEditEmployee = (employee) => {
-    dispatch(setEmployee(employee))
+  const handleEditEmployee = () => {
+    dispatch(setEmployee(emp))
     navigate(`/employees/edit`)
   }
 
-  const checkDeleteEmployee = (employee) => {
+  const checkDeleteEmployee = () => {
     setVisible(true)
-    setDemployee(employee)
+    setDemployee(emp)
   }
 
   const handleDeleteEmployee = () => {
     dispatch(deleteEmployee(demployee._id))
     setVisible(false)
+  }
+
+  const actionsBodyTemplate = (rowData) => {
+    return (
+      <>
+        <Menu
+          model={[
+            {
+              label: 'Details',
+              icon: 'pi pi-info-circle',
+            },
+            {
+              label: 'Edit',
+              icon: 'pi pi-pencil',
+              command: (e) => handleEditEmployee(),
+            },
+            {
+              label: 'Delete',
+              icon: 'pi pi-trash',
+              command: (e) => checkDeleteEmployee(),
+            },
+            {
+              label: 'Unban / Ban',
+              icon: 'pi pi-check',
+              command: (e) => handleBanEmployee(),
+            },
+            {
+              label: 'Activate/Deactivate',
+              icon: 'pi pi-times',
+              command: (e) => handleActiveEmployee(),
+            },
+          ]}
+          popup
+          ref={menu}
+          id={`actions_${rowData.id}`}
+        />
+        <Button
+          label={<ThreeDotsVertical />}
+          icon=""
+          className="mr-2 three-dots"
+          onClick={(event) => {
+            menu.current.toggle(event)
+            setEmp(rowData)
+          }}
+          aria-controls={`actions_${rowData.id}`}
+          aria-haspopup
+        />
+      </>
+    )
   }
 
   return (
@@ -106,119 +156,61 @@ const EmployeeList = () => {
             </div>
           </div>
         </CRow>
-        <CTable align="middle" className="border mt-4" hover responsive>
-          <CTableHead color="light">
-            <CTableRow>
-              <CTableHeaderCell className="text-center" scope={'col'}>
-                Avatar
-              </CTableHeaderCell>
-              <CTableHeaderCell className="text-center" scope={'col'}>
-                Name
-              </CTableHeaderCell>
-              <CTableHeaderCell className="text-center" scope={'col'}>
-                Email
-              </CTableHeaderCell>
-              <CTableHeaderCell className="text-center" scope={'col'}>
-                Phone
-              </CTableHeaderCell>
-              <CTableHeaderCell className="text-center" scope={'col'}>
-                Active
-              </CTableHeaderCell>
-              <CTableHeaderCell className="text-center" scope={'col'}>
-                Banned
-              </CTableHeaderCell>
-              <CTableHeaderCell className="text-center" scope={'col'}>
-                Role
-              </CTableHeaderCell>
-              <CTableHeaderCell className="text-center" scope={'col'}>
-                Actions
-              </CTableHeaderCell>
-            </CTableRow>
-          </CTableHead>
-          <CTableBody>
-            {employees.map((employee) => (
-              <CTableRow key={employee._id}>
-                <CTableHeaderCell className="text-center" scope={'row'}>
-                  <img
-                    style={{ width: 60, height: 60, borderRadius: '50%' }}
-                    src={`http://localhost:8001/api/v1/images/employees/${employee.image}`}
-                    alt="employee avatar"
-                  />
-                </CTableHeaderCell>
-                <CTableHeaderCell className="text-center" scope={'row'}>
-                  {employee.name}
-                </CTableHeaderCell>
-                <CTableHeaderCell className="text-center" scope={'row'}>
-                  {employee.email}
-                </CTableHeaderCell>
-                <CTableHeaderCell className="text-center" scope={'row'}>
-                  {employee.phoneNumber}
-                </CTableHeaderCell>
-                <CTableHeaderCell className="text-center" scope={'row'}>
-                  <FontAwesomeIcon
-                    color={employee.deactivatedAt ? 'red' : 'green'}
-                    icon={faCircleDot}
-                  />
-                </CTableHeaderCell>
-                <CTableHeaderCell className="text-center" scope={'row'}>
-                  <FontAwesomeIcon
-                    color={employee.bannedAtt ? 'red' : 'green'}
-                    icon={faCircleDot}
-                  />
-                </CTableHeaderCell>
-                <CTableHeaderCell className="text-center" scope={'row'}>
-                  {employee.role.name}
-                </CTableHeaderCell>
-                <CTableHeaderCell className="text-center" scope={'row'}>
-                  <CButton
-                    title={'Show Details'}
-                    color="primary"
-                    variant={'outline'}
-                    className="me-1"
-                  >
-                    <FontAwesomeIcon icon={faCircleInfo} />
-                  </CButton>
-                  <CButton
-                    title={'Edit Employee'}
-                    color="secondary"
-                    variant={'outline'}
-                    className="me-1"
-                    onClick={() => handleEditEmployee(employee)}
-                  >
-                    <FontAwesomeIcon icon={faPenToSquare} />
-                  </CButton>
-                  <CButton
-                    title={'Delete Employee'}
-                    color="danger"
-                    variant={'outline'}
-                    onClick={() => checkDeleteEmployee(employee)}
-                    className="me-1"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </CButton>
-                  <CButton
-                    title={'Ban / Unban Employee'}
-                    color="secondary"
-                    variant={'outline'}
-                    className="me-1"
-                    onClick={() => handleBanEmployee(employee)}
-                  >
-                    <FontAwesomeIcon icon={faBan} />
-                  </CButton>
-                  <CButton
-                    title={'Activate / Deactivate Employee'}
-                    color="info"
-                    variant={'outline'}
-                    className="me-1"
-                    onClick={() => handleActiveEmployee(employee)}
-                  >
-                    <FontAwesomeIcon icon={faDollarSign} />
-                  </CButton>
-                </CTableHeaderCell>
-              </CTableRow>
-            ))}
-          </CTableBody>
-        </CTable>
+        <DataTable
+          value={employees}
+          paginator
+          rows={10}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          tableStyle={{ minWidth: '50rem' }}
+        >
+          <Column
+            field="avatar"
+            header="Avater"
+            body={(employee) => (
+              <img
+                src={`http://localhost:8001/api/v1/images/employees/${employee.image}`}
+                alt="avatar"
+                className="avatar"
+              />
+            )}
+            style={{ width: '5%' }}
+          ></Column>
+          <Column field="name" header="Name" style={{ width: '20%' }}></Column>
+          <Column field="email" header="Email" style={{ width: '30%' }}></Column>
+          <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
+          <Column
+            field="active"
+            header="Active"
+            body={(employee) => (
+              <FontAwesomeIcon
+                color={employee.deactivatedAt ? 'red' : 'green'}
+                icon={faCircleDot}
+              />
+            )}
+            bodyClassName="text-center"
+            style={{ width: '5%' }}
+          ></Column>
+          <Column
+            field="banned"
+            header="Banned"
+            body={(employee) => (
+              <FontAwesomeIcon color={employee.bannedAtt ? 'red' : 'green'} icon={faCircleDot} />
+            )}
+            bodyClassName="text-center"
+            style={{ width: '5%' }}
+          ></Column>
+          <Column
+            field="role"
+            header="Role"
+            body={(employee) => <p className="mb-0">{employee.role.name}</p>}
+            style={{ width: '10%' }}
+          ></Column>
+          <Column
+            body={(employee) => actionsBodyTemplate(employee)}
+            bodyClassName="text-center"
+            style={{ width: '5%' }}
+          ></Column>
+        </DataTable>
       </CCardBody>
       <CModal visible={visible} onClose={() => setVisible(false)}>
         <CModalHeader onClose={() => setVisible(false)}>

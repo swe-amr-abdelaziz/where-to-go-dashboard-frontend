@@ -20,18 +20,16 @@ import { logo } from 'src/assets/brand/logo'
 
 import LogoIcon from './../assets/brand/Icon.svg'
 import LogoText from './../assets/brand/Text.svg'
+import { changeState } from '../Redux/SlidebarSlice/slidebarSlice'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const sidebarShow = useSelector((state) => state.slidebar.sidebarShow)
 
   return (
-    <CHeader position="sticky" className="mb-4">
+    <CHeader position="sticky" className="mb-4 shadow">
       <CContainer fluid>
-        <CHeaderToggler
-          className="ps-1"
-          onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
-        >
+        <CHeaderToggler className="ps-1" onClick={() => dispatch(changeState(!sidebarShow))}>
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">

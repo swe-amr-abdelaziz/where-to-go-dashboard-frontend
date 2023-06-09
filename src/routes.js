@@ -51,7 +51,9 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 // Custom
-const Customers = React.lazy(() => import('./Pages/customers/customerList'))
+const Customers = React.lazy(() => import('./Pages/customers/customerList/customerList'))
+const CustomerAdd = React.lazy(() => import('./Pages/customers/customerAdd/customerAdd'))
+const CustomerEdit = React.lazy(() => import('./Pages/customers/customerEdit/customerEdit'))
 const VendorAdd = React.lazy(() => import('./Pages/vendor/vendorAdd/vendorAdd'))
 const EmployeeList = React.lazy(() => import('./Pages/Employee/employeeList/employeeList'))
 const EmployeeAdd = React.lazy(() => import('./Pages/Employee/employeeAdd/employeeAdd'))
@@ -106,7 +108,8 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/customers', name: 'Customers', element: Customers },
-  { path: '/customers/new', name: 'New Customer', element: Customers },
+  { path: '/customers/new', name: 'New Customer', element: CustomerAdd },
+  { path: '/customers/edit', name: 'Edit Customer', element: CustomerEdit },
   { path: '/employees', name: 'Employees', element: EmployeeList },
   { path: '/employees/new', name: 'New Employee', element: EmployeeAdd },
   { path: '/employees/edit', name: 'Edit Employee', element: EmployeeEdit },

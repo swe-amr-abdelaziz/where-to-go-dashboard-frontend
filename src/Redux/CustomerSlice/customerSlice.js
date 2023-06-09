@@ -12,7 +12,6 @@ const initialState = {
 export const getCustomers = createAsyncThunk('customers/getCustomers', async (thunkAPI) => {
   try {
     const response = await axiosInstance.get(URL)
-    console.log(response)
     return response.data.data
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data)
@@ -22,7 +21,8 @@ export const getCustomers = createAsyncThunk('customers/getCustomers', async (th
 export const getCustomer = createAsyncThunk('customers/getCustomer', async (id, thunkAPI) => {
   try {
     const response = await axiosInstance.get(`${URL}/${id}`)
-    return response.data
+    console.log(response.data.data[0].firstName)
+    return response.data.data[0]
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data)
   }

@@ -52,7 +52,6 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 // Custom
 const Customers = React.lazy(() => import('./Pages/customers/customerList/customerList'))
-const CustomerShow = React.lazy(() => import('./Pages/customers/customerShow/customerShow'))
 const CustomerAdd = React.lazy(() => import('./Pages/customers/customerAdd/customerAdd'))
 const CustomerEdit = React.lazy(() => import('./Pages/customers/customerEdit/customerEdit'))
 const VendorAdd = React.lazy(() => import('./Pages/vendor/vendorAdd/vendorAdd'))
@@ -109,7 +108,6 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/customers', name: 'Customers', element: Customers },
-  { path: '/customers/show', name: 'Customer Details', element: CustomerShow },
   { path: '/customers/new', name: 'New Customer', element: CustomerAdd },
   { path: '/customers/edit', name: 'Edit Customer', element: CustomerEdit },
   { path: '/employees', name: 'Employees', element: EmployeeList },

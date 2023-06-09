@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { DataTable } from 'primereact/datatable'
@@ -74,8 +74,9 @@ const CustomerList = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const customers = useSelector((state) => state.customer.customers)
-  const [visible, setVisible] = React.useState(false)
-  const [dcustomer, setDcustomer] = React.useState(null)
+  const customer = useSelector((state) => state.customer.customer)
+  const [id, setId] = useState(null)
+  const [detailsVisible, setDetailsVisible] = React.useState(false)
   const menu = useRef(null)
 
   useEffect(() => {
@@ -100,17 +101,20 @@ const CustomerList = () => {
     return <FontAwesomeIcon color={customer.bannedAt ? 'red' : 'green'} icon={faCircleDot} />
   }
 
-  const actionsBodyTemplate = (customer) => {
+  const handleDetails = async () => {
+    await dispatch(getCustomer(id))
+    setDetailsVisible(true)
+  }
+
+  const actionsBodyTemplate = (rowData) => {
     return (
       <>
         <Menu
           model={[
             {
-              label: 'Show',
-              icon: 'pi pi-eye',
-              command: (e) => {
-                navigate('/customers/show')
-              },
+              label: 'Details',
+              icon: 'pi pi-info-circle',
+              command: (e) => handleDetails(),
             },
             {
               label: 'Edit',
@@ -120,22 +124,22 @@ const CustomerList = () => {
               },
             },
             {
-              label: customer.deletedAt ? 'Delete Permanently' : 'Soft Delete',
+              label: rowData.deletedAt ? 'Delete Permanently' : 'Soft Delete',
               icon: 'pi pi-trash',
               command: (e) => {
                 navigate('/customers/edit')
               },
             },
             {
-              label: customer.bannedAt ? 'Unban' : 'Ban',
-              icon: customer.bannedAt ? 'pi pi-check' : 'pi pi-times',
+              label: rowData.bannedAt ? 'Unban' : 'Ban',
+              icon: rowData.bannedAt ? 'pi pi-check' : 'pi pi-times',
               command: (e) => {
                 navigate('/customers/edit')
               },
             },
             {
-              label: customer.deactivatedAt ? 'Activate' : 'Deactivate',
-              icon: customer.deactivatedAt ? 'pi pi-check' : 'pi pi-times',
+              label: rowData.deactivatedAt ? 'Activate' : 'Deactivate',
+              icon: rowData.deactivatedAt ? 'pi pi-check' : 'pi pi-times',
               command: (e) => {
                 navigate('/customers/edit')
               },
@@ -143,14 +147,17 @@ const CustomerList = () => {
           ]}
           popup
           ref={menu}
-          id={`actions_${customer.id}`}
+          id={`actions_${rowData.id}`}
         />
         <Button
           label={<ThreeDotsVertical />}
           icon=""
           className="mr-2 three-dots"
-          onClick={(event) => menu.current.toggle(event)}
-          aria-controls={`actions_${customer.id}`}
+          onClick={(event) => {
+            menu.current.toggle(event)
+            setId(rowData.id)
+          }}
+          aria-controls={`actions_${rowData.id}`}
           aria-haspopup
         />
       </>
@@ -213,8 +220,6 @@ const CustomerList = () => {
               style={{ width: '5%' }}
             ></Column>
             <Column
-              field="actions"
-              header=""
               body={actionsBodyTemplate}
               bodyClassName="text-center"
               style={{ width: '5%' }}
@@ -222,6 +227,17 @@ const CustomerList = () => {
           </DataTable>
         </CCardBody>
       </CCard>
+      <Dialog
+        header="Customer Details"
+        visible={detailsVisible}
+        style={{ width: '50vw' }}
+        onHide={() => setDetailsVisible(false)}
+      >
+        <p className="m-0">
+          <strong>First Name:</strong> {customer.firstName}
+          <strong>Last Name:</strong> {customer.lastName}
+        </p>
+      </Dialog>
     </>
   )
 }

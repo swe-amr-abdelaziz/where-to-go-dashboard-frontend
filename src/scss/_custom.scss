@@ -60,5 +60,8 @@ th {
 
 .p-dropdown:not(.p-disabled).p-focus {
   box-shadow: 0 0 0 0.2rem rgba($color: $base, $alpha: .1) !important;
+}
 
+.p-dialog-header-close {
+  box-shadow: none !important;
 }

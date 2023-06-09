@@ -25,10 +25,8 @@ import {
   EyeFill,
   Trash,
 } from 'react-bootstrap-icons'
-
+import { Link } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
-
-import KebabMenu from 'src/components/KebabMenu'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])
@@ -49,16 +47,25 @@ const VendorList = () => {
       })
   }
 
+  const handleDelete = async (id) => {
+    await axiosInstance
+      .patch(`api/v1/vendors/${id}/deactivate`)
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error))
+  }
+
   return (
     <CCard className="m-3 mb-5 p-4">
       <CCardBody>
         <div className="d-flex justify-content-between mb-4 mt-2">
           <h3>Vendors List</h3>
           <div className="d-flex justify-content-between">
-            <CButton className="me-2 bg-base d-flex align-items-center">
-              <PlusCircleFill className="me-1" />
-              New
-            </CButton>
+            <Link to="/vendors/create">
+              <CButton className="me-2 bg-base d-flex align-items-center">
+                <PlusCircleFill className="me-1" />
+                New
+              </CButton>
+            </Link>
             <CFormInput type="search" className="me-2" placeholder="Search" />
           </div>
         </div>
@@ -121,7 +128,7 @@ const VendorList = () => {
                         <PencilSquare className="me-2 text-secondary" />
                         Edit
                       </CDropdownItem>
-                      <CDropdownItem href="#">
+                      <CDropdownItem onClick={() => handleDelete(vendor._id)}>
                         <Trash className="me-2 text-danger" />
                         Delete
                       </CDropdownItem>

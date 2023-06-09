@@ -111,9 +111,9 @@ const routes = [
   { path: '/employees/new', name: 'New Employee', element: EmployeeAdd },
   { path: '/employees/edit', name: 'Edit Employee', element: EmployeeEdit },
   { path: '/widgets', name: 'Widgets', element: Widgets },
-  { path: '/vendorAdd', name: 'VendorAdd', element: VendorAdd },
-  { path: '/vendorList', name: 'VendorList', element: VendorList },
-  { path: '/vendorDetails', name: 'VendorDetails', element: VendorDetails },
+  { path: '/vendors', name: 'VendorList', element: VendorList },
+  { path: '/vendors/create', name: 'VendorAdd', element: VendorAdd },
+  { path: '/vendors/:id', name: 'VendorDetails', element: VendorDetails },
   // { path: '/Gallery', name: 'Gallery', element: Gallery },
 ]
 

@@ -32,6 +32,7 @@ const EmployeeAdd = () => {
     setValidated(true)
     if (form.checkValidity() === true) {
       const data = new FormData(event.target)
+      console.log(data)
       dispatch(createEmployee(data)).then((res) => {
         navigate('/employees')
       })

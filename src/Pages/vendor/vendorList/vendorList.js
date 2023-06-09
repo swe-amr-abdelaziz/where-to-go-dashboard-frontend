@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   CCard,
   CCardBody,
@@ -27,9 +27,16 @@ import {
 } from 'react-bootstrap-icons'
 import { Link } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
+import { Column } from 'primereact/column'
+import { Menu } from 'primereact/menu'
+import { Button } from 'primereact/button'
+import { useNavigate } from 'react-router-dom'
+import 'primereact/resources/themes/lara-light-indigo/theme.css'
+import 'primereact/resources/primereact.min.css'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])
+  const [id, setId] = useState(null)
 
   useEffect(() => {
     getVendorsList()
@@ -52,6 +59,54 @@ const VendorList = () => {
       .patch(`api/v1/vendors/${id}/deactivate`)
       .then((res) => console.log(res))
       .catch((error) => console.log(error))
+  }
+
+  const navigate = useNavigate()
+  const menu = useRef(null)
+
+  const actionsBodyTemplate = (rowData) => {
+    return (
+      <>
+        <Menu
+          model={[
+            {
+              label: 'Details',
+              icon: 'pi pi-info-circle',
+              command: (e) => {
+                console.log(e)
+              },
+            },
+            {
+              label: 'Edit',
+              icon: 'pi pi-pencil',
+              command: (e) => {
+                navigate('/customers/edit')
+              },
+            },
+            // {
+            //   label: rowData.deactivatedAt ? 'Activate' : 'Deactivate',
+            //   icon: rowData.deactivatedAt ? 'pi pi-check' : 'pi pi-times',
+            //   command: (e) => {
+            //     navigate('/customers/edit')
+            //   },
+            // },
+          ]}
+          popup
+          ref={menu}
+          id={`actions_${rowData.id}`}
+        />
+        <Button
+          label={<ThreeDotsVertical />}
+          className="mr-2 three-dots"
+          onClick={(event) => {
+            menu.current.toggle(event)
+            setId(rowData.id)
+          }}
+          aria-controls={`actions_${rowData.id}`}
+          aria-haspopup
+        />
+      </>
+    )
   }
 
   return (
@@ -115,7 +170,12 @@ const VendorList = () => {
                 <CTableDataCell>{vendor.email}</CTableDataCell>
                 <CTableDataCell>{vendor.isApproved}</CTableDataCell>
                 <CTableDataCell>
-                  <CDropdown>
+                  <Column
+                    body={actionsBodyTemplate}
+                    bodyClassName="text-center"
+                    style={{ width: '50%' }}
+                  ></Column>
+                  {/* <CDropdown>
                     <CDropdownToggle color="secondary">
                       <ThreeDotsVertical />
                     </CDropdownToggle>
@@ -133,7 +193,7 @@ const VendorList = () => {
                         Delete
                       </CDropdownItem>
                     </CDropdownMenu>
-                  </CDropdown>
+                  </CDropdown> */}
                 </CTableDataCell>
               </CTableRow>
             ))}

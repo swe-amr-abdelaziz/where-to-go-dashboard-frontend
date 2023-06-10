@@ -46,17 +46,9 @@ const VendorAdd = () => {
       .catch((error) => console.log(error))
   }
 
-  const handleCountryChange = (event) => {
-    setCurrentCountry(event.currentTarget.value)
-    // const predicate = countries.filter((country) => country.name === event.currentTarget.value)
-    // setCurrentCountry(predicate)
-    console.log(currentCountry)
-  }
   const handleSelectedCountry = (event) => {
     setSelectedCountryValue(event.currentTarget.value)
     setCurrentCountry(countries.filter((country) => country.name === selectedCountryValue))
-    console.log(selectedCountryValue)
-    console.log(currentCountry)
   }
 
   useEffect(() => {

@@ -15,29 +15,48 @@ import UploadImage from '../../../components/uploadImage/uploadImage'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
 import { useParams } from 'react-router-dom'
+import axios from 'axios'
 
 const VendorEdit = () => {
   const { id } = useParams()
   const [currentVendor, setCurrentVendor] = useState({})
   const [categories, setCategories] = useState([])
+  const [countries, setCountries] = useState([])
+  const [selectedCountryValue, setSelectedCountryValue] = useState('')
+
   useEffect(() => {
     getCurrentVendor()
     getCategories()
+    getCountriesWithStates()
   }, [])
+
   const getCurrentVendor = async () => {
     const data = await axiosInstance.get(`api/v1/Vendors/${id}`)
-    console.log(data.data.data[0])
     if (data.data) setCurrentVendor(data.data.data[0])
+  }
+  const handleSelectedCountry = (event) => {
+    setSelectedCountryValue(event.currentTarget.value)
+    // setCurrentCountry(countries.filter((country) => country.name === selectedCountryValue))
   }
   const getCategories = async () => {
     try {
       let res = await axiosInstance.get('api/v1/categories')
-      console.log(res.data.data)
       setCategories(res.data.data)
     } catch (error) {
       console.log(error)
     }
   }
+
+  const getCountriesWithStates = () => {
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then((res) => {
+        console.log(res.data.data)
+        setCountries(res.data.data)
+      })
+      .catch((error) => console.log(error))
+  }
+
   const navigate = useNavigate()
   const [validated, setValidated] = useState(false)
   const [vendorObject, setVendorObject] = useState(new FormData())
@@ -171,12 +190,16 @@ const VendorEdit = () => {
                     name={'country'}
                     feedbackInvalid="Please choose Country"
                     className="me-2"
+                    value={selectedCountryValue}
+                    onChange={handleSelectedCountry}
                     required
                   >
-                    <option disabled>Country</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option disabled>---- Select Country ----</option>
+                    {countries.map((country) => (
+                      <option key={country.iso3} value={country.name}>
+                        {country.name}
+                      </option>
+                    ))}
                   </CFormSelect>
                   <CFormSelect
                     name={'governorate'}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -11,17 +11,39 @@ import {
   CFormSelect,
   CRow,
 } from '@coreui/react'
-import UploadImage from './../../../components/uploadImage/uploadImage'
+import UploadImage from '../../../components/uploadImage/uploadImage'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
+import { useParams } from 'react-router-dom'
 
-const VendorAdd = () => {
+const VendorEdit = () => {
+  const { id } = useParams()
+  const [currentVendor, setCurrentVendor] = useState({})
+  const [categories, setCategories] = useState([])
+  useEffect(() => {
+    getCurrentVendor()
+    getCategories()
+  }, [])
+  const getCurrentVendor = async () => {
+    const data = await axiosInstance.get(`api/v1/Vendors/${id}`)
+    console.log(data.data.data[0])
+    if (data.data) setCurrentVendor(data.data.data[0])
+  }
+  const getCategories = async () => {
+    try {
+      let res = await axiosInstance.get('api/v1/categories')
+      console.log(res.data.data)
+      setCategories(res.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const navigate = useNavigate()
   const [validated, setValidated] = useState(false)
   const [vendorObject, setVendorObject] = useState(new FormData())
   const handleChange = (e) => {
-    vendorObject.set(e.target.name, e.target.value)
-    console.log(vendorObject)
+    setCurrentVendor(...currentVendor, e.target.name, e.target.value)
+    console.log(currentVendor)
   }
 
   const handleSubmit = (event) => {
@@ -33,9 +55,8 @@ const VendorAdd = () => {
     setValidated(true)
     if (form.checkValidity() === true) {
       const data = new FormData(event.target)
-      console.log(data.get('gallery'))
       axiosInstance
-        .post('/api/v1/vendors', data)
+        .patch('/api/v1/vendors', data)
         .then((res) => {
           console.log(res)
         })
@@ -52,7 +73,7 @@ const VendorAdd = () => {
       <CCol xs={12}>
         <CCard className="m-3 mb-5 p-4 shadow">
           <CCardBody>
-            <h3 className="mb-4 mt-2">New Vendor</h3>
+            <h3 className="mb-4 mt-2">Edit Vendor</h3>
             <CForm
               className="row g-3 needs-validation"
               noValidate
@@ -62,6 +83,8 @@ const VendorAdd = () => {
               <CFormLabel htmlFor="exampleFormControlInput1">Owner</CFormLabel>
               <div className="mb-3 d-flex">
                 <CFormInput
+                  value={currentVendor.firstName}
+                  onChange={handleChange}
                   className="me-2"
                   type="text"
                   placeholder="First Name"
@@ -70,6 +93,8 @@ const VendorAdd = () => {
                   required
                 />
                 <CFormInput
+                  value={currentVendor.lastName}
+                  onChange={handleChange}
                   className="ms-2"
                   type="text"
                   placeholder="Last Name"
@@ -81,6 +106,8 @@ const VendorAdd = () => {
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Place Name</CFormLabel>
                 <CFormInput
+                  value={currentVendor.placeName}
+                  onChange={handleChange}
                   className="me-2"
                   type="text"
                   placeholder="Place Name"
@@ -90,8 +117,35 @@ const VendorAdd = () => {
                 />
               </div>
               <div className="mb-3">
+                <CFormLabel htmlFor="exampleFormControlInput1">Category</CFormLabel>
+                <CFormSelect
+                  name={'category'}
+                  feedbackInvalid="Please choose Country"
+                  className="me-2"
+                  required
+                >
+                  <option disabled>--- Select Category ---</option>
+                  {categories.map((cat) => {
+                    if (cat._id == currentVendor.categories) {
+                      return (
+                        <option key={cat._id} value={cat._id} selected>
+                          {cat.name}
+                        </option>
+                      )
+                    } else {
+                      return (
+                        <option key={cat._id} value={cat._id}>
+                          {cat.name}
+                        </option>
+                      )
+                    }
+                  })}
+                </CFormSelect>
+              </div>
+              <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Tags</CFormLabel>
                 <CFormInput
+                  value={currentVendor.tags}
                   className="me-2"
                   type="text"
                   placeholder="Tags"
@@ -103,6 +157,7 @@ const VendorAdd = () => {
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Location</CFormLabel>
                 <CFormInput
+                  value={currentVendor.street}
                   className="me-2"
                   type="text"
                   placeholder="Street"
@@ -136,6 +191,7 @@ const VendorAdd = () => {
                     </option>
                   </CFormSelect>
                   <CFormInput
+                    value={currentVendor.city}
                     className="mx-2"
                     type="text"
                     placeholder="City"
@@ -144,6 +200,7 @@ const VendorAdd = () => {
                     required
                   />
                   <CFormInput
+                    value={currentVendor.zip}
                     className="ms-2"
                     type="text"
                     placeholder="Postal Code"
@@ -156,6 +213,7 @@ const VendorAdd = () => {
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Contact Number</CFormLabel>
                 <CFormInput
+                  value={currentVendor.phoneNumber}
                   type="text"
                   id="exampleFormControlInput1"
                   placeholder="Contact Number"
@@ -168,6 +226,7 @@ const VendorAdd = () => {
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlInput1">Email address</CFormLabel>
                 <CFormInput
+                  value={currentVendor.email}
                   type="email"
                   id="exampleFormControlInput1"
                   placeholder="Enter Your Email"
@@ -184,16 +243,18 @@ const VendorAdd = () => {
                   name={'description'}
                   feedbackInvalid="Please provide Some Description"
                   required
-                ></CFormTextarea>
+                >
+                  {currentVendor.description}
+                </CFormTextarea>
               </div>
               <div className="mb-3">
-                {/* <CFormLabel htmlFor="exampleFormControlTextarea1">Thumbnail</CFormLabel>
+                <CFormLabel htmlFor="exampleFormControlTextarea1">Thumbnail</CFormLabel>
                 <UploadImage
                   name={'thumbnail'}
                   feedbackValid="Looks good!"
                   feedbackInvalid="Please provide a Thumbnail Image"
                   required
-                ></UploadImage> */}
+                ></UploadImage>
               </div>
               <div className="mb-3">
                 <CFormLabel htmlFor="exampleFormControlTextarea1">Gallery</CFormLabel>
@@ -219,4 +280,4 @@ const VendorAdd = () => {
   )
 }
 
-export default VendorAdd
+export default VendorEdit

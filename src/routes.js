@@ -60,6 +60,7 @@ const EmployeeAdd = React.lazy(() => import('./Pages/Employee/employeeAdd/employ
 const EmployeeEdit = React.lazy(() => import('./Pages/Employee/employeeEdit/employeeEdit'))
 const VendorList = React.lazy(() => import('./Pages/vendor/vendorList/vendorList'))
 const VendorDetails = React.lazy(() => import('./Pages/vendor/vendorDetails/vendorDetails'))
+const VendorEdit = React.lazy(() => import('./Pages/vendor/vendorEdit/vendorEdit'))
 // const Gallery = React.lazy(() => import('./components/gallery/gallery'))
 
 const routes = [
@@ -117,6 +118,7 @@ const routes = [
   { path: '/vendors', name: 'VendorList', element: VendorList },
   { path: '/vendors/create', name: 'VendorAdd', element: VendorAdd },
   { path: '/vendors/:id', name: 'VendorDetails', element: VendorDetails },
+  { path: '/vendors/edit/:id', name: 'VendorEdit', element: VendorEdit },
   // { path: '/Gallery', name: 'Gallery', element: Gallery },
 ]
 

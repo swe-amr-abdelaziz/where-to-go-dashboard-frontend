@@ -27,15 +27,18 @@ import {
 } from 'react-bootstrap-icons'
 import { Link } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
+import { useDispatch } from 'react-redux'
 import { Column } from 'primereact/column'
 import { Menu } from 'primereact/menu'
 import { Button } from 'primereact/button'
 import { useNavigate } from 'react-router-dom'
 import 'primereact/resources/themes/lara-light-indigo/theme.css'
 import 'primereact/resources/primereact.min.css'
+import { DataTable } from 'primereact/datatable'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])
+
   const [id, setId] = useState(null)
 
   useEffect(() => {
@@ -73,23 +76,24 @@ const VendorList = () => {
               label: 'Details',
               icon: 'pi pi-info-circle',
               command: (e) => {
-                console.log(e)
+                console.log(id)
+                navigate(`/vendors/${id}`)
               },
             },
             {
               label: 'Edit',
               icon: 'pi pi-pencil',
               command: (e) => {
-                navigate('/customers/edit')
+                navigate(`/vendors/edit/${id}`)
               },
             },
-            // {
-            //   label: rowData.deactivatedAt ? 'Activate' : 'Deactivate',
-            //   icon: rowData.deactivatedAt ? 'pi pi-check' : 'pi pi-times',
-            //   command: (e) => {
-            //     navigate('/customers/edit')
-            //   },
-            // },
+            {
+              label: 'Deactivate',
+              icon: 'pi pi-info-circle',
+              command: (e) => {
+                axiosInstance.patch(`/api/v1/vendors/${id}/deactivate`)
+              },
+            },
           ]}
           popup
           ref={menu}
@@ -100,7 +104,7 @@ const VendorList = () => {
           className="mr-2 three-dots"
           onClick={(event) => {
             menu.current.toggle(event)
-            setId(rowData.id)
+            setId(rowData._id)
           }}
           aria-controls={`actions_${rowData.id}`}
           aria-haspopup
@@ -137,20 +141,32 @@ const VendorList = () => {
             <CNavLink href="#">Link</CNavLink>
           </CNavItem>
         </CNav>
-        {/* <div className="d-flex justify-content-start">
-          <div>
-            <span className="badge badge-pill bg-success me-1 p-2">
-              <strong>All Vendors</strong>
-            </span>
-            <span className="badge badge-pill bg-primary mx-1 p-2">
-              <strong>Approved</strong>
-            </span>
-            <span className="badge badge-pill bg-secondary ms-1 p-2">
-              <strong>Not Approved</strong>
-            </span>
-          </div>
-        </div> */}
-        <CTable striped hover>
+        <DataTable
+          value={vendorList}
+          paginator
+          rows={10}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          tableStyle={{ minWidth: '50rem' }}
+        >
+          <Column field="placeName" header="Place Name" style={{ width: '15%' }}></Column>
+          <Column field="firstName" header="First Name" style={{ width: '15%' }}></Column>
+          <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
+          <Column field="email" header="Email" style={{ width: '15%' }}></Column>
+          <Column
+            body={actionsBodyTemplate}
+            bodyClassName="text-center"
+            style={{ width: '5%' }}
+          ></Column>
+        </DataTable>
+      </CCardBody>
+    </CCard>
+  )
+}
+
+export default VendorList
+
+{
+  /* <CTable striped hover>
           <CTableHead>
             <CTableRow>
               <CTableHeaderCell scope="col">Place</CTableHeaderCell>
@@ -175,12 +191,12 @@ const VendorList = () => {
                     bodyClassName="text-center"
                     style={{ width: '50%' }}
                   ></Column>
-                  {/* <CDropdown>
+                  <CDropdown>
                     <CDropdownToggle color="secondary">
                       <ThreeDotsVertical />
                     </CDropdownToggle>
                     <CDropdownMenu>
-                      <CDropdownItem href="#">
+                      <CDropdownItem to={`/vendors/${vendor._id}`}>
                         <EyeFill className="me-2 text-primary" />
                         View
                       </CDropdownItem>
@@ -193,15 +209,10 @@ const VendorList = () => {
                         Delete
                       </CDropdownItem>
                     </CDropdownMenu>
-                  </CDropdown> */}
+                  </CDropdown>
                 </CTableDataCell>
               </CTableRow>
             ))}
           </CTableBody>
-        </CTable>
-      </CCardBody>
-    </CCard>
-  )
+        </CTable> */
 }
-
-export default VendorList

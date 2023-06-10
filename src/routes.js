@@ -60,6 +60,14 @@ const EmployeeAdd = React.lazy(() => import('./Pages/Employee/employeeAdd/employ
 const EmployeeEdit = React.lazy(() => import('./Pages/Employee/employeeEdit/employeeEdit'))
 const VendorList = React.lazy(() => import('./Pages/vendor/vendorList/vendorList'))
 const VendorDetails = React.lazy(() => import('./Pages/vendor/vendorDetails/vendorDetails'))
+const CategoryList = React.lazy(() => import('./Pages/Category/CategoryList/CategoryList'))
+const CategoryDetails = React.lazy(() => import('./Pages/Category/CategoryDetails/CategoryDetails'))
+const CategoryAdd = React.lazy(() => import('./Pages/Category/CategoryAdd/CategoryAdd'))
+const CategoryEdit = React.lazy(() => import('./Pages/Category/CategoryEdit/CategoryEdit'))
+const TagList = React.lazy(() => import('./Pages/Tag/TagList/TagList'))
+const TagDetails = React.lazy(() => import('./Pages/Tag/TagDetails/TagDetails'))
+const TagAdd = React.lazy(() => import('./Pages/Tag/TagAdd/TagAdd'))
+const TagEdit = React.lazy(() => import('./Pages/Tag/TagEdit/TagEdit'))
 // const Gallery = React.lazy(() => import('./components/gallery/gallery'))
 
 const routes = [
@@ -114,9 +122,17 @@ const routes = [
   { path: '/employees/new', name: 'New Employee', element: EmployeeAdd },
   { path: '/employees/edit', name: 'Edit Employee', element: EmployeeEdit },
   { path: '/widgets', name: 'Widgets', element: Widgets },
-  { path: '/vendorAdd', name: 'VendorAdd', element: VendorAdd },
-  { path: '/vendorList', name: 'VendorList', element: VendorList },
-  { path: '/vendorDetails', name: 'VendorDetails', element: VendorDetails },
+  { path: '/vendors', name: 'VendorList', element: VendorList },
+  { path: '/vendors/create', name: 'VendorAdd', element: VendorAdd },
+  { path: '/vendors/:id', name: 'VendorDetails', element: VendorDetails },
+  { path: '/categories', name: 'CategoryList', element: CategoryList },
+  { path: '/categories/:id', name: 'CategoryDetails', element: CategoryDetails },
+  { path: '/categories/create', name: 'CategoryAdd', element: CategoryAdd },
+  { path: '/categories/:id/edit', name: 'CategoryEdit', element: CategoryEdit },
+  { path: '/tags', name: 'TagList', element: TagList },
+  { path: '/tags/:id', name: 'TagDetails', element: TagDetails },
+  { path: '/tags/create', name: 'TagAdd', element: TagAdd },
+  { path: '/tags/:id/edit', name: 'TagEdit', element: TagEdit },
   // { path: '/Gallery', name: 'Gallery', element: Gallery },
 ]
 

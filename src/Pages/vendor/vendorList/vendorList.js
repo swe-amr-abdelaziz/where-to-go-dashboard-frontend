@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   CCard,
   CCardBody,
@@ -25,13 +25,18 @@ import {
   EyeFill,
   Trash,
 } from 'react-bootstrap-icons'
-
+import { Link } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
-
-import KebabMenu from 'src/components/KebabMenu'
+import { Column } from 'primereact/column'
+import { Menu } from 'primereact/menu'
+import { Button } from 'primereact/button'
+import { useNavigate } from 'react-router-dom'
+import 'primereact/resources/themes/lara-light-indigo/theme.css'
+import 'primereact/resources/primereact.min.css'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])
+  const [id, setId] = useState(null)
 
   useEffect(() => {
     getVendorsList()
@@ -49,16 +54,73 @@ const VendorList = () => {
       })
   }
 
+  const handleDelete = async (id) => {
+    await axiosInstance
+      .patch(`api/v1/vendors/${id}/deactivate`)
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error))
+  }
+
+  const navigate = useNavigate()
+  const menu = useRef(null)
+
+  const actionsBodyTemplate = (rowData) => {
+    return (
+      <>
+        <Menu
+          model={[
+            {
+              label: 'Details',
+              icon: 'pi pi-info-circle',
+              command: (e) => {
+                console.log(e)
+              },
+            },
+            {
+              label: 'Edit',
+              icon: 'pi pi-pencil',
+              command: (e) => {
+                navigate('/customers/edit')
+              },
+            },
+            // {
+            //   label: rowData.deactivatedAt ? 'Activate' : 'Deactivate',
+            //   icon: rowData.deactivatedAt ? 'pi pi-check' : 'pi pi-times',
+            //   command: (e) => {
+            //     navigate('/customers/edit')
+            //   },
+            // },
+          ]}
+          popup
+          ref={menu}
+          id={`actions_${rowData.id}`}
+        />
+        <Button
+          label={<ThreeDotsVertical />}
+          className="mr-2 three-dots"
+          onClick={(event) => {
+            menu.current.toggle(event)
+            setId(rowData.id)
+          }}
+          aria-controls={`actions_${rowData.id}`}
+          aria-haspopup
+        />
+      </>
+    )
+  }
+
   return (
     <CCard className="m-3 mb-5 p-4 shadow">
       <CCardBody>
         <div className="d-flex justify-content-between mb-4 mt-2">
           <h3>Vendors List</h3>
           <div className="d-flex justify-content-between">
-            <CButton className="me-2 bg-base d-flex align-items-center">
-              <PlusCircleFill className="me-1" />
-              New
-            </CButton>
+            <Link to="/vendors/create">
+              <CButton className="me-2 bg-base d-flex align-items-center">
+                <PlusCircleFill className="me-1" />
+                New
+              </CButton>
+            </Link>
             <CFormInput type="search" className="me-2" placeholder="Search" />
           </div>
         </div>
@@ -108,7 +170,12 @@ const VendorList = () => {
                 <CTableDataCell>{vendor.email}</CTableDataCell>
                 <CTableDataCell>{vendor.isApproved}</CTableDataCell>
                 <CTableDataCell>
-                  <CDropdown>
+                  <Column
+                    body={actionsBodyTemplate}
+                    bodyClassName="text-center"
+                    style={{ width: '50%' }}
+                  ></Column>
+                  {/* <CDropdown>
                     <CDropdownToggle color="secondary">
                       <ThreeDotsVertical />
                     </CDropdownToggle>
@@ -121,12 +188,12 @@ const VendorList = () => {
                         <PencilSquare className="me-2 text-secondary" />
                         Edit
                       </CDropdownItem>
-                      <CDropdownItem href="#">
+                      <CDropdownItem onClick={() => handleDelete(vendor._id)}>
                         <Trash className="me-2 text-danger" />
                         Delete
                       </CDropdownItem>
                     </CDropdownMenu>
-                  </CDropdown>
+                  </CDropdown> */}
                 </CTableDataCell>
               </CTableRow>
             ))}

@@ -44,7 +44,7 @@ const UploadImage = () => {
   }
 
   return (
-    <form id="form-file-upload" onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
+    <div id="form-file-upload" onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
       <input
         ref={inputRef}
         type="file"
@@ -76,7 +76,7 @@ const UploadImage = () => {
           onDrop={handleDrop}
         ></div>
       )}
-    </form>
+    </div>
   )
 }
 

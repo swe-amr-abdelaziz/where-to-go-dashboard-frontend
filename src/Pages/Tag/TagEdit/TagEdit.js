@@ -62,8 +62,7 @@ const TagEdit = () => {
       .put(`/api/v1/tags/${id}`, { name, category })
       .then((res) => {
         console.log(res)
-        // Redirect to the tag details page after successful update
-        // history.push(`/tags/${id}`)
+        navigate(`/tags/${id}`)
       })
       .catch((error) => console.log(error))
   }

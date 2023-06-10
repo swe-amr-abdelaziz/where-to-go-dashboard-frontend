@@ -42,8 +42,7 @@ const CategoryEdit = () => {
     axiosInstance
       .put(`/api/v1/categories/${id}`, { name })
       .then((res) => {
-        // Redirect to the category details page after successful update
-        // history.push(`/categories/${id}`)
+        navigate(`/categories/${id}`)
       })
       .catch((error) => console.log(error))
   }

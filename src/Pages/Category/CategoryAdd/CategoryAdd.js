@@ -23,7 +23,9 @@ const CategoryAdd = () => {
       const data = new FormData(event.target)
       axiosInstance
         .post('/api/v1/categories', data)
-        .then((res) => {})
+        .then((res) => {
+          navigate(`/categories`)
+        })
         .catch((error) => console.log(error))
     }
   }

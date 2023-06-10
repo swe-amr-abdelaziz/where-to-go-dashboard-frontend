@@ -38,7 +38,7 @@ const TagList = () => {
   }
 
   const handleEditTag = (id) => {
-    navigate(`/tags/edit/${id}`)
+    navigate(`/tags/${id}/edit`)
   }
 
   const handleDeleteTag = async (id) => {

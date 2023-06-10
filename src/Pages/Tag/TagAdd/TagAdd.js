@@ -52,7 +52,7 @@ const TagAdd = () => {
       axiosInstance
         .post('/api/v1/tags', tagObject)
         .then((res) => {
-          console.log(res)
+          navigate(`/tags`)
         })
         .catch((error) => console.log(error))
     }

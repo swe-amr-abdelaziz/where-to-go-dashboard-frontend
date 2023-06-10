@@ -31,6 +31,8 @@ const EmployeeAdd = () => {
     }
     setValidated(true)
     if (form.checkValidity() === true) {
+      event.preventDefault()
+      event.stopPropagation()
       const data = new FormData(event.target)
       console.log(data)
       dispatch(createEmployee(data)).then((res) => {

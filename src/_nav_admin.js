@@ -94,13 +94,13 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Permissions',
-    to: '/theme/colors',
+    to: '/permissions',
     icon: <LuLock size={24} style={{ marginRight: '16px' }} />,
   },
   {
     component: CNavItem,
     name: 'Roles',
-    to: '/theme/colors',
+    to: '/roles',
     icon: <HiOutlineIdentification size={24} style={{ marginRight: '16px' }} />,
   },
   // {

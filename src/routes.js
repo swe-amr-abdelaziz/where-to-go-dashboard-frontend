@@ -1,4 +1,5 @@
 import React from 'react'
+import PermissionsList from './Pages/permissions/permissionsList'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -60,6 +61,7 @@ const EmployeeAdd = React.lazy(() => import('./Pages/Employee/employeeAdd/employ
 const EmployeeEdit = React.lazy(() => import('./Pages/Employee/employeeEdit/employeeEdit'))
 const VendorList = React.lazy(() => import('./Pages/vendor/vendorList/vendorList'))
 const VendorDetails = React.lazy(() => import('./Pages/vendor/vendorDetails/vendorDetails'))
+const rolesList = React.lazy(() => import('./Pages/roles/rolesList'))
 // const Gallery = React.lazy(() => import('./components/gallery/gallery'))
 
 const routes = [
@@ -118,6 +120,8 @@ const routes = [
   { path: '/vendorList', name: 'VendorList', element: VendorList },
   { path: '/vendorDetails', name: 'VendorDetails', element: VendorDetails },
   // { path: '/Gallery', name: 'Gallery', element: Gallery },
+  { path: '/roles', name: 'RolesList', element: rolesList },
+  { path: '/permissions', name: 'permissionList', element: PermissionsList },
 ]
 
 export default routes

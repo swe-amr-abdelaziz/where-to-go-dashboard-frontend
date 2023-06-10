@@ -46,7 +46,7 @@ const EmployeeList = () => {
   const dispatch = useDispatch()
   const employees = useSelector((state) => state.employee.employees)
   const [visible, setVisible] = React.useState(false)
-  const [emp, setEmp] = useState(null)
+  const [emp, setEmp] = useState({})
   const [demployee, setDemployee] = React.useState(null)
   const menu = useRef(null)
 
@@ -109,12 +109,12 @@ const EmployeeList = () => {
               command: (e) => checkDeleteEmployee(),
             },
             {
-              label: 'Unban / Ban',
+              label: emp.bannedAtt ? 'Unban' : 'Ban',
               icon: 'pi pi-check',
               command: (e) => handleBanEmployee(),
             },
             {
-              label: 'Activate/Deactivate',
+              label: emp.deactivatedAt ? 'Activate' : 'Deactivate',
               icon: 'pi pi-times',
               command: (e) => handleActiveEmployee(),
             },

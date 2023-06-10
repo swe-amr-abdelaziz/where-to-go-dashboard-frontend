@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -20,9 +20,13 @@ const VendorAdd = () => {
   const navigate = useNavigate()
   const [categories, setCategories] = useState([])
   const [validated, setValidated] = useState(false)
+  const [countries, setCountries] = useState([])
+  const [selectedCountryValue, setSelectedCountryValue] = useState('')
+  const [currentCountry, setCurrentCountry] = useState([])
 
   useEffect(() => {
     getCategories()
+    getCountriesWithStates()
   }, [])
   const getCategories = async () => {
     try {
@@ -32,6 +36,32 @@ const VendorAdd = () => {
       console.log(error)
     }
   }
+  const getCountriesWithStates = () => {
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then((res) => {
+        console.log(res.data.data)
+        setCountries(res.data.data)
+      })
+      .catch((error) => console.log(error))
+  }
+
+  const handleCountryChange = (event) => {
+    setCurrentCountry(event.currentTarget.value)
+    // const predicate = countries.filter((country) => country.name === event.currentTarget.value)
+    // setCurrentCountry(predicate)
+    console.log(currentCountry)
+  }
+  const handleSelectedCountry = (event) => {
+    setSelectedCountryValue(event.currentTarget.value)
+    setCurrentCountry(countries.filter((country) => country.name === selectedCountryValue))
+    console.log(selectedCountryValue)
+    console.log(currentCountry)
+  }
+
+  useEffect(() => {
+    setCurrentCountry(countries.filter((country) => country.name === selectedCountryValue))
+  }, [selectedCountryValue, countries])
 
   const handleSubmit = (event) => {
     const form = event.currentTarget
@@ -139,12 +169,16 @@ const VendorAdd = () => {
                     name={'country'}
                     feedbackInvalid="Please choose Country"
                     className="me-2"
+                    value={selectedCountryValue}
+                    onChange={handleSelectedCountry}
                     required
                   >
-                    <option disabled>Country</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option disabled>---- Select Country ----</option>
+                    {countries.map((country) => (
+                      <option key={country.iso3} value={country.name}>
+                        {country.name}
+                      </option>
+                    ))}
                   </CFormSelect>
                   <CFormSelect
                     name={'governorate'}
@@ -152,12 +186,12 @@ const VendorAdd = () => {
                     className="mx-2"
                     required
                   >
-                    <option disabled>Governorate</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3" disabled>
-                      Three
-                    </option>
+                    <option disabled>---- Select Governorate -----</option>
+                    {/* {currentCountry[0].states.map((state) => (
+                      <option key={state.state_code} value={state.name}>
+                        {state.name}
+                      </option>
+                    ))} */}
                   </CFormSelect>
                   <CFormInput
                     className="mx-2"
@@ -182,7 +216,6 @@ const VendorAdd = () => {
                 <CFormInput
                   type="text"
                   placeholder="Contact Number"
-                  feedbackValid="Looks good!"
                   feedbackInvalid="Please enter Phone Number"
                   name={'phoneNumber'}
                   required
@@ -211,49 +244,49 @@ const VendorAdd = () => {
               </div>
               <div className="mb-3">
                 <CFormLabel>Thumbnail</CFormLabel>
-                {/* <CFormInput
+                <CFormInput
                   type="file"
                   aria-describedby="validationCustom05Feedback"
                   feedbackInvalid="Please provide a valid image."
                   id="validationCustom05"
                   name={'thumbnail'}
                   required
-                /> */}
+                />
                 {/* <CFormInput
                   type="file"
                   feedbackInvalid="Upload Thumbnail"
                   name={'thumbnail'}
                   required
                 /> */}
-                <UploadImage
+                {/* <UploadImage
                   name={'thumbnail'}
                   content={'thumbnail'}
                   feedbackInvalid="Please provide a Thumbnail Image"
                   required
-                ></UploadImage>
+                ></UploadImage> */}
               </div>
               <div className="mb-3">
                 <CFormLabel>Gallery</CFormLabel>
-                {/* <CFormInput
+                <CFormInput
                   type="file"
                   aria-describedby="validationCustom05Feedback"
                   feedbackInvalid="Please provide a valid image."
                   id="validationCustom05"
                   name={'gallery'}
                   required
-                /> */}
+                />
                 {/* <CFormInput
                   type="file"
                   feedbackInvalid="Upload Gallery"
                   name={'gallery'}
                   required
                 /> */}
-                <UploadImage
+                {/* <UploadImage
                   name={'gallery'}
                   content={'gallery'}
                   feedbackValid="Please provide Gallery Images"
                   required
-                ></UploadImage>
+                ></UploadImage> */}
               </div>
               <div>
                 <CButton className="bg-base" type="submit">

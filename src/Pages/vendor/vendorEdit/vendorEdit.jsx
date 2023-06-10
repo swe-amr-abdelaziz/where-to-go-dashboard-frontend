@@ -41,6 +41,7 @@ const VendorEdit = () => {
   const navigate = useNavigate()
   const [validated, setValidated] = useState(false)
   const [vendorObject, setVendorObject] = useState(new FormData())
+
   const handleChange = (e) => {
     setCurrentVendor(...currentVendor, e.target.name, e.target.value)
     console.log(currentVendor)

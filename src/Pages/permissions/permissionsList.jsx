@@ -18,10 +18,6 @@ import {
   createPermission,
 } from '../../Redux/PermissionsSlice/permissionsSlice'
 
-// ...
-
-// ...
-
 const PermissionsList = () => {
   const dispatch = useDispatch()
   const permissions = useSelector((state) => state.permissions.permissions)
@@ -82,13 +78,6 @@ const PermissionsList = () => {
     setCurrentPermission((prevPermission) => ({
       ...prevPermission,
       description: e.target.value,
-    }))
-  }
-
-  const handlePermissionsChange = (e) => {
-    setCurrentPermission((prevPermission) => ({
-      ...prevPermission,
-      permissions: e.value,
     }))
   }
 

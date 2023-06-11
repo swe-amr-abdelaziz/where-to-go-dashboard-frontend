@@ -34,7 +34,6 @@ const PrivateRoute = ({ element: Component, roles, ...rest }) => {
     if (role === 'Admin') {
       return <DefaultLayout {...rest} />
     } else if (role === 'Employee') {
-      
       return <EmployeeLayout {...rest} />
     }
   }

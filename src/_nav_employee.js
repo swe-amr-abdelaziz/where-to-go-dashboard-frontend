@@ -80,7 +80,7 @@ const _nav = [
     name: 'Mood',
     to: '/theme/colors',
     icon: <TbMoodSmile size={24} style={{ marginRight: '16px' }} />,
-  }
+  },
 ]
 
 export default _nav

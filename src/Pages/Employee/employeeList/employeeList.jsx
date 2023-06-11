@@ -206,6 +206,7 @@ const EmployeeList = () => {
             style={{ width: '10%' }}
           ></Column>
           <Column
+            header={'Actions'}
             body={(employee) => actionsBodyTemplate(employee)}
             bodyClassName="text-center"
             style={{ width: '5%' }}

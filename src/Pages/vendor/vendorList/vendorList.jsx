@@ -33,18 +33,22 @@ import { Button } from 'primereact/button'
 import { useNavigate } from 'react-router-dom'
 import 'primereact/resources/themes/lara-light-indigo/theme.css'
 import 'primereact/resources/primereact.min.css'
+import { DataTable } from 'primereact/datatable'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])
+
   const [id, setId] = useState(null)
 
   useEffect(() => {
     getVendorsList()
   }, [])
 
-  const getVendorsList = async () => {
+  const getVendorsList = async (_url) => {
+    let url = _url === undefined ? '/api/v1/vendors' : _url
+
     await axiosInstance
-      .get('/api/v1/vendors')
+      .get(url)
       .then((res) => {
         console.log(res.data.data)
         setVendorList(res.data.data)
@@ -52,6 +56,39 @@ const VendorList = () => {
       .catch((error) => {
         console.log(error)
       })
+  }
+  const handleNavigation = (event) => {
+    let currentTab = event.target
+
+    let siblings = Array.from(currentTab.parentNode.parentNode.childNodes).filter(
+      (node) => node !== currentTab.parentNode,
+    )
+
+    siblings.forEach((node) => {
+      node.childNodes[0].classList.remove('bg-base')
+    })
+
+    switch (event.target.innerText) {
+      case 'All Vendors':
+        getVendorsList('/api/v1/vendors')
+        event.target.classList.add('bg-base')
+        break
+      case 'Approved':
+        console.log('inside Approved')
+        getVendorsList('/api/v1/vendors/approved')
+        event.target.classList.add('bg-base')
+
+        break
+      case 'Not Approved':
+        console.log('inside Not')
+        getVendorsList('/api/v1/vendors/rejected')
+        event.target.classList.add('bg-base')
+
+        break
+      default:
+        break
+    }
+    // console.log(event.target.classList.add('active'))
   }
 
   const handleDelete = async (id) => {
@@ -73,23 +110,24 @@ const VendorList = () => {
               label: 'Details',
               icon: 'pi pi-info-circle',
               command: (e) => {
-                console.log(e)
+                console.log(id)
+                navigate(`/vendors/${id}`)
               },
             },
             {
               label: 'Edit',
               icon: 'pi pi-pencil',
               command: (e) => {
-                navigate('/customers/edit')
+                navigate(`/vendors/edit/${id}`)
               },
             },
-            // {
-            //   label: rowData.deactivatedAt ? 'Activate' : 'Deactivate',
-            //   icon: rowData.deactivatedAt ? 'pi pi-check' : 'pi pi-times',
-            //   command: (e) => {
-            //     navigate('/customers/edit')
-            //   },
-            // },
+            {
+              label: 'Deactivate',
+              icon: 'pi pi-info-circle',
+              command: (e) => {
+                axiosInstance.patch(`/api/v1/vendors/${id}/deactivate`)
+              },
+            },
           ]}
           popup
           ref={menu}
@@ -100,7 +138,7 @@ const VendorList = () => {
           className="mr-2 three-dots"
           onClick={(event) => {
             menu.current.toggle(event)
-            setId(rowData.id)
+            setId(rowData._id)
           }}
           aria-controls={`actions_${rowData.id}`}
           aria-haspopup
@@ -124,33 +162,47 @@ const VendorList = () => {
             <CFormInput type="search" className="me-2" placeholder="Search" />
           </div>
         </div>
-        <CNav variant="underline">
+
+        <CNav variant="tabs">
           <CNavItem>
-            <CNavLink href="#" active>
-              Active
+            <CNavLink className="bg-base" onClick={handleNavigation}>
+              All Vendors
             </CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="#">Link</CNavLink>
+            <CNavLink onClick={handleNavigation}>Approved</CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="#">Link</CNavLink>
+            <CNavLink onClick={handleNavigation}>Not Approved</CNavLink>
           </CNavItem>
         </CNav>
-        {/* <div className="d-flex justify-content-start">
-          <div>
-            <span className="badge badge-pill bg-success me-1 p-2">
-              <strong>All Vendors</strong>
-            </span>
-            <span className="badge badge-pill bg-primary mx-1 p-2">
-              <strong>Approved</strong>
-            </span>
-            <span className="badge badge-pill bg-secondary ms-1 p-2">
-              <strong>Not Approved</strong>
-            </span>
-          </div>
-        </div> */}
-        <CTable striped hover>
+
+        <DataTable
+          value={vendorList}
+          paginator
+          rows={10}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          tableStyle={{ minWidth: '50rem' }}
+        >
+          <Column field="placeName" header="Place Name" style={{ width: '15%' }}></Column>
+          <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
+          <Column field="email" header="Email" style={{ width: '15%' }}></Column>
+          <Column field="isApproved" header="Approved" style={{ width: '15%' }}></Column>
+          <Column
+            body={actionsBodyTemplate}
+            bodyClassName="text-center"
+            style={{ width: '5%' }}
+          ></Column>
+        </DataTable>
+      </CCardBody>
+    </CCard>
+  )
+}
+
+export default VendorList
+
+{
+  /* <CTable striped hover>
           <CTableHead>
             <CTableRow>
               <CTableHeaderCell scope="col">Place</CTableHeaderCell>
@@ -175,12 +227,12 @@ const VendorList = () => {
                     bodyClassName="text-center"
                     style={{ width: '50%' }}
                   ></Column>
-                  {/* <CDropdown>
+                  <CDropdown>
                     <CDropdownToggle color="secondary">
                       <ThreeDotsVertical />
                     </CDropdownToggle>
                     <CDropdownMenu>
-                      <CDropdownItem href="#">
+                      <CDropdownItem to={`/vendors/${vendor._id}`}>
                         <EyeFill className="me-2 text-primary" />
                         View
                       </CDropdownItem>
@@ -193,15 +245,10 @@ const VendorList = () => {
                         Delete
                       </CDropdownItem>
                     </CDropdownMenu>
-                  </CDropdown> */}
+                  </CDropdown>
                 </CTableDataCell>
               </CTableRow>
             ))}
           </CTableBody>
-        </CTable>
-      </CCardBody>
-    </CCard>
-  )
+        </CTable> */
 }
-
-export default VendorList

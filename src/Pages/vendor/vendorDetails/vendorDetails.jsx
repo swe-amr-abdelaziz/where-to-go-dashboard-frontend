@@ -11,8 +11,10 @@ import {
   EnvelopeAtFill,
   BookmarkCheckFill,
 } from 'react-bootstrap-icons'
+import { useParams } from 'react-router-dom'
 
 const VendorDetails = () => {
+  const { id } = useParams()
   const [placeDetails, setPlaceDetails] = useState({})
 
   useEffect(() => {
@@ -21,7 +23,7 @@ const VendorDetails = () => {
 
   const getPlace = async () => {
     await axiosInstance
-      .get('/api/v1/vendors/6473b57a374502480883e55f')
+      .get(`/api/v1/vendors/${id}`)
       .then((res) => {
         setPlaceDetails(res.data.data[0])
         console.log(res.data.data)

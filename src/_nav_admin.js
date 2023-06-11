@@ -1,24 +1,28 @@
 import React from 'react'
-import CIcon from '@coreui/icons-react'
-import {
-  cilBell,
-  cilCalculator,
-  cilChartPie,
-  cilCursor,
-  cilDescription,
-  cilDrop,
-  cilNotes,
-  cilPencil,
-  cilPuzzle,
-  cilSpeedometer,
-  cilStar,
-} from '@coreui/icons'
+// import CIcon from '@coreui/icons-react'
+// import {
+//   cilBell,
+//   cilCalculator,
+//   cilChartPie,
+//   cilCursor,
+//   cilDescription,
+//   cilDrop,
+//   cilNotes,
+//   cilPencil,
+//   cilPuzzle,
+//   cilSpeedometer,
+//   cilStar,
+// } from '@coreui/icons'
 import { LuLayoutDashboard, LuFileSpreadsheet, LuVerified, LuTag, LuLock } from 'react-icons/lu'
 import { HiOutlineIdentification } from 'react-icons/hi'
 import { ImStatsDots } from 'react-icons/im'
 import { MdOutlineCategory } from 'react-icons/md'
 import { TbMoodSmile } from 'react-icons/tb'
-import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+import {
+  //  CNavGroup,
+  CNavItem,
+  CNavTitle,
+} from '@coreui/react'
 
 const _nav = [
   {
@@ -76,13 +80,13 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Categories',
-    to: '/theme/colors',
+    to: '/categories',
     icon: <MdOutlineCategory size={24} style={{ marginRight: '16px' }} />,
   },
   {
     component: CNavItem,
     name: 'Tags',
-    to: '/theme/colors',
+    to: '/tags',
     icon: <LuTag size={24} style={{ marginRight: '16px' }} />,
   },
   {
@@ -94,13 +98,13 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Permissions',
-    to: '/theme/colors',
+    to: '/permissions',
     icon: <LuLock size={24} style={{ marginRight: '16px' }} />,
   },
   {
     component: CNavItem,
     name: 'Roles',
-    to: '/theme/colors',
+    to: '/roles',
     icon: <HiOutlineIdentification size={24} style={{ marginRight: '16px' }} />,
   },
   // {

@@ -3,7 +3,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import './uploadImage.css'
 
 // drag drop file component
-const UploadImage = () => {
+const UploadImage = (prop) => {
   // drag state
   const [dragActive, setDragActive] = React.useState(false)
   // ref
@@ -46,9 +46,9 @@ const UploadImage = () => {
   return (
     <div id="form-file-upload" onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
       <input
+        name={prop.content}
         ref={inputRef}
         type="file"
-        id="input-file-upload"
         multiple={true}
         onChange={handleChange}
       />

@@ -33,7 +33,7 @@ export const createEmployee = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const response = await axios.post(URL, data)
-      return response.data
+      return response.data.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)
     }

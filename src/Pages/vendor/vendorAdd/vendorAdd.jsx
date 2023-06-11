@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -11,34 +11,87 @@ import {
   CFormSelect,
   CRow,
 } from '@coreui/react'
-import UploadImage from './../../../components/uploadImage/uploadImage'
+import UploadImage from '../../../components/uploadImage/uploadImage'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
+import axios from 'axios'
+import { Multiselect } from 'multiselect-react-dropdown'
 
 const VendorAdd = () => {
   const navigate = useNavigate()
+  const [categories, setCategories] = useState([])
   const [validated, setValidated] = useState(false)
-  const [vendorObject, setVendorObject] = useState(new FormData())
-  const handleChange = (e) => {
-    vendorObject.set(e.target.name, e.target.value)
-    console.log(vendorObject)
+  const [countries, setCountries] = useState([])
+  const [selectedCountryValue, setSelectedCountryValue] = useState('')
+  const [currentCountry, setCurrentCountry] = useState({
+    states: [],
+  })
+  const [tags, setTags] = useState([])
+  const [selectedTags, setSelectedTags] = useState([])
+  const getTags = () => {
+    axios
+      .get('http://localhost:8001/api/v1/tags')
+      .then((res) => {
+        setTags(res.data.data)
+        console.log(tags)
+      })
+      .catch((error) => console.log(error))
+  }
+  const handleSelectAndRemoveTag = (data) => {
+    setSelectedTags(data)
+    console.log(selectedTags)
   }
 
+  useEffect(() => {
+    getCategories()
+    getCountriesWithStates()
+    getTags()
+  }, [])
+
+  const getCategories = async () => {
+    try {
+      let res = await axiosInstance.get('api/v1/categories')
+      setCategories(res.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const getCountriesWithStates = () => {
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then((res) => {
+        setCountries(res.data.data)
+      })
+      .catch((error) => console.log(error))
+  }
+
+  const handleSelectedCountry = (event) => {
+    setSelectedCountryValue(event.currentTarget.value)
+    setCurrentCountry(countries.filter((country) => country.name === selectedCountryValue))
+  }
+
+  useEffect(() => {
+    setCurrentCountry(countries.filter((country) => country.name === selectedCountryValue))
+  }, [selectedCountryValue, countries])
+
   const handleSubmit = (event) => {
-    event.preventDefault()
     const form = event.currentTarget
     if (form.checkValidity() === false) {
+      event.preventDefault()
       event.stopPropagation()
     }
     setValidated(true)
     if (form.checkValidity() === true) {
+      event.preventDefault()
+      event.stopPropagation()
       const data = new FormData(event.target)
-      console.log(data.get('gallery'))
-      axiosInstance
-        .post('/api/v1/vendors', data)
-        .then((res) => {
-          console.log(res)
-        })
+
+      let tagsId = []
+      selectedTags.forEach((tag) => tagsId.push(tag._id))
+      data.set('tags', tagsId)
+      axios
+        .post('http://localhost:8001/api/v1/vendors', data)
+        .then((res) => navigate('/vendors'))
         .catch((error) => console.log(error))
     }
   }
@@ -46,7 +99,6 @@ const VendorAdd = () => {
   const handleBack = () => {
     navigate('/vendors')
   }
-
   return (
     <CRow>
       <CCol xs={12}>
@@ -54,12 +106,13 @@ const VendorAdd = () => {
           <CCardBody>
             <h3 className="mb-4 mt-2">New Vendor</h3>
             <CForm
+              encType="multipart/form-data"
               className="row g-3 needs-validation"
               noValidate
               validated={validated}
               onSubmit={handleSubmit}
             >
-              <CFormLabel htmlFor="exampleFormControlInput1">Owner</CFormLabel>
+              <CFormLabel>Owner</CFormLabel>
               <div className="mb-3 d-flex">
                 <CFormInput
                   className="me-2"
@@ -79,7 +132,7 @@ const VendorAdd = () => {
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Place Name</CFormLabel>
+                <CFormLabel>Place Name</CFormLabel>
                 <CFormInput
                   className="me-2"
                   type="text"
@@ -90,18 +143,35 @@ const VendorAdd = () => {
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Tags</CFormLabel>
-                <CFormInput
+                <CFormLabel>Category</CFormLabel>
+                <CFormSelect
+                  name={'category'}
+                  feedbackInvalid="Please choose Country"
                   className="me-2"
-                  type="text"
-                  placeholder="Tags"
-                  feedbackInvalid="Please enter Tags"
-                  name={'tags'}
                   required
+                >
+                  <option disabled>--- Select Category ---</option>
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </CFormSelect>
+              </div>
+              <div className="mb-3">
+                <CFormLabel htmlFor="updateRolePermissions">Tags</CFormLabel>
+                <Multiselect
+                  name="tags"
+                  options={tags}
+                  displayValue="name"
+                  placeholder="Select Tags"
+                  className="w-100"
+                  onSelect={handleSelectAndRemoveTag}
+                  onRemove={handleSelectAndRemoveTag}
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Location</CFormLabel>
+                <CFormLabel>Location</CFormLabel>
                 <CFormInput
                   className="me-2"
                   type="text"
@@ -115,26 +185,30 @@ const VendorAdd = () => {
                     name={'country'}
                     feedbackInvalid="Please choose Country"
                     className="me-2"
+                    value={selectedCountryValue}
+                    onChange={handleSelectedCountry}
                     required
                   >
-                    <option disabled>Country</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option disabled>---- Select Country ----</option>
+                    {countries.map((country) => (
+                      <option key={country.iso3} value={country.name}>
+                        {country.name}
+                      </option>
+                    ))}
                   </CFormSelect>
-                  <CFormSelect
+                  {/* <CFormSelect
                     name={'governorate'}
                     feedbackInvalid="Please choose Governorate"
                     className="mx-2"
                     required
-                  >
-                    <option disabled>Governorate</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3" disabled>
-                      Three
-                    </option>
-                  </CFormSelect>
+                  > */}
+                  {/* <option disabled>---- Select Governorate -----</option>
+                    {currentCountry[0].states.map((state) => (
+                      <option key={state.state_code} value={state.name}>
+                        {state.name}
+                      </option>
+                    ))} */}
+                  {/* </CFormSelect> */}
                   <CFormInput
                     className="mx-2"
                     type="text"
@@ -154,12 +228,10 @@ const VendorAdd = () => {
                 </div>
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Contact Number</CFormLabel>
+                <CFormLabel>Contact Number</CFormLabel>
                 <CFormInput
                   type="text"
-                  id="exampleFormControlInput1"
                   placeholder="Contact Number"
-                  feedbackValid="Looks good!"
                   feedbackInvalid="Please enter Phone Number"
                   name={'phoneNumber'}
                   required
@@ -187,21 +259,38 @@ const VendorAdd = () => {
                 ></CFormTextarea>
               </div>
               <div className="mb-3">
-                {/* <CFormLabel htmlFor="exampleFormControlTextarea1">Thumbnail</CFormLabel>
-                <UploadImage
+                <CFormLabel>Thumbnail</CFormLabel>
+                <CFormInput
+                  type="file"
+                  aria-describedby="validationCustom05Feedback"
+                  feedbackInvalid="Please provide a valid image."
+                  id="validationCustom05"
                   name={'thumbnail'}
-                  feedbackValid="Looks good!"
+                  required
+                />
+                {/* <UploadImage
+                  name={'thumbnail'}
+                  content={'thumbnail'}
                   feedbackInvalid="Please provide a Thumbnail Image"
                   required
                 ></UploadImage> */}
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Gallery</CFormLabel>
-                <UploadImage
+                <CFormLabel>Gallery</CFormLabel>
+                <CFormInput
+                  type="file"
+                  aria-describedby="validationCustom05Feedback"
+                  feedbackInvalid="Please provide a valid image."
+                  id="validationCustom05"
                   name={'gallery'}
+                  required
+                />
+                {/* <UploadImage
+                  name={'gallery'}
+                  content={'gallery'}
                   feedbackValid="Please provide Gallery Images"
                   required
-                ></UploadImage>
+                ></UploadImage> */}
               </div>
               <div>
                 <CButton className="bg-base" type="submit">

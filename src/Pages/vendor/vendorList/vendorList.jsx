@@ -165,7 +165,9 @@ const VendorList = () => {
 
         <CNav variant="tabs">
           <CNavItem>
-            <CNavLink onClick={handleNavigation}>All Vendors</CNavLink>
+            <CNavLink className="bg-base" onClick={handleNavigation}>
+              All Vendors
+            </CNavLink>
           </CNavItem>
           <CNavItem>
             <CNavLink onClick={handleNavigation}>Approved</CNavLink>

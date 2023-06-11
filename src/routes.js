@@ -61,6 +61,7 @@ const EmployeeAdd = React.lazy(() => import('./Pages/Employee/employeeAdd/employ
 const EmployeeEdit = React.lazy(() => import('./Pages/Employee/employeeEdit/employeeEdit'))
 const VendorList = React.lazy(() => import('./Pages/vendor/vendorList/vendorList'))
 const VendorDetails = React.lazy(() => import('./Pages/vendor/vendorDetails/vendorDetails'))
+const Login = React.lazy(() => import('./Pages/login/Login'))
 const VendorEdit = React.lazy(() => import('./Pages/vendor/vendorEdit/vendorEdit'))
 const CategoryList = React.lazy(() => import('./Pages/Category/CategoryList/CategoryList'))
 const CategoryDetails = React.lazy(() => import('./Pages/Category/CategoryDetails/CategoryDetails'))
@@ -140,6 +141,7 @@ const routes = [
   // { path: '/Gallery', name: 'Gallery', element: Gallery },
   { path: '/roles', name: 'RolesList', element: rolesList },
   { path: '/permissions', name: 'permissionList', element: PermissionsList },
+  { path: '/employee/login', private: false, name: 'EmpLogin', element: Login },
 ]
 
 export default routes

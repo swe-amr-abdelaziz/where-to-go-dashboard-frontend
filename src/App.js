@@ -25,16 +25,20 @@ const Page500 = React.lazy(() => import('./Pages/page500/Page500'))
 const PrivateRoute = ({ element: Component, roles, ...rest }) => {
   const token = localStorage.getItem('token')
   const role = localStorage.getItem('role')
+  const Admin = '72dd04b7-4d1d-4434-af60-d6804d8ec991'
+  const Employee = '405ac1d7-5956-479e-9967-48da40aebb79'
 
   if (!token) {
     return <Navigate to="/employee/login" />
   }
 
-  if (roles.includes(role)) {
-    if (role === 'Admin') {
+  if (roles.includes('Admin') || roles.includes('Employee')) {
+    if (role === '72dd04b7-4d1d-4434-af60-d6804d8ec991') {
       return <DefaultLayout {...rest} />
-    } else if (role === 'Employee') {
+    } else if (role === '405ac1d7-5956-479e-9967-48da40aebb79') {
       return <EmployeeLayout {...rest} />
+    } else {
+      return <Navigate to="/employee/login" />
     }
   }
 

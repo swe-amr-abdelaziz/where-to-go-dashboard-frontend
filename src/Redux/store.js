@@ -4,6 +4,8 @@ import employeeReducer from './EmployeeSlice/employeeSlice'
 import customerReducer from './CustomerSlice/customerSlice'
 import rolesReducer from './RolesSlice/rolesSlice'
 import permissionsReducer from './PermissionsSlice/permissionsSlice'
+import locationReducer from './LocationSlice/locationSlice'
+
 const store = configureStore({
   reducer: {
     slidebar: slidebarReducer,
@@ -11,6 +13,7 @@ const store = configureStore({
     customer: customerReducer,
     roles: rolesReducer,
     permissions: permissionsReducer,
+    location: locationReducer,
   },
 })
 

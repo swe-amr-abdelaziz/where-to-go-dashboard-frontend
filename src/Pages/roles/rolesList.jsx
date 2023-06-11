@@ -76,9 +76,19 @@ const RolesList = () => {
     }))
   }
 
-  const handleUpdateRole = () => {
-    dispatch(updateRole(currentRole))
-    setEditVisible(false)
+  const handleUpdateRole = async () => {
+    const updatedRole = {
+      _id: currentRole._id,
+      name: currentRole.name,
+    }
+
+    try {
+      await dispatch(updateRole(updatedRole)).unwrap()
+      setEditVisible(false)
+      dispatch(getRoles())
+    } catch (error) {
+      // Handle error
+    }
   }
 
   if (roles.loading) {

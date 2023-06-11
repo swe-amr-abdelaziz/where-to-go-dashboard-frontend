@@ -96,17 +96,6 @@ const rolesSlice = createSlice({
       .addCase(deleteRole.pending, (state) => {
         state.loading = true
       })
-      // .addCase(deleteRole.fulfilled, (state, action) => {
-      //   state.roles = state.roles.filter((role) => role._id !== action.payload._id)
-      //   state.loading = false
-      // })
-      // .addCase(deleteRole.fulfilled, (state, action) => {
-      //   state.roles = state.roles.filter((role) => role._id !== action.payload)
-      //   state.loading = false
-
-      //   // Dispatch the getRoles action to refetch the roles
-      //   action.dispatch(getRoles())
-      // })
       .addCase(deleteRole.fulfilled, (state, action) => {
         const deletedRoleId = action.payload
         state.roles = state.roles.filter((role) => role._id !== deletedRoleId)

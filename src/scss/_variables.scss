@@ -1796,6 +1796,7 @@ $sidebar-nav-link-active-bg:               $base !default;
 
 ::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: rgba($base, .1);

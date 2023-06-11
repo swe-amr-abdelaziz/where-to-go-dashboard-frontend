@@ -1,4 +1,5 @@
 import React from 'react'
+import PermissionsList from './Pages/permissions/permissionsList'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -60,6 +61,7 @@ const EmployeeAdd = React.lazy(() => import('./Pages/Employee/employeeAdd/employ
 const EmployeeEdit = React.lazy(() => import('./Pages/Employee/employeeEdit/employeeEdit'))
 const VendorList = React.lazy(() => import('./Pages/vendor/vendorList/vendorList'))
 const VendorDetails = React.lazy(() => import('./Pages/vendor/vendorDetails/vendorDetails'))
+const VendorEdit = React.lazy(() => import('./Pages/vendor/vendorEdit/vendorEdit'))
 const CategoryList = React.lazy(() => import('./Pages/Category/CategoryList/CategoryList'))
 const CategoryDetails = React.lazy(() => import('./Pages/Category/CategoryDetails/CategoryDetails'))
 const CategoryAdd = React.lazy(() => import('./Pages/Category/CategoryAdd/CategoryAdd'))
@@ -68,6 +70,7 @@ const TagList = React.lazy(() => import('./Pages/Tag/TagList/TagList'))
 const TagDetails = React.lazy(() => import('./Pages/Tag/TagDetails/TagDetails'))
 const TagAdd = React.lazy(() => import('./Pages/Tag/TagAdd/TagAdd'))
 const TagEdit = React.lazy(() => import('./Pages/Tag/TagEdit/TagEdit'))
+const rolesList = React.lazy(() => import('./Pages/roles/rolesList'))
 // const Gallery = React.lazy(() => import('./components/gallery/gallery'))
 
 const routes = [
@@ -125,6 +128,7 @@ const routes = [
   { path: '/vendors', name: 'VendorList', element: VendorList },
   { path: '/vendors/create', name: 'VendorAdd', element: VendorAdd },
   { path: '/vendors/:id', name: 'VendorDetails', element: VendorDetails },
+  { path: '/vendors/edit/:id', name: 'VendorEdit', element: VendorEdit },
   { path: '/categories', name: 'CategoryList', element: CategoryList },
   { path: '/categories/:id', name: 'CategoryDetails', element: CategoryDetails },
   { path: '/categories/create', name: 'CategoryAdd', element: CategoryAdd },
@@ -134,6 +138,8 @@ const routes = [
   { path: '/tags/create', name: 'TagAdd', element: TagAdd },
   { path: '/tags/:id/edit', name: 'TagEdit', element: TagEdit },
   // { path: '/Gallery', name: 'Gallery', element: Gallery },
+  { path: '/roles', name: 'RolesList', element: rolesList },
+  { path: '/permissions', name: 'permissionList', element: PermissionsList },
 ]
 
 export default routes

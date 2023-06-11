@@ -12,6 +12,24 @@ th {
   color: $white !important;
 }
 
+.bg-base:focus {
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba($color: $base, $alpha: .25), 0 1px 2px 0 rgb(0, 0, 0) !important;
+}
+
+.bg-secondary {
+  background-color: #f3f4f6 !important;
+  color: #565e6c !important;
+  border: none !important;
+}
+
+.bg-secondary:focus {
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #d4d4d4, 0 1px 2px 0 rgb(0, 0, 0) !important;
+}
+
+CButton {
+  padding: .5rem 1rem !important;
+}
+
 .shadow {
   box-shadow: $box-shadow !important;
 }
@@ -76,4 +94,29 @@ th {
 
 .purple-logo {
   filter: invert(22%) sepia(95%) saturate(7193%) hue-rotate(275deg) brightness(85%) contrast(106%);
+}
+
+.details-table {
+  margin: 0 !important;
+}
+.details-table td, .details-table th {
+  width: 50% !important;
+  background-color: #FFFFFF !important;
+  border-bottom: 1px solid #DEE2E6 !important;
+  padding: 10px !important;
+}
+
+.soft-delete {
+  opacity: 50% !important;
+  text-decoration: line-through;
+}
+
+.input-group-text {
+  background-color: $base !important;
+  color: #FFFFFF !important;
+}
+
+.input-group-custom {
+  border-bottom-right-radius: .375rem !important;
+  border-top-right-radius: .375rem !important;
 }

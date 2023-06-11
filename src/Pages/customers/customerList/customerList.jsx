@@ -62,22 +62,36 @@ import {
   getCustomers,
   getCustomer,
   unbanCustomer,
+  softDeleteCustomer,
+  restoreCustomer,
 } from '../../../Redux/CustomerSlice/customerSlice'
 
 import WidgetsBrand from '../../../views/widgets/WidgetsBrand'
 import WidgetsDropdown from '../../../views/widgets/WidgetsDropdown'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle, faCircleDot } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faCircle, faCircleDot, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons'
+import { array } from 'prop-types'
 
 const CustomerList = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const customers = useSelector((state) => state.customer.customers)
   const customer = useSelector((state) => state.customer.customer)
-  const [id, setId] = useState(null)
-  const [detailsVisible, setDetailsVisible] = React.useState(false)
-  const menu = useRef(null)
+  const placeholderCustomer = {
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    bannedAt: null,
+    deactivatedAt: null,
+    image: '',
+  }
+  const [selectedCustomer, setSelectedCustomer] = useState(placeholderCustomer)
+  const [detailsVisible, setDetailsVisible] = useState(false)
+  const [deleteVisible, setDeleteVisible] = useState(false)
+  const menu = useRef([])
 
   useEffect(() => {
     dispatch(getCustomers())
@@ -85,77 +99,159 @@ const CustomerList = () => {
 
   const avatarBodyTemplate = (customer) => {
     return (
-      <CAvatar size="md" src={`http://localhost:8001/api/v1/images/customers/${customer.image}`} />
+      <CAvatar
+        className={customer.deletedAt ? 'soft-delete' : ''}
+        size="md"
+        src={`http://localhost:8001/api/v1/images/customers/${customer.image}`}
+      />
     )
   }
 
   const nameBodyTemplate = (customer) => {
-    return <strong>{`${customer.firstName} ${customer.lastName}`}</strong>
+    return (
+      <strong
+        className={customer.deletedAt ? 'soft-delete' : ''}
+      >{`${customer.firstName} ${customer.lastName}`}</strong>
+    )
+  }
+
+  const phoneBodyTemplate = (customer) => {
+    return <span className={customer.deletedAt ? 'soft-delete' : ''}>{customer.phoneNumber}</span>
+  }
+
+  const emailBodyTemplate = (customer) => {
+    return <span className={customer.deletedAt ? 'soft-delete' : ''}>{customer.email}</span>
   }
 
   const activeBodyTemplate = (customer) => {
-    return <FontAwesomeIcon color={customer.deactivatedAt ? 'red' : 'green'} icon={faCircleDot} />
+    return (
+      <FontAwesomeIcon
+        className={customer.deletedAt ? 'soft-delete' : ''}
+        color={customer.deactivatedAt ? 'red' : 'green'}
+        icon={faCircleDot}
+      />
+    )
   }
 
   const bannedBodyTemplate = (customer) => {
-    return <FontAwesomeIcon color={customer.bannedAt ? 'red' : 'green'} icon={faCircleDot} />
+    return (
+      <FontAwesomeIcon
+        className={customer.deletedAt ? 'soft-delete' : ''}
+        color={customer.bannedAt ? 'red' : 'green'}
+        icon={faCircleDot}
+      />
+    )
   }
 
   const handleDetails = async () => {
-    await dispatch(getCustomer(id))
+    await dispatch(getCustomer(selectedCustomer.id))
     setDetailsVisible(true)
   }
 
+  const handleBanCustomer = async () => {
+    if (!selectedCustomer.bannedAt) {
+      dispatch(banCustomer(selectedCustomer.id))
+    } else {
+      dispatch(unbanCustomer(selectedCustomer.id))
+    }
+  }
+
+  const handleActiveCustomer = async () => {
+    if (!selectedCustomer.deactivatedAt) {
+      dispatch(deactivateCustomer(selectedCustomer.id))
+    } else {
+      dispatch(activateCustomer(selectedCustomer.id))
+    }
+  }
+
+  const handleDeleteCustomer = async () => {
+    if (selectedCustomer.deletedAt) {
+      dispatch(deleteCustomer(selectedCustomer.id))
+      setDeleteVisible(false)
+    }
+  }
+
+  const handleSoftDeleteCustomer = async () => {
+    if (!selectedCustomer.deletedAt) {
+      dispatch(softDeleteCustomer(selectedCustomer.id))
+    }
+  }
+
+  const handleRestoreCustomer = async () => {
+    if (selectedCustomer.deletedAt) {
+      dispatch(restoreCustomer(selectedCustomer.id))
+    }
+  }
+
+  const deleteFooterContent = (
+    <div>
+      <Button
+        label="Cancel"
+        icon="pi pi-times"
+        onClick={() => setDeleteVisible(false)}
+        className="bg-secondary"
+      />
+      <Button
+        label="Delete"
+        icon="pi pi-trash"
+        onClick={() => handleDeleteCustomer()}
+        className="p-button-danger"
+      />
+    </div>
+  )
+
   const actionsBodyTemplate = (rowData) => {
+    const _model = [
+      {
+        label: 'Details',
+        icon: 'pi pi-info-circle',
+        command: (e) => handleDetails(),
+      },
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: (e) => {
+          navigate('/customers/edit')
+        },
+      },
+      {
+        label: selectedCustomer.deletedAt ? 'Delete Forever' : 'Soft Delete',
+        icon: 'pi pi-trash',
+        command: (e) => {
+          selectedCustomer.deletedAt ? setDeleteVisible(true) : handleSoftDeleteCustomer()
+        },
+      },
+      {
+        label: selectedCustomer.bannedAt ? 'Unban' : 'Ban',
+        icon: selectedCustomer.bannedAt ? 'pi pi-check' : 'pi pi-times',
+        command: (e) => handleBanCustomer(),
+      },
+      {
+        label: selectedCustomer.deactivatedAt ? 'Activate' : 'Deactivate',
+        icon: selectedCustomer.deactivatedAt ? 'pi pi-check' : 'pi pi-times',
+        command: (e) => handleActiveCustomer(),
+      },
+    ]
+
+    if (selectedCustomer.deletedAt) {
+      const restoreObject = {
+        label: 'Restore',
+        icon: 'pi pi-undo',
+        command: (e) => handleRestoreCustomer(),
+      }
+      _model.splice(3, 0, restoreObject)
+    }
+
     return (
       <>
-        <Menu
-          model={[
-            {
-              label: 'Details',
-              icon: 'pi pi-info-circle',
-              command: (e) => handleDetails(),
-            },
-            {
-              label: 'Edit',
-              icon: 'pi pi-pencil',
-              command: (e) => {
-                navigate('/customers/edit')
-              },
-            },
-            {
-              label: rowData.deletedAt ? 'Delete Permanently' : 'Soft Delete',
-              icon: 'pi pi-trash',
-              command: (e) => {
-                navigate('/customers/edit')
-              },
-            },
-            {
-              label: rowData.bannedAt ? 'Unban' : 'Ban',
-              icon: rowData.bannedAt ? 'pi pi-check' : 'pi pi-times',
-              command: (e) => {
-                navigate('/customers/edit')
-              },
-            },
-            {
-              label: rowData.deactivatedAt ? 'Activate' : 'Deactivate',
-              icon: rowData.deactivatedAt ? 'pi pi-check' : 'pi pi-times',
-              command: (e) => {
-                navigate('/customers/edit')
-              },
-            },
-          ]}
-          popup
-          ref={menu}
-          id={`actions_${rowData.id}`}
-        />
+        <Menu model={_model} popup ref={menu} id={`actions_${rowData.id}`} />
         <Button
           label={<ThreeDotsVertical />}
           icon=""
           className="mr-2 three-dots"
           onClick={(event) => {
+            setSelectedCustomer(rowData)
             menu.current.toggle(event)
-            setId(rowData.id)
           }}
           aria-controls={`actions_${rowData.id}`}
           aria-haspopup
@@ -203,8 +299,18 @@ const CustomerList = () => {
               body={nameBodyTemplate}
               style={{ width: '30%' }}
             ></Column>
-            <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
-            <Column field="email" header="Email" style={{ width: '35%' }}></Column>
+            <Column
+              field="phoneNumber"
+              header="Phone"
+              body={phoneBodyTemplate}
+              style={{ width: '15%' }}
+            ></Column>
+            <Column
+              field="email"
+              header="Email"
+              body={emailBodyTemplate}
+              style={{ width: '35%' }}
+            ></Column>
             <Column
               field="active"
               header="Active"
@@ -227,15 +333,125 @@ const CustomerList = () => {
           </DataTable>
         </CCardBody>
       </CCard>
+
+      {/* Details Dialog */}
       <Dialog
         header="Customer Details"
         visible={detailsVisible}
-        style={{ width: '50vw' }}
+        style={{ width: '75vw' }}
         onHide={() => setDetailsVisible(false)}
       >
+        <div className="details-table d-flex flex-column flex-lg-row justify-content-between align-items-center">
+          <table className="table mx-4">
+            <tbody>
+              <tr>
+                <th>First Name</th>
+                <td>{customer.firstName || ''}</td>
+              </tr>
+              <tr>
+                <th>Email</th>
+                <td>{customer.email || ''}</td>
+              </tr>
+              <tr>
+                <th>Role</th>
+                <td>{customer.role || ''}</td>
+              </tr>
+              <tr>
+                <th>City</th>
+                <td>{customer.address ? customer.address.city : ''}</td>
+              </tr>
+              <tr>
+                <th>Zip</th>
+                <td>{customer.address ? customer.address.zip : ''}</td>
+              </tr>
+              <tr>
+                <th>Deactivated At</th>
+                <td>
+                  {customer.deactivatedAt
+                    ? new Date(customer.deactivatedAt).toLocaleDateString('en-UK')
+                    : 'Activated'}
+                </td>
+              </tr>
+              <tr>
+                <th>Deleted At</th>
+                <td>
+                  {customer.deletedAt
+                    ? new Date(customer.deletedAt).toLocaleDateString('en-UK')
+                    : 'Not Deleted'}
+                </td>
+              </tr>
+              <tr>
+                <th>Gender</th>
+                <td>{customer.gender || ''}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="table mx-4">
+            <tbody>
+              <tr>
+                <th>Last Name</th>
+                <td>{customer.lastName || ''}</td>
+              </tr>
+              <tr>
+                <th>Phone Number</th>
+                <td>{customer.phoneNumber || ''}</td>
+              </tr>
+              <tr>
+                <th>Country</th>
+                <td>{customer.address ? customer.address.country : ''}</td>
+              </tr>
+              <tr>
+                <th>State</th>
+                <td>{customer.address ? customer.address.state : ''}</td>
+              </tr>
+              <tr>
+                <th>Street</th>
+                <td>{customer.address ? customer.address.street : ''}</td>
+              </tr>
+              <tr>
+                <th>Banned At</th>
+                <td>
+                  {customer.bannedAt
+                    ? new Date(customer.bannedAt).toLocaleDateString('en-UK')
+                    : 'Not Banned'}
+                </td>
+              </tr>
+              <tr>
+                <th>Verified At</th>
+                <td>
+                  {customer.verifiedAt
+                    ? new Date(customer.verifiedAt).toLocaleDateString('en-UK')
+                    : 'Not Verified'}
+                </td>
+              </tr>
+              <tr>
+                <th>Date of Birth</th>
+                <td>
+                  {customer.dateOfBirth
+                    ? new Date(customer.dateOfBirth).toLocaleDateString('en-UK')
+                    : ''}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </Dialog>
+
+      {/* Delete Dialog */}
+      <Dialog
+        header="Delete Customer"
+        visible={deleteVisible}
+        style={{ width: '50vw' }}
+        onHide={() => setDeleteVisible(false)}
+        footer={deleteFooterContent}
+      >
         <p className="m-0">
-          <strong>First Name:</strong> {customer.firstName}
-          <strong>Last Name:</strong> {customer.lastName}
+          Are you sure you want to delete the customer &apos;
+          <strong>
+            {selectedCustomer.firstName} {selectedCustomer.lastName}
+          </strong>
+          &apos;? <br />
+          <em className="text-danger">This action cannot be undone</em>
         </p>
       </Dialog>
     </>

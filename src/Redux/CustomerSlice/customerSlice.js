@@ -21,15 +21,14 @@ export const getCustomers = createAsyncThunk('customers/getCustomers', async (th
 export const getCustomer = createAsyncThunk('customers/getCustomer', async (id, thunkAPI) => {
   try {
     const response = await axiosInstance.get(`${URL}/${id}`)
-    console.log(response.data.data[0].firstName)
-    return response.data.data[0]
+    return response.data.data
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data)
   }
 })
 
 export const createCustomer = createAsyncThunk(
-  'Customers/createCustomer',
+  'customers/createCustomer',
   async (data, thunkAPI) => {
     try {
       const response = await axiosInstance.post(URL, data)
@@ -55,15 +54,39 @@ export const updateCustomer = createAsyncThunk(
 export const deleteCustomer = createAsyncThunk('customers/deleteCustomer', async (id, thunkAPI) => {
   try {
     const response = await axiosInstance.delete(`${URL}/${id}`)
-    return response.data.oldData
+    return response.data
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data)
   }
 })
 
+export const softDeleteCustomer = createAsyncThunk(
+  'customers/softDeleteCustomer',
+  async (id, thunkAPI) => {
+    try {
+      const response = await axiosInstance.patch(`${URL}/softDelete/${id}`)
+      return response.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data)
+    }
+  },
+)
+
+export const restoreCustomer = createAsyncThunk(
+  'customers/restoreCustomer',
+  async (id, thunkAPI) => {
+    try {
+      const response = await axiosInstance.patch(`${URL}/restore/${id}`)
+      return response.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data)
+    }
+  },
+)
+
 export const banCustomer = createAsyncThunk('customers/banCustomer', async (id, thunkAPI) => {
   try {
-    const response = await axiosInstance.put(`${URL}/ban/${id}`)
+    const response = await axiosInstance.patch(`${URL}/ban/${id}`)
     return response.data
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data)
@@ -72,7 +95,7 @@ export const banCustomer = createAsyncThunk('customers/banCustomer', async (id, 
 
 export const unbanCustomer = createAsyncThunk('customers/unbanCustomer', async (id, thunkAPI) => {
   try {
-    const response = await axiosInstance.put(`${URL}/unban/${id}`)
+    const response = await axiosInstance.patch(`${URL}/unban/${id}`)
     return response.data
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data)
@@ -83,7 +106,7 @@ export const deactivateCustomer = createAsyncThunk(
   'customers/deactivateCustomer',
   async (id, thunkAPI) => {
     try {
-      const response = await axiosInstance.put(`${URL}/deactivate/${id}`)
+      const response = await axiosInstance.patch(`${URL}/deactivate/${id}`)
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)
@@ -95,7 +118,7 @@ export const activateCustomer = createAsyncThunk(
   'customers/activateCustomer',
   async (id, thunkAPI) => {
     try {
-      const response = await axiosInstance.put(`${URL}/activate/${id}`)
+      const response = await axiosInstance.patch(`${URL}/activate/${id}`)
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)
@@ -165,10 +188,42 @@ const customerSlice = createSlice({
       state.loading = true
     },
     [deleteCustomer.fulfilled]: (state, action) => {
-      state.customers = state.customers.filter((customer) => customer._id !== action.payload._id)
+      state.customers = state.customers.filter((customer) => customer.id !== action.payload.id)
       state.loading = false
     },
     [deleteCustomer.rejected]: (state, action) => {
+      state.error = action.payload
+      state.loading = false
+    },
+    [softDeleteCustomer.pending]: (state, action) => {
+      state.loading = true
+    },
+    [softDeleteCustomer.fulfilled]: (state, action) => {
+      state.customers = state.customers.map((customer) => {
+        if (customer.id === action.payload.id) {
+          customer.deletedAt = action.payload.deletedAt
+        }
+        return customer
+      })
+      state.loading = false
+    },
+    [softDeleteCustomer.rejected]: (state, action) => {
+      state.error = action.payload
+      state.loading = false
+    },
+    [restoreCustomer.pending]: (state, action) => {
+      state.loading = true
+    },
+    [restoreCustomer.fulfilled]: (state, action) => {
+      state.customers = state.customers.map((customer) => {
+        if (customer.id === action.payload.id) {
+          customer.deletedAt = null
+        }
+        return customer
+      })
+      state.loading = false
+    },
+    [restoreCustomer.rejected]: (state, action) => {
       state.error = action.payload
       state.loading = false
     },
@@ -176,10 +231,12 @@ const customerSlice = createSlice({
       state.loading = true
     },
     [banCustomer.fulfilled]: (state, action) => {
-      console.log(action.payload)
-      state.customers = state.customers.map((customer) =>
-        customer._id === action.payload.customer._id ? action.payload.customer : customer,
-      )
+      state.customers = state.customers.map((customer) => {
+        if (customer.id === action.payload.id) {
+          customer.bannedAt = action.payload.bannedAt
+        }
+        return customer
+      })
       state.loading = false
     },
     [banCustomer.rejected]: (state, action) => {
@@ -190,9 +247,12 @@ const customerSlice = createSlice({
       state.loading = true
     },
     [unbanCustomer.fulfilled]: (state, action) => {
-      state.customers = state.customers.map((customer) =>
-        customer._id === action.payload.customer._id ? action.payload.customer : customer,
-      )
+      state.customers = state.customers.map((customer) => {
+        if (customer.id === action.payload.id) {
+          customer.bannedAt = null
+        }
+        return customer
+      })
       state.loading = false
     },
     [unbanCustomer.rejected]: (state, action) => {
@@ -203,9 +263,12 @@ const customerSlice = createSlice({
       state.loading = true
     },
     [deactivateCustomer.fulfilled]: (state, action) => {
-      state.customers = state.customers.map((customer) =>
-        customer._id === action.payload.customer._id ? action.payload.customer : customer,
-      )
+      state.customers = state.customers.map((customer) => {
+        if (customer.id === action.payload.id) {
+          customer.deactivatedAt = action.payload.deactivatedAt
+        }
+        return customer
+      })
       state.loading = false
     },
     [deactivateCustomer.rejected]: (state, action) => {
@@ -216,9 +279,12 @@ const customerSlice = createSlice({
       state.loading = true
     },
     [activateCustomer.fulfilled]: (state, action) => {
-      state.customers = state.customers.map((customer) =>
-        customer._id === action.payload.customer._id ? action.payload.customer : customer,
-      )
+      state.customers = state.customers.map((customer) => {
+        if (customer.id === action.payload.id) {
+          customer.deactivatedAt = null
+        }
+        return customer
+      })
       state.loading = false
     },
     [activateCustomer.rejected]: (state, action) => {

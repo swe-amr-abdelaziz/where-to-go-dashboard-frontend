@@ -46,11 +46,11 @@ const EmployeeAdd = () => {
   }
 
   return (
-    <CCard className="mb-4">
+    <CCard className="m-3 mb-5 p-4 shadow">
       <CCardBody>
         <CRow>
           <CCol sm={5}>
-            <h3 id="users-list" className="card-title mb-0">
+            <h3 id="users-list" className="card-title mb-4 mt-2">
               Add Employee
             </h3>
           </CCol>

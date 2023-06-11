@@ -43,8 +43,15 @@ const Login = () => {
       })
 
       if (response.status === 200) {
+        const Admin = '72dd04b7-4d1d-4434-af60-d6804d8ec991'
+        const Employee = '405ac1d7-5956-479e-9967-48da40aebb79'
+
         localStorage.setItem('token', response.data.token)
-        localStorage.setItem('role', response.data.role)
+        if (response.data.role === 'Admin') {
+          localStorage.setItem('role', Admin)
+        } else if (response.data.role === 'Employee') {
+          localStorage.setItem('role', Employee)
+        }
 
         toast.success('Login succeeded!', {
           position: toast.POSITION.TOP_RIGHT,
@@ -61,6 +68,10 @@ const Login = () => {
       })
       setLoading(false)
     }
+  }
+
+  const handleForgotPassword = () => {
+    // navigate("/forgotPassword")
   }
 
   return (
@@ -107,7 +118,7 @@ const Login = () => {
                         </CButton>
                       </CCol>
                       <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
+                        <CButton onClick={handleForgotPassword} color="link" className="px-0">
                           Forgot password?
                         </CButton>
                       </CCol>

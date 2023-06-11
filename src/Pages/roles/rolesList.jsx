@@ -20,7 +20,9 @@ const RolesList = () => {
   const roles = useSelector((state) => state.roles.roles)
   const permissions = useSelector((state) => state.permissions.permissions)
   const [detailsVisible, setDetailsVisible] = useState(false)
-  const [editVisible, setEditVisible] = useState(false)
+  const [updatePermissions, setUpdatePermissions] = useState([])
+  const [updateVisible, setUpdateVisible] = useState(false)
+
   const [currentRole, setCurrentRole] = useState({
     name: '',
     permissions: [],
@@ -80,17 +82,17 @@ const RolesList = () => {
     const updatedRole = {
       _id: currentRole._id,
       name: currentRole.name,
+      permissions: updatePermissions,
     }
 
     try {
       await dispatch(updateRole(updatedRole)).unwrap()
-      setEditVisible(false)
+      setUpdateVisible(false)
       dispatch(getRoles())
     } catch (error) {
       // Handle error
     }
   }
-
   if (roles.loading) {
     return <div>Loading...</div>
   }
@@ -107,8 +109,9 @@ const RolesList = () => {
     }
 
     const handleEdit = () => {
-      setEditVisible(true)
+      setUpdateVisible(true)
       setCurrentRole(rowData)
+      setUpdatePermissions(rowData.permissions.map((permission) => permission._id))
     }
 
     const handleDeleteRole = () => {
@@ -243,12 +246,11 @@ const RolesList = () => {
           </ul>
         </div>
       </Dialog>
-
       <Dialog
         header="Edit Role Details"
-        visible={editVisible}
+        visible={updateVisible}
         style={{ width: '50vw' }}
-        onHide={() => setEditVisible(false)}
+        onHide={() => setUpdateVisible(false)}
       >
         <CFormLabel htmlFor="roleName">Role Name</CFormLabel>
         <CFormInput
@@ -259,6 +261,22 @@ const RolesList = () => {
           value={currentRole.name}
           aria-label="Role Name"
           onChange={handleRoleNameChange}
+        />
+        <br />
+        <CFormLabel htmlFor="updateRolePermissions">Permissions</CFormLabel>
+        <MultiSelect
+          id="updateRolePermissions"
+          className="ms-2"
+          value={updatePermissions}
+          options={permissions}
+          onChange={(e) => setUpdatePermissions(e.value)}
+          optionLabel="name"
+          optionValue="_id"
+          placeholder="Select Permissions"
+          filter
+          showClear
+          style={{ width: '100%' }}
+          scrollHeight="200px"
         />
         <br />
         <div>

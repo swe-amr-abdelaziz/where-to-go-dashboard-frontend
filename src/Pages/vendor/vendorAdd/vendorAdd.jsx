@@ -15,6 +15,7 @@ import UploadImage from '../../../components/uploadImage/uploadImage'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
 import axios from 'axios'
+import { Multiselect } from 'multiselect-react-dropdown'
 
 const VendorAdd = () => {
   const navigate = useNavigate()
@@ -22,12 +23,31 @@ const VendorAdd = () => {
   const [validated, setValidated] = useState(false)
   const [countries, setCountries] = useState([])
   const [selectedCountryValue, setSelectedCountryValue] = useState('')
-  const [currentCountry, setCurrentCountry] = useState([])
+  const [currentCountry, setCurrentCountry] = useState({
+    states: [],
+  })
+  const [tags, setTags] = useState([])
+  const [selectedTags, setSelectedTags] = useState([])
+  const getTags = () => {
+    axios
+      .get('http://localhost:8001/api/v1/tags')
+      .then((res) => {
+        setTags(res.data.data)
+        console.log(tags)
+      })
+      .catch((error) => console.log(error))
+  }
+  const handleSelectAndRemoveTag = (data) => {
+    setSelectedTags(data)
+    console.log(selectedTags)
+  }
 
   useEffect(() => {
     getCategories()
     getCountriesWithStates()
+    getTags()
   }, [])
+
   const getCategories = async () => {
     try {
       let res = await axiosInstance.get('api/v1/categories')
@@ -40,7 +60,6 @@ const VendorAdd = () => {
     axios
       .get('https://countriesnow.space/api/v0.1/countries/states')
       .then((res) => {
-        console.log(res.data.data)
         setCountries(res.data.data)
       })
       .catch((error) => console.log(error))
@@ -66,9 +85,13 @@ const VendorAdd = () => {
       event.preventDefault()
       event.stopPropagation()
       const data = new FormData(event.target)
+
+      let tagsId = []
+      selectedTags.forEach((tag) => tagsId.push(tag._id))
+      data.set('tags', tagsId)
       axios
         .post('http://localhost:8001/api/v1/vendors', data)
-        .then((res) => console.log(res))
+        .then((res) => navigate('/vendors'))
         .catch((error) => console.log(error))
     }
   }
@@ -136,14 +159,15 @@ const VendorAdd = () => {
                 </CFormSelect>
               </div>
               <div className="mb-3">
-                <CFormLabel>Tags</CFormLabel>
-                <CFormInput
-                  className="me-2"
-                  type="text"
-                  placeholder="Tags"
-                  feedbackInvalid="Please enter Tags"
-                  name={'tags'}
-                  required
+                <CFormLabel htmlFor="updateRolePermissions">Tags</CFormLabel>
+                <Multiselect
+                  name="tags"
+                  options={tags}
+                  displayValue="name"
+                  placeholder="Select Tags"
+                  className="w-100"
+                  onSelect={handleSelectAndRemoveTag}
+                  onRemove={handleSelectAndRemoveTag}
                 />
               </div>
               <div className="mb-3">
@@ -172,19 +196,19 @@ const VendorAdd = () => {
                       </option>
                     ))}
                   </CFormSelect>
-                  <CFormSelect
+                  {/* <CFormSelect
                     name={'governorate'}
                     feedbackInvalid="Please choose Governorate"
                     className="mx-2"
                     required
-                  >
-                    <option disabled>---- Select Governorate -----</option>
-                    {/* {currentCountry[0].states.map((state) => (
+                  > */}
+                  {/* <option disabled>---- Select Governorate -----</option>
+                    {currentCountry[0].states.map((state) => (
                       <option key={state.state_code} value={state.name}>
                         {state.name}
                       </option>
                     ))} */}
-                  </CFormSelect>
+                  {/* </CFormSelect> */}
                   <CFormInput
                     className="mx-2"
                     type="text"
@@ -244,12 +268,6 @@ const VendorAdd = () => {
                   name={'thumbnail'}
                   required
                 />
-                {/* <CFormInput
-                  type="file"
-                  feedbackInvalid="Upload Thumbnail"
-                  name={'thumbnail'}
-                  required
-                /> */}
                 {/* <UploadImage
                   name={'thumbnail'}
                   content={'thumbnail'}
@@ -267,12 +285,6 @@ const VendorAdd = () => {
                   name={'gallery'}
                   required
                 />
-                {/* <CFormInput
-                  type="file"
-                  feedbackInvalid="Upload Gallery"
-                  name={'gallery'}
-                  required
-                /> */}
                 {/* <UploadImage
                   name={'gallery'}
                   content={'gallery'}

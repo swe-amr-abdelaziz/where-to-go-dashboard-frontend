@@ -27,7 +27,6 @@ import {
 } from 'react-bootstrap-icons'
 import { Link } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
-import { useDispatch } from 'react-redux'
 import { Column } from 'primereact/column'
 import { Menu } from 'primereact/menu'
 import { Button } from 'primereact/button'
@@ -45,9 +44,11 @@ const VendorList = () => {
     getVendorsList()
   }, [])
 
-  const getVendorsList = async () => {
+  const getVendorsList = async (_url) => {
+    let url = _url === undefined ? '/api/v1/vendors' : _url
+
     await axiosInstance
-      .get('/api/v1/vendors')
+      .get(url)
       .then((res) => {
         console.log(res.data.data)
         setVendorList(res.data.data)
@@ -55,6 +56,39 @@ const VendorList = () => {
       .catch((error) => {
         console.log(error)
       })
+  }
+  const handleNavigation = (event) => {
+    let currentTab = event.target
+
+    let siblings = Array.from(currentTab.parentNode.parentNode.childNodes).filter(
+      (node) => node !== currentTab.parentNode,
+    )
+
+    siblings.forEach((node) => {
+      node.childNodes[0].classList.remove('bg-base')
+    })
+
+    switch (event.target.innerText) {
+      case 'All Vendors':
+        getVendorsList('/api/v1/vendors')
+        event.target.classList.add('bg-base')
+        break
+      case 'Approved':
+        console.log('inside Approved')
+        getVendorsList('/api/v1/vendors/approved')
+        event.target.classList.add('bg-base')
+
+        break
+      case 'Not Approved':
+        console.log('inside Not')
+        getVendorsList('/api/v1/vendors/rejected')
+        event.target.classList.add('bg-base')
+
+        break
+      default:
+        break
+    }
+    // console.log(event.target.classList.add('active'))
   }
 
   const handleDelete = async (id) => {
@@ -128,19 +162,19 @@ const VendorList = () => {
             <CFormInput type="search" className="me-2" placeholder="Search" />
           </div>
         </div>
-        <CNav variant="underline">
+
+        <CNav variant="tabs">
           <CNavItem>
-            <CNavLink href="#" active>
-              Active
-            </CNavLink>
+            <CNavLink onClick={handleNavigation}>All Vendors</CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="#">Link</CNavLink>
+            <CNavLink onClick={handleNavigation}>Approved</CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="#">Link</CNavLink>
+            <CNavLink onClick={handleNavigation}>Not Approved</CNavLink>
           </CNavItem>
         </CNav>
+
         <DataTable
           value={vendorList}
           paginator
@@ -149,9 +183,9 @@ const VendorList = () => {
           tableStyle={{ minWidth: '50rem' }}
         >
           <Column field="placeName" header="Place Name" style={{ width: '15%' }}></Column>
-          <Column field="firstName" header="First Name" style={{ width: '15%' }}></Column>
           <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
           <Column field="email" header="Email" style={{ width: '15%' }}></Column>
+          <Column field="isApproved" header="Approved" style={{ width: '15%' }}></Column>
           <Column
             body={actionsBodyTemplate}
             bodyClassName="text-center"

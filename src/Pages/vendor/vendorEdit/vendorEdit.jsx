@@ -16,18 +16,38 @@ import { useNavigate } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
+import { Multiselect } from 'multiselect-react-dropdown'
 
 const VendorEdit = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
+  const [validated, setValidated] = useState(false)
   const [currentVendor, setCurrentVendor] = useState({})
   const [categories, setCategories] = useState([])
   const [countries, setCountries] = useState([])
   const [selectedCountryValue, setSelectedCountryValue] = useState('')
+  const [tags, setTags] = useState([])
+  const [selectedTags, setSelectedTags] = useState([])
+  const [vendorObject, setVendorObject] = useState(new FormData())
+  const getTags = () => {
+    axios
+      .get('http://localhost:8001/api/v1/tags')
+      .then((res) => {
+        setTags(res.data.data)
+        console.log(tags)
+      })
+      .catch((error) => console.log(error))
+  }
+  const handleSelectAndRemoveTag = (data) => {
+    setSelectedTags(data)
+    console.log(selectedTags)
+  }
 
   useEffect(() => {
     getCurrentVendor()
     getCategories()
     getCountriesWithStates()
+    getTags()
   }, [])
 
   const getCurrentVendor = async () => {
@@ -57,10 +77,6 @@ const VendorEdit = () => {
       .catch((error) => console.log(error))
   }
 
-  const navigate = useNavigate()
-  const [validated, setValidated] = useState(false)
-  const [vendorObject, setVendorObject] = useState(new FormData())
-
   const handleChange = (e) => {
     setCurrentVendor(...currentVendor, e.target.name, e.target.value)
     console.log(currentVendor)
@@ -75,6 +91,11 @@ const VendorEdit = () => {
     setValidated(true)
     if (form.checkValidity() === true) {
       const data = new FormData(event.target)
+
+      let tagsId = []
+      selectedTags.forEach((tag) => tagsId.push(tag._id))
+      data.set('tags', tagsId)
+
       axiosInstance
         .patch('/api/v1/vendors', data)
         .then((res) => {
@@ -163,15 +184,15 @@ const VendorEdit = () => {
                 </CFormSelect>
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Tags</CFormLabel>
-                <CFormInput
-                  value={currentVendor.tags}
-                  className="me-2"
-                  type="text"
-                  placeholder="Tags"
-                  feedbackInvalid="Please enter Tags"
-                  name={'tags'}
-                  required
+                <CFormLabel htmlFor="updateRolePermissions">Tags</CFormLabel>
+                <Multiselect
+                  name="tags"
+                  options={tags}
+                  displayValue="name"
+                  placeholder="Select Tags"
+                  className="w-100"
+                  onSelect={handleSelectAndRemoveTag}
+                  onRemove={handleSelectAndRemoveTag}
                 />
               </div>
               <div className="mb-3">
@@ -272,21 +293,37 @@ const VendorEdit = () => {
                 </CFormTextarea>
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Thumbnail</CFormLabel>
-                <UploadImage
+                <CFormLabel>Thumbnail</CFormLabel>
+                <CFormInput
+                  type="file"
+                  aria-describedby="validationCustom05Feedback"
+                  feedbackInvalid="Please provide a valid image."
+                  id="validationCustom05"
+                  name={'thumbnail'}
+                  required
+                />
+                {/* <UploadImage
                   name={'thumbnail'}
                   feedbackValid="Looks good!"
                   feedbackInvalid="Please provide a Thumbnail Image"
                   required
-                ></UploadImage>
+                ></UploadImage> */}
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Gallery</CFormLabel>
-                <UploadImage
+                <CFormLabel>Gallery</CFormLabel>
+                <CFormInput
+                  type="file"
+                  aria-describedby="validationCustom05Feedback"
+                  feedbackInvalid="Please provide a valid image."
+                  id="validationCustom05"
+                  name={'gallery'}
+                  required
+                />
+                {/* <UploadImage
                   name={'gallery'}
                   feedbackValid="Please provide Gallery Images"
                   required
-                ></UploadImage>
+                ></UploadImage> */}
               </div>
               <div>
                 <CButton className="bg-base" type="submit">

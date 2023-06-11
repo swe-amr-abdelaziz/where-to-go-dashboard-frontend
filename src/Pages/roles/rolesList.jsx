@@ -6,13 +6,13 @@ import { Button } from 'primereact/button'
 import { Menu } from 'primereact/menu'
 import 'primereact/resources/themes/lara-light-indigo/theme.css'
 import 'primereact/resources/primereact.min.css'
-import { Dialog } from 'primereact/dialog'
-import { ThreeDotsVertical } from 'react-bootstrap-icons'
 import { MultiSelect } from 'primereact/multiselect'
+import { Dialog } from 'primereact/dialog'
+import { ThreeDotsVertical, PlusCircle } from 'react-bootstrap-icons'
 
-import { CButton, CFormInput, CFormLabel } from '@coreui/react'
+import { CButton, CFormLabel, CFormInput } from '@coreui/react'
 
-import { getRoles, deleteRole } from '../../Redux/RolesSlice/rolesSlice'
+import { getRoles, deleteRole, updateRole, createRole } from '../../Redux/RolesSlice/rolesSlice'
 import { getPermissions } from '../../Redux/PermissionsSlice/permissionsSlice'
 
 const RolesList = () => {
@@ -21,33 +21,90 @@ const RolesList = () => {
   const permissions = useSelector((state) => state.permissions.permissions)
   const [detailsVisible, setDetailsVisible] = useState(false)
   const [editVisible, setEditVisible] = useState(false)
-  const menu = useRef(null)
-  const [currentRole, setCurrentRole] = useState({ permissions: [] })
+  const [currentRole, setCurrentRole] = useState({
+    name: '',
+    permissions: [],
+  })
+  const [createVisible, setCreateVisible] = useState(false)
+  const [selectedPermissions, setSelectedPermissions] = useState(null) // New state for selected permissions
 
   useEffect(() => {
     dispatch(getRoles())
-    dispatch(getPermissions())
+    dispatch(getPermissions()) // Fetch permissions from the backend
   }, [dispatch])
 
-  const handleDetails = async () => {
-    setDetailsVisible(true)
-  }
-  const handleEdit = async (roleId) => {
-    setEditVisible(true)
+  useEffect(() => {
+    dispatch(getRoles())
+  }, [dispatch])
+
+  const handleCreate = () => {
+    setCurrentRole({
+      name: '',
+      permissions: [],
+    })
+    setSelectedPermissions([]) // Initialize selected permissions
+    setCreateVisible(true)
   }
 
-  const handleDelete = async (roleId) => {
-    dispatch(deleteRole(roleId))
+  const handleCreateRole = async () => {
+    const newRole = {
+      ...currentRole,
+      permissions: selectedPermissions,
+    }
+    await dispatch(createRole(newRole)).unwrap()
+    setCreateVisible(false)
+    dispatch(getRoles())
   }
 
-  const handlePermissionsChange = (e) => {
+  const handleDelete = async (rowData) => {
+    if (rowData && rowData._id) {
+      console.log('Deleting role:', rowData)
+
+      try {
+        await dispatch(deleteRole(rowData._id))
+        dispatch(getRoles()) // Fetch roles again after deletion
+      } catch (error) {
+        // Handle error
+      }
+    }
+  }
+
+  const handleRoleNameChange = (e) => {
     setCurrentRole((prevRole) => ({
       ...prevRole,
-      permissions: e.value,
+      name: e.target.value,
     }))
   }
 
-  const actionsBodyTemplate = (rowData) => {
+  const handleUpdateRole = () => {
+    dispatch(updateRole(currentRole))
+    setEditVisible(false)
+  }
+
+  if (roles.loading) {
+    return <div>Loading...</div>
+  }
+
+  if (!roles || roles.length === 0) {
+    return <div>No roles available.</div>
+  }
+  const ActionsBodyTemplate = (rowData) => {
+    const menuRef = useRef(null)
+
+    const handleDetails = () => {
+      setDetailsVisible(true)
+      setCurrentRole(rowData)
+    }
+
+    const handleEdit = () => {
+      setEditVisible(true)
+      setCurrentRole(rowData)
+    }
+
+    const handleDeleteRole = () => {
+      handleDelete(rowData)
+    }
+
     return (
       <>
         <Menu
@@ -55,23 +112,21 @@ const RolesList = () => {
             {
               label: 'Details',
               icon: 'pi pi-info-circle',
-              command: (e) => {
-                return handleDetails(rowData._id)
-              },
+              command: handleDetails,
             },
             {
               label: 'Edit',
               icon: 'pi pi-pencil',
-              command: (e) => handleEdit(rowData._id),
+              command: handleEdit,
             },
             {
               label: 'Delete',
               icon: 'pi pi-trash',
-              command: (e) => handleDelete(rowData._id),
+              command: handleDeleteRole,
             },
           ]}
           popup
-          ref={menu}
+          ref={menuRef}
           id={`actions_${rowData._id}`}
         />
         <Button
@@ -79,7 +134,7 @@ const RolesList = () => {
           icon=""
           className="mr-2 three-dots"
           onClick={(event) => {
-            menu.current.toggle(event)
+            menuRef.current.toggle(event)
             setCurrentRole(rowData)
           }}
           aria-controls={`actions_${rowData._id}`}
@@ -91,6 +146,12 @@ const RolesList = () => {
 
   return (
     <>
+      <div className="mb-4">
+        <CButton className="bg-success text-white" onClick={handleCreate}>
+          <PlusCircle className="me-2" />
+          Create
+        </CButton>
+      </div>
       <DataTable
         value={roles}
         paginator
@@ -100,11 +161,52 @@ const RolesList = () => {
       >
         <Column field="name" header="Name" style={{ width: '50%' }}></Column>
         <Column
-          body={actionsBodyTemplate}
+          body={ActionsBodyTemplate}
           bodyClassName="text-center"
           style={{ width: '30%' }}
         ></Column>
       </DataTable>
+      <Dialog
+        header="Create Role"
+        visible={createVisible}
+        style={{ width: '50vw' }}
+        onHide={() => setCreateVisible(false)}
+      >
+        <CFormLabel htmlFor="createRoleName">Role Name</CFormLabel>
+        <CFormInput
+          id="createRoleName"
+          className="ms-2"
+          type="text"
+          placeholder="Role Name"
+          value={currentRole.name}
+          aria-label="Role Name"
+          onChange={handleRoleNameChange}
+          pattern="[A-Za-z\s]+"
+          title="Only text characters are allowed"
+        />
+        <br />
+        <CFormLabel htmlFor="createRolePermissions">Permissions</CFormLabel>
+        <MultiSelect
+          id="createRolePermissions"
+          className="ms-2"
+          value={selectedPermissions}
+          options={permissions}
+          onChange={(e) => setSelectedPermissions(e.value)}
+          optionLabel="name"
+          optionValue="_id"
+          placeholder="Select Permissions"
+          filter
+          showClear
+          style={{ width: '100%' }}
+          scrollHeight="200px"
+        />
+        <br />
+        <div>
+          <CButton className="bg-base" onClick={handleCreateRole}>
+            Create
+          </CButton>
+        </div>
+      </Dialog>
 
       <Dialog
         header="Role Details"
@@ -112,15 +214,24 @@ const RolesList = () => {
         style={{ width: '50vw' }}
         onHide={() => setDetailsVisible(false)}
       >
-        <p className="m-0">
-          <strong>Permission Names:</strong>
+        <div className="m-0">
+          <strong>Name:</strong>
           <br />
-          {currentRole.permissions.map((el) => (
-            <>
-              {el.name} <br />
-            </>
-          ))}
-        </p>
+          {currentRole.name}
+        </div>
+        <div className="m-0 mt-3">
+          <strong>Permissions:</strong>
+          <br />
+          <ul>
+            {currentRole.permissions.map((permission) => {
+              return (
+                <li key={permission._id} style={{ marginBottom: '0.5rem' }}>
+                  <span style={{ fontWeight: 'bold' }}>{permission.name}</span>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
       </Dialog>
 
       <Dialog
@@ -129,30 +240,21 @@ const RolesList = () => {
         style={{ width: '50vw' }}
         onHide={() => setEditVisible(false)}
       >
-        <CFormLabel htmlFor="exampleFormControlInput1">Role Name</CFormLabel>
-
+        <CFormLabel htmlFor="roleName">Role Name</CFormLabel>
         <CFormInput
+          id="roleName"
           className="ms-2"
           type="text"
           placeholder="Role Name"
           value={currentRole.name}
-          aria-label="default input example"
+          aria-label="Role Name"
+          onChange={handleRoleNameChange}
         />
         <br />
-        <CFormLabel htmlFor="exampleFormControlInput1">Role Permissions</CFormLabel>
-        <MultiSelect
-          value={currentRole.permissions}
-          onChange={handlePermissionsChange}
-          options={permissions}
-          optionLabel="name"
-          filter
-          placeholder="Select Permissions"
-          maxSelectedLabels={3}
-          className="w-full md:w-20rem"
-        />
-        {console.log(currentRole.permissions)}
         <div>
-          <CButton className="bg-base">Submit</CButton>
+          <CButton className="bg-base" onClick={handleUpdateRole}>
+            Submit
+          </CButton>
         </div>
       </Dialog>
     </>

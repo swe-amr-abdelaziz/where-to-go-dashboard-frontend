@@ -26,7 +26,8 @@ const PermissionsList = () => {
   const menu = useRef(null)
   const [currentPermission, setCurrentPermission] = useState({
     name: '', // Provide a default value for name
-    description: '', // Provide a default value for description
+    description: '',
+    permissions: [], // Provide a default value for description
   })
   const [createVisible, setCreateVisible] = useState(false)
 

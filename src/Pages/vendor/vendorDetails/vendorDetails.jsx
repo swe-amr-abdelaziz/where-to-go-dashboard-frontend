@@ -87,11 +87,11 @@ const VendorDetails = () => {
               <div className="col-6">
                 <small className="d-flex align-items-center mb-2">
                   <GeoAltFill className="me-2 text-primary" />
-                  Address
+                  address
                 </small>
                 <small className="d-flex align-items-center mt-2">
                   <TagFill className="me-2 text-primary" />
-                  Categpry
+                  {placeDetails.category && placeDetails.category[0].name}
                 </small>
                 <small className="d-flex align-items-center mt-2">
                   <EnvelopeAtFill className="me-2 text-primary" />

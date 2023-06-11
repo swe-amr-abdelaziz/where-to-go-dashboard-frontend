@@ -47,6 +47,7 @@
     "primeicons": "^6.0.1",
     "primereact": "^9.5.0",
     "prop-types": "^15.8.1",
+    "randexp": "^0.5.3",
     "react": "^18.2.0",
     "react-app-polyfill": "^3.0.0",
     "react-bootstrap": "^2.7.4",

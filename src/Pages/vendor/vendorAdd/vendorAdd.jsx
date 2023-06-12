@@ -196,18 +196,6 @@ const VendorAdd = () => {
                   ))}
                 </CFormSelect>
               </div>
-              {/* <div className="mb-3">
-                <CFormLabel>Tags</CFormLabel>
-                <Multiselect
-                  name={'tags'}
-                  options={tags}
-                  displayValue="name"
-                  placeholder="Select Tags"
-                  className="w-100"
-                  onSelect={handleSelectAndRemoveTag}
-                  onRemove={handleSelectAndRemoveTag}
-                />
-              </div> */}
               <div className="mb-3">
                 <CFormLabel>Location</CFormLabel>
                 <CFormInput

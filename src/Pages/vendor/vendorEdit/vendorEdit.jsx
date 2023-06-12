@@ -106,8 +106,8 @@ const VendorEdit = () => {
       event.stopPropagation()
       const data = new FormData(event.target)
 
-      axios
-        .patch(`http://localhost:8001/api/v1/vendors/${id}`, data)
+      axiosInstance
+        .patch(`/api/v1/vendors/${id}`, data)
         .then((res) => navigate('/vendors'))
         .catch((error) => console.log(error))
     }

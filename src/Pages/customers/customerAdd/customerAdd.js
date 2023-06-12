@@ -52,31 +52,45 @@ const CustomerAdd = () => {
     zip: '',
     phoneNumber: '',
     dateOfBirth: '',
+    gender: '',
   })
+
+  const [location, setLocation] = useState({
+    country: '',
+    state: '',
+    city: '',
+  })
+
+  const [phoneCode, setPhoneCode] = useState('')
+
+  const [FD, setFD] = useState(null)
+
+  const [image, setImage] = useState(new File([], ''))
 
   useEffect(() => {
     dispatch(getCountries())
+    setFD(new FormData(document.getElementById('customerAddForm')))
   }, [])
 
-  useEffect(() => {
-    const form = document.getElementById('customerAddForm')
-    form.addEventListener('keydown', handleKeyDown)
-    return () => {
-      form.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [formData])
+  // useEffect(() => {
+  //   const form = document.getElementById('customerAddForm')
+  //   form.addEventListener('keydown', handleKeyDown)
+  //   return () => {
+  //     form.removeEventListener('keydown', handleKeyDown)
+  //   }
+  // }, [formData])
 
   useEffect(() => {
-    if (formData.country) {
-      dispatch(getStates({ country: formData.country }))
+    if (location.country) {
+      dispatch(getStates({ country: location.country }))
     }
-  }, [formData.country])
+  }, [location.country])
 
   useEffect(() => {
-    if (formData.country && formData.state) {
-      dispatch(getCities({ country: formData.country, state: formData.state }))
+    if (location.country && location.state) {
+      dispatch(getCities({ country: location.country, state: location.state }))
     }
-  }, [formData.state])
+  }, [location.state])
 
   useEffect(() => {
     const randexp = new RandExp(new RegExp(phoneRegex))
@@ -90,11 +104,23 @@ const CustomerAdd = () => {
     zip: '^(\\d{5}(?:[-\\s]\\d{4})?)?$',
   }
 
-  const handleInputChange = (event) => {
-    console.log(cities)
+  // const handleInputChange = (event) => {
+  //   console.log(FD.get('firstName'))
+  //   const { name, value, files } = event.target
+  //   if (name === 'image') {
+  //     setImage(files[0])
+  //   } else {
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       [name]: value,
+  //     }))
+  //   }
+  // }
+
+  const handleLocationChange = (event) => {
     const { name, value } = event.target
-    setFormData((prevFormData) => ({
-      ...prevFormData,
+    setLocation((prevLocation) => ({
+      ...prevLocation,
       [name]: value,
     }))
   }
@@ -105,15 +131,29 @@ const CustomerAdd = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    event.stopPropagation()
     const form = event.currentTarget
-    if (form.checkValidity() === false) {
-      event.stopPropagation()
-    }
+
+    // if (form.checkValidity() === false) {
+    // }
+
     if (form.checkValidity() === true) {
-      if (formData.dateOfBirth === '') {
-        delete formData.dateOfBirth
-      }
-      dispatch(createCustomer(formData)).then((res) => {
+      // const formDataToSend = new FormData()
+      // if (formData.dateOfBirth === '') {
+      //   delete formData.dateOfBirth
+      // }
+      // if (formData.gender === '') {
+      //   delete formData.gender
+      // }
+      // for (const [key, value] of Object.entries(formData)) {
+      //   formDataToSend.append(key, value)
+      // }
+      // formDataToSend.append('image', image)
+      // console.log(formDataToSend)
+
+      const data = new FormData(event.target)
+      console.log(data)
+      dispatch(createCustomer(data)).then((res) => {
         navigate('/customers')
       })
     }
@@ -146,8 +186,8 @@ const CustomerAdd = () => {
               name="firstName"
               id="firstName"
               pattern={regexPatterns.firstName}
-              value={formData.firstName}
-              onChange={handleInputChange}
+              // value={formData.firstName}
+              // onChange={handleInputChange}
               required
             />
           </CCol>
@@ -159,8 +199,8 @@ const CustomerAdd = () => {
               name="lastName"
               id="lastName"
               pattern={regexPatterns.lastName}
-              value={formData.lastName}
-              onChange={handleInputChange}
+              // value={formData.lastName}
+              // onChange={handleInputChange}
               required
               className="mt-3 mt-md-0"
             />
@@ -177,8 +217,8 @@ const CustomerAdd = () => {
                 feedbackInvalid="Enter a valid email address"
                 name="email"
                 id="email"
-                value={formData.email}
-                onChange={handleInputChange}
+                // value={formData.email}
+                // onChange={handleInputChange}
                 required
                 className="input-group-custom"
               />
@@ -196,8 +236,8 @@ const CustomerAdd = () => {
                 name="password"
                 id="password"
                 pattern={regexPatterns.password}
-                value={formData.password}
-                onChange={handleInputChange}
+                // value={formData.password}
+                // onChange={handleInputChange}
                 required
                 className="input-group-custom"
               />
@@ -210,18 +250,18 @@ const CustomerAdd = () => {
               placeholder="Street"
               name="street"
               id="street"
-              value={formData.street}
-              onChange={handleInputChange}
+              // value={formData.street}
+              // onChange={handleInputChange}
             />
           </CCol>
           <CCol md={6} lg={3}>
             <CFormSelect
               name="country"
               id="country"
-              value={formData.country}
-              onChange={handleInputChange}
+              value={location.country}
+              onChange={handleLocationChange}
             >
-              <option defaultValue="">Country</option>
+              <option value="">Select Country</option>
               {countries.map((country) => (
                 <option key={country.Iso3} value={country.name}>
                   {country.name}
@@ -233,10 +273,10 @@ const CustomerAdd = () => {
             <CFormSelect
               name="state"
               id="state"
-              value={formData.state}
-              onChange={handleInputChange}
+              value={location.state}
+              onChange={handleLocationChange}
             >
-              <option defaultValue="">State</option>
+              <option value="">Select State</option>
               {states.map((state) => (
                 <option key={state.state_code} value={state.name}>
                   {state.name}
@@ -245,8 +285,8 @@ const CustomerAdd = () => {
             </CFormSelect>
           </CCol>
           <CCol md={6} lg={3}>
-            <CFormSelect name="city" id="city" value={formData.city} onChange={handleInputChange}>
-              <option defaultValue="">City</option>
+            <CFormSelect name="city" id="city">
+              <option value="">Select City</option>
               {cities.map((city) => (
                 <option key={city} value={city}>
                   {city}
@@ -257,13 +297,13 @@ const CustomerAdd = () => {
           <CCol md={6} lg={3}>
             <CFormInput
               type="text"
-              placeholder="eg. 12345 or 12345-6789"
-              feedbackInvalid="Enter a valid zip code"
+              placeholder="Zip Code"
+              feedbackInvalid="Enter a valid zip code , eg. 12345 or 12345-6789"
               name="zip"
               id="zip"
               pattern={regexPatterns.zip}
-              value={formData.zip}
-              onChange={handleInputChange}
+              // value={formData.zip}
+              // onChange={handleInputChange}
             />
           </CCol>
           <CFormLabel htmlFor="phoneCode">Phone</CFormLabel>
@@ -293,22 +333,43 @@ const CustomerAdd = () => {
                 name="phoneNumber"
                 id="phoneNumber"
                 pattern={phoneRegex}
-                value={formData.phoneNumber}
-                onChange={handleInputChange}
+                // value={formData.phoneNumber}
+                // onChange={handleInputChange}
                 className="input-group-custom mt-3 mt-md-0"
               />
             </CInputGroup>
           </CCol>
-          {/* <CCol md={6}>
+          <CCol md={6}>
             <CFormInput
               type="date"
-              name="dateOfBirth"
               label="Date of Birth"
               id="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleInputChange}
+              name="dateOfBirth"
+              // value={formData.dateOfBirth}
+              // onChange={handleInputChange}
             />
-          </CCol> */}
+          </CCol>
+          <CCol md={6}>
+            <CFormSelect
+              label="Gender"
+              name="gender"
+              id="gender"
+              // value={formData.gender}
+              // onChange={handleInputChange}
+            >
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md={12}>
+            <CFormInput
+              type="file"
+              name="image"
+              label="Image"
+              id="image"
+              // onChange={handleInputChange}
+            />
+          </CCol>
           <CCol xs={12} className="d-flex justify-content-end mt-5">
             <CButton
               className="bg-secondary me-3"

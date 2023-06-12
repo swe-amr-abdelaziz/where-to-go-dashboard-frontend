@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axiosInstance from '../../Axios'
+import { axiosInstance, axiosInstanceFormData } from '../../Axios'
 const URL = '/api/v1/customers'
 
 const initialState = {
@@ -31,7 +31,7 @@ export const createCustomer = createAsyncThunk(
   'customers/createCustomer',
   async (data, thunkAPI) => {
     try {
-      const response = await axiosInstance.post(URL, data)
+      const response = await axiosInstanceFormData.post(URL, data)
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)

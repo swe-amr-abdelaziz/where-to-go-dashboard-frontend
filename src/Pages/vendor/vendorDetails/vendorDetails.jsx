@@ -15,7 +15,7 @@ import { useParams } from 'react-router-dom'
 
 const VendorDetails = () => {
   const { id } = useParams()
-  const [placeDetails, setPlaceDetails] = useState({})
+  const [placeDetails, setPlaceDetails] = useState(null)
 
   useEffect(() => {
     getPlace()
@@ -35,7 +35,7 @@ const VendorDetails = () => {
     <CCard className="p-5">
       <CCardBody>
         <h5>
-          <strong>{placeDetails.placeName}</strong>
+          <strong>{placeDetails && placeDetails.placeName}</strong>
         </h5>
 
         <div className="d-flex mb-4">
@@ -87,29 +87,29 @@ const VendorDetails = () => {
               <div className="col-6">
                 <small className="d-flex align-items-center mb-2">
                   <GeoAltFill className="me-2 text-primary" />
-                  Address
+                  address
                 </small>
                 <small className="d-flex align-items-center mt-2">
                   <TagFill className="me-2 text-primary" />
-                  Categpry
+                  {placeDetails && placeDetails.category[0].name}
                 </small>
                 <small className="d-flex align-items-center mt-2">
                   <EnvelopeAtFill className="me-2 text-primary" />
-                  {placeDetails.email}
+                  {placeDetails && placeDetails.email}
                 </small>
               </div>
               <div className="col-6">
                 <small className="d-flex align-items-center mb-2">
                   <PersonFill className="me-2 text-primary" />
-                  {placeDetails.firstName + ' ' + placeDetails.lastName}
+                  {placeDetails && placeDetails.firstName + ' ' + placeDetails.lastName}
                 </small>
                 <small className="d-flex align-items-center mt-2">
                   <TelephoneFill className="me-2 text-primary" />
-                  {placeDetails.phoneNumber}
+                  {placeDetails && placeDetails.phoneNumber}
                 </small>
               </div>
             </div>
-            <div className="description">{placeDetails.description}</div>
+            <div className="description">{placeDetails && placeDetails.description}</div>
           </div>
           <div className="w-50 ms-5 ps-5">
             <h6>

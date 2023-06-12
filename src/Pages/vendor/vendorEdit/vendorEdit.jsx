@@ -14,30 +14,90 @@ import {
 import UploadImage from '../../../components/uploadImage/uploadImage'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
-import { useParams } from 'react-router-dom'
 import axios from 'axios'
+import { Multiselect } from 'multiselect-react-dropdown'
+import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
 const VendorEdit = () => {
   const { id } = useParams()
-  const [currentVendor, setCurrentVendor] = useState({})
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [validated, setValidated] = useState(false)
+  const countries = useSelector((state) => state.location.countries)
+  const states = useSelector((state) => state.location.states)
+  const cities = useSelector((state) => state.location.cities)
   const [categories, setCategories] = useState([])
-  const [countries, setCountries] = useState([])
-  const [selectedCountryValue, setSelectedCountryValue] = useState('')
+  const [tags, setTags] = useState([])
+  const [selectedTags, setSelectedTags] = useState([])
+
+  const [vendorData, setVendorData] = useState({
+    firstName: '',
+    lastName: '',
+    placeName: '',
+    category: '',
+    tags: [],
+    country: '',
+    state: '',
+    city: '',
+    street: '',
+    zip: '',
+    phoneNumber: '',
+    email: '',
+    description: '',
+    thumbnail: '',
+    gallery: '',
+  })
 
   useEffect(() => {
-    getCurrentVendor()
+    dispatch(getCountries())
     getCategories()
-    getCountriesWithStates()
+    getTags()
+    getCurrentVendor()
   }, [])
+  useEffect(() => {
+    if (vendorData.country) {
+      dispatch(getStates({ country: vendorData.country }))
+    }
+  }, [vendorData.country])
+  useEffect(() => {
+    if (vendorData.country && vendorData.state) {
+      dispatch(getCities({ country: vendorData.country, state: vendorData.state }))
+    }
+  }, [vendorData.state])
 
   const getCurrentVendor = async () => {
     const data = await axiosInstance.get(`api/v1/Vendors/${id}`)
-    if (data.data) setCurrentVendor(data.data.data[0])
+    if (data.data) setVendorData(data.data.data[0])
   }
-  const handleSelectedCountry = (event) => {
-    setSelectedCountryValue(event.currentTarget.value)
-    // setCurrentCountry(countries.filter((country) => country.name === selectedCountryValue))
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target
+    setVendorData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }))
+    console.log(vendorData.tags)
   }
+
+  const getTags = () => {
+    axios
+      .get('http://localhost:8001/api/v1/tags')
+      .then((res) => {
+        setTags(res.data.data)
+        console.log(tags)
+      })
+      .catch((error) => console.log(error))
+  }
+  const handleSelectAndRemoveTag = (data) => {
+    setSelectedTags(data)
+    setVendorData((prevFormData) => ({
+      ...prevFormData,
+      tags: selectedTags,
+    }))
+  }
+
   const getCategories = async () => {
     try {
       let res = await axiosInstance.get('api/v1/categories')
@@ -47,39 +107,24 @@ const VendorEdit = () => {
     }
   }
 
-  const getCountriesWithStates = () => {
-    axios
-      .get('https://countriesnow.space/api/v0.1/countries/states')
-      .then((res) => {
-        console.log(res.data.data)
-        setCountries(res.data.data)
-      })
-      .catch((error) => console.log(error))
-  }
-
-  const navigate = useNavigate()
-  const [validated, setValidated] = useState(false)
-  const [vendorObject, setVendorObject] = useState(new FormData())
-
-  const handleChange = (e) => {
-    setCurrentVendor(...currentVendor, e.target.name, e.target.value)
-    console.log(currentVendor)
-  }
-
   const handleSubmit = (event) => {
-    event.preventDefault()
     const form = event.currentTarget
     if (form.checkValidity() === false) {
+      event.preventDefault()
       event.stopPropagation()
     }
     setValidated(true)
     if (form.checkValidity() === true) {
+      event.preventDefault()
+      event.stopPropagation()
       const data = new FormData(event.target)
-      axiosInstance
-        .patch('/api/v1/vendors', data)
-        .then((res) => {
-          console.log(res)
-        })
+
+      let tagsId = []
+      selectedTags.forEach((tag) => tagsId.push(tag._id))
+      data.set('tags', tagsId)
+      axios
+        .patch(`http://localhost:8001/api/v1/vendors/${id}`, data)
+        .then((res) => navigate('/vendors'))
         .catch((error) => console.log(error))
     }
   }
@@ -88,6 +133,12 @@ const VendorEdit = () => {
     navigate('/vendors')
   }
 
+  const regexPatterns = {
+    firstName: '^[A-Za-z]+$',
+    lastName: '^[A-Za-z]+$',
+    password: '^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$',
+    zip: '^(\\d{5}(?:[-\\s]\\d{4})?)?$',
+  }
   return (
     <CRow>
       <CCol xs={12}>
@@ -95,94 +146,90 @@ const VendorEdit = () => {
           <CCardBody>
             <h3 className="mb-4 mt-2">Edit Vendor</h3>
             <CForm
+              encType="multipart/form-data"
               className="row g-3 needs-validation"
               noValidate
               validated={validated}
               onSubmit={handleSubmit}
             >
-              <CFormLabel htmlFor="exampleFormControlInput1">Owner</CFormLabel>
+              <CFormLabel>Owner</CFormLabel>
               <div className="mb-3 d-flex">
                 <CFormInput
-                  value={currentVendor.firstName}
-                  onChange={handleChange}
                   className="me-2"
                   type="text"
                   placeholder="First Name"
+                  pattern={regexPatterns.firstName}
                   feedbackInvalid="Please Enter Owner Last Name"
                   name={'firstName'}
+                  value={vendorData.firstName}
+                  onChange={handleInputChange}
                   required
                 />
                 <CFormInput
-                  value={currentVendor.lastName}
-                  onChange={handleChange}
                   className="ms-2"
                   type="text"
                   placeholder="Last Name"
+                  pattern={regexPatterns.lastName}
                   feedbackInvalid="Please Enter Owner First Name"
                   name={'lastName'}
+                  value={vendorData.lastName}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Place Name</CFormLabel>
+                <CFormLabel>Place Name</CFormLabel>
                 <CFormInput
-                  value={currentVendor.placeName}
-                  onChange={handleChange}
                   className="me-2"
                   type="text"
                   placeholder="Place Name"
                   feedbackInvalid="Please enter Place Name"
                   name={'placeName'}
+                  value={vendorData.placeName}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Category</CFormLabel>
+                <CFormLabel>Category</CFormLabel>
                 <CFormSelect
                   name={'category'}
                   feedbackInvalid="Please choose Country"
                   className="me-2"
+                  value={vendorData.country}
+                  onChange={handleInputChange}
                   required
                 >
-                  <option disabled>--- Select Category ---</option>
-                  {categories.map((cat) => {
-                    if (cat._id == currentVendor.categories) {
-                      return (
-                        <option key={cat._id} value={cat._id} selected>
-                          {cat.name}
-                        </option>
-                      )
-                    } else {
-                      return (
-                        <option key={cat._id} value={cat._id}>
-                          {cat.name}
-                        </option>
-                      )
-                    }
-                  })}
+                  <option disabled>Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
                 </CFormSelect>
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Tags</CFormLabel>
-                <CFormInput
-                  value={currentVendor.tags}
-                  className="me-2"
-                  type="text"
-                  placeholder="Tags"
-                  feedbackInvalid="Please enter Tags"
+                <CFormLabel>Tags</CFormLabel>
+                <Multiselect
                   name={'tags'}
-                  required
+                  options={tags}
+                  displayValue="name"
+                  placeholder="Select Tags"
+                  className="w-100"
+                  onSelect={handleSelectAndRemoveTag}
+                  onRemove={handleSelectAndRemoveTag}
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Location</CFormLabel>
+                <CFormLabel>Location</CFormLabel>
                 <CFormInput
-                  value={currentVendor.street}
                   className="me-2"
                   type="text"
                   placeholder="Street"
                   feedbackInvalid="Please enter Street"
                   name={'street'}
+                  value={vendorData.street}
+                  onChange={handleInputChange}
                   required
                 />
                 <div className="mb-3 d-flex my-3">
@@ -190,8 +237,8 @@ const VendorEdit = () => {
                     name={'country'}
                     feedbackInvalid="Please choose Country"
                     className="me-2"
-                    value={selectedCountryValue}
-                    onChange={handleSelectedCountry}
+                    value={vendorData.country}
+                    onChange={handleInputChange}
                     required
                   >
                     <option disabled>---- Select Country ----</option>
@@ -201,94 +248,118 @@ const VendorEdit = () => {
                       </option>
                     ))}
                   </CFormSelect>
+
                   <CFormSelect
-                    name={'governorate'}
+                    name={'state'}
                     feedbackInvalid="Please choose Governorate"
                     className="mx-2"
+                    value={vendorData.state}
+                    onChange={handleInputChange}
                     required
                   >
-                    <option disabled>Governorate</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3" disabled>
-                      Three
-                    </option>
+                    <option disabled>Select State</option>
+                    {states.map((state) => (
+                      <option key={state.state_code} value={state.name}>
+                        {state.name}
+                      </option>
+                    ))}
                   </CFormSelect>
-                  <CFormInput
-                    value={currentVendor.city}
+
+                  <CFormSelect
+                    name="city"
+                    value={vendorData.city}
+                    onChange={handleInputChange}
                     className="mx-2"
-                    type="text"
-                    placeholder="City"
-                    feedbackInvalid="Please enter City"
-                    name={'city'}
-                    required
-                  />
-                  <CFormInput
-                    value={currentVendor.zip}
-                    className="ms-2"
-                    type="text"
-                    placeholder="Postal Code"
-                    feedbackInvalid="Please enter Postal Code"
-                    name={'zip'}
-                    required
-                  />
+                  >
+                    <option disabled>Select City</option>
+                    {cities.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </CFormSelect>
+                  <CCol md={6} lg={3} className="ms-2">
+                    <CFormInput
+                      type="text"
+                      placeholder="eg. 12345 or 12345-6789"
+                      feedbackInvalid="Enter a valid zip code"
+                      name={'zip'}
+                      value={vendorData.zip}
+                      onChange={handleInputChange}
+                      pattern={regexPatterns.zip}
+                    />
+                  </CCol>
                 </div>
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Contact Number</CFormLabel>
+                <CFormLabel>Contact Number</CFormLabel>
                 <CFormInput
-                  value={currentVendor.phoneNumber}
                   type="text"
-                  id="exampleFormControlInput1"
                   placeholder="Contact Number"
-                  feedbackValid="Looks good!"
                   feedbackInvalid="Please enter Phone Number"
                   name={'phoneNumber'}
+                  value={vendorData.phoneNumber}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Email address</CFormLabel>
+                <CFormLabel>Email address</CFormLabel>
                 <CFormInput
-                  value={currentVendor.email}
                   type="email"
-                  id="exampleFormControlInput1"
                   placeholder="Enter Your Email"
                   feedbackInvalid="Please enter Email"
                   name={'email'}
+                  value={vendorData.email}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Description</CFormLabel>
+                <CFormLabel>Description</CFormLabel>
                 <CFormTextarea
-                  id="exampleFormControlTextarea1"
                   rows="5"
                   name={'description'}
+                  value={vendorData.description}
+                  onChange={handleInputChange}
                   feedbackInvalid="Please provide Some Description"
                   required
-                >
-                  {currentVendor.description}
-                </CFormTextarea>
+                ></CFormTextarea>
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Thumbnail</CFormLabel>
-                <UploadImage
+                <CFormLabel>Thumbnail</CFormLabel>
+                <CFormInput
+                  type="file"
+                  aria-describedby="validationCustom05Feedback"
+                  feedbackInvalid="Please provide a valid image."
                   name={'thumbnail'}
-                  feedbackValid="Looks good!"
+                  required
+                />
+                {/* <UploadImage
+                  name={'thumbnail'}
+                  content={'thumbnail'}
                   feedbackInvalid="Please provide a Thumbnail Image"
                   required
-                ></UploadImage>
+                ></UploadImage> */}
               </div>
               <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Gallery</CFormLabel>
-                <UploadImage
+                <CFormLabel>Gallery</CFormLabel>
+                <CFormInput
+                  type="file"
+                  aria-describedby="validationCustom05Feedback"
+                  feedbackInvalid="Please provide a valid image."
+                  id="validationCustom05"
                   name={'gallery'}
+                  required
+                />
+                {/* <UploadImage
+                  name={'gallery'}
+                  content={'gallery'}
                   feedbackValid="Please provide Gallery Images"
                   required
-                ></UploadImage>
+                ></UploadImage> */}
               </div>
-              <div>
+              <div className="text-end">
                 <CButton className="bg-base" type="submit">
                   Submit
                 </CButton>

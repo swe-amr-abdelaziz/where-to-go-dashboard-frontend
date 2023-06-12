@@ -25,7 +25,7 @@ const VendorDetails = () => {
     await axiosInstance
       .get(`/api/v1/vendors/${id}`)
       .then((res) => {
-        setPlaceDetails(res.data.data[0])
+        setPlaceDetails(res.data.data)
         console.log(res.data.data)
       })
       .catch((error) => console.log(error))

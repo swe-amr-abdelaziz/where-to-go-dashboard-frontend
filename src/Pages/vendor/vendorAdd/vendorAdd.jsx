@@ -326,6 +326,7 @@ const VendorAdd = () => {
                   feedbackInvalid="Please provide a valid image."
                   id="validationCustom05"
                   name={'gallery'}
+                  multiple
                   required
                 />
                 {/* <UploadImage

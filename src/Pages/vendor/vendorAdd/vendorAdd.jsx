@@ -325,7 +325,7 @@ const VendorAdd = () => {
                   aria-describedby="validationCustom05Feedback"
                   feedbackInvalid="Please provide a valid image."
                   id="validationCustom05"
-                  name={'gallery[]'}
+                  name={'gallery'}
                   multiple
                   required
                 />

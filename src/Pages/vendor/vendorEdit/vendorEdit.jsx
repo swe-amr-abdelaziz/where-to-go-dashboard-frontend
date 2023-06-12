@@ -29,9 +29,6 @@ const VendorEdit = () => {
   const states = useSelector((state) => state.location.states)
   const cities = useSelector((state) => state.location.cities)
   const [categories, setCategories] = useState([])
-  const [tags, setTags] = useState([])
-  const [selectedTags, setSelectedTags] = useState([])
-
   const [vendorData, setVendorData] = useState({
     firstName: '',
     lastName: '',
@@ -42,7 +39,6 @@ const VendorEdit = () => {
     state: '',
     city: '',
     street: '',
-    zip: '',
     phoneNumber: '',
     email: '',
     description: '',
@@ -53,7 +49,6 @@ const VendorEdit = () => {
   useEffect(() => {
     dispatch(getCountries())
     getCategories()
-    getTags()
     getCurrentVendor()
   }, [])
   useEffect(() => {
@@ -69,7 +64,16 @@ const VendorEdit = () => {
 
   const getCurrentVendor = async () => {
     const data = await axiosInstance.get(`api/v1/Vendors/${id}`)
-    if (data.data) setVendorData(data.data.data[0])
+    console.log(data.data.data)
+    if (data.data) {
+      setVendorData({
+        ...data.data.data,
+        country: data.data.data.address.country,
+        state: data.data.data.address.state,
+        street: data.data.data.address.street,
+        city: data.data.data.address.city,
+      })
+    }
   }
 
   const handleInputChange = (event) => {
@@ -78,29 +82,12 @@ const VendorEdit = () => {
       ...prevFormData,
       [name]: value,
     }))
-    console.log(vendorData.tags)
-  }
-
-  const getTags = () => {
-    axios
-      .get('http://localhost:8001/api/v1/tags')
-      .then((res) => {
-        setTags(res.data.data)
-        console.log(tags)
-      })
-      .catch((error) => console.log(error))
-  }
-  const handleSelectAndRemoveTag = (data) => {
-    setSelectedTags(data)
-    setVendorData((prevFormData) => ({
-      ...prevFormData,
-      tags: selectedTags,
-    }))
   }
 
   const getCategories = async () => {
     try {
       let res = await axiosInstance.get('api/v1/categories')
+
       setCategories(res.data.data)
     } catch (error) {
       console.log(error)
@@ -119,9 +106,6 @@ const VendorEdit = () => {
       event.stopPropagation()
       const data = new FormData(event.target)
 
-      let tagsId = []
-      selectedTags.forEach((tag) => tagsId.push(tag._id))
-      data.set('tags', tagsId)
       axios
         .patch(`http://localhost:8001/api/v1/vendors/${id}`, data)
         .then((res) => navigate('/vendors'))
@@ -194,9 +178,9 @@ const VendorEdit = () => {
                 <CFormLabel>Category</CFormLabel>
                 <CFormSelect
                   name={'category'}
-                  feedbackInvalid="Please choose Country"
+                  feedbackInvalid="Please choose Category"
                   className="me-2"
-                  value={vendorData.country}
+                  value={vendorData.category}
                   onChange={handleInputChange}
                   required
                 >
@@ -207,18 +191,6 @@ const VendorEdit = () => {
                     </option>
                   ))}
                 </CFormSelect>
-              </div>
-              <div className="mb-3">
-                <CFormLabel>Tags</CFormLabel>
-                <Multiselect
-                  name={'tags'}
-                  options={tags}
-                  displayValue="name"
-                  placeholder="Select Tags"
-                  className="w-100"
-                  onSelect={handleSelectAndRemoveTag}
-                  onRemove={handleSelectAndRemoveTag}
-                />
               </div>
               <div className="mb-3">
                 <CFormLabel>Location</CFormLabel>

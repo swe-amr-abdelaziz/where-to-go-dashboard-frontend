@@ -36,7 +36,9 @@ const EmployeeAdd = () => {
       const data = new FormData(event.target)
       console.log(data.get('image'))
       dispatch(createEmployee(data)).then((res) => {
-        navigate('/employees')
+        if (res.payload.address) {
+          navigate('/employees')
+        }
       })
     }
   }

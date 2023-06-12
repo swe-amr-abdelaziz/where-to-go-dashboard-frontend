@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -40,45 +40,23 @@ const CustomerAdd = () => {
     }
   }
 
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    street: '',
-    country: '',
-    state: '',
-    city: '',
-    zip: '',
-    phoneNumber: '',
-    dateOfBirth: '',
-    gender: '',
-  })
-
   const [location, setLocation] = useState({
     country: '',
     state: '',
     city: '',
   })
 
-  const [phoneCode, setPhoneCode] = useState('')
-
-  const [FD, setFD] = useState(null)
-
-  const [image, setImage] = useState(new File([], ''))
-
   useEffect(() => {
     dispatch(getCountries())
-    setFD(new FormData(document.getElementById('customerAddForm')))
   }, [])
 
-  // useEffect(() => {
-  //   const form = document.getElementById('customerAddForm')
-  //   form.addEventListener('keydown', handleKeyDown)
-  //   return () => {
-  //     form.removeEventListener('keydown', handleKeyDown)
-  //   }
-  // }, [formData])
+  useEffect(() => {
+    const form = document.getElementById('customerAddForm')
+    form.addEventListener('keydown', handleKeyDown)
+    return () => {
+      form.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   useEffect(() => {
     if (location.country) {
@@ -104,19 +82,6 @@ const CustomerAdd = () => {
     zip: '^(\\d{5}(?:[-\\s]\\d{4})?)?$',
   }
 
-  // const handleInputChange = (event) => {
-  //   console.log(FD.get('firstName'))
-  //   const { name, value, files } = event.target
-  //   if (name === 'image') {
-  //     setImage(files[0])
-  //   } else {
-  //     setFormData((prevFormData) => ({
-  //       ...prevFormData,
-  //       [name]: value,
-  //     }))
-  //   }
-  // }
-
   const handleLocationChange = (event) => {
     const { name, value } = event.target
     setLocation((prevLocation) => ({
@@ -132,28 +97,11 @@ const CustomerAdd = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
     event.stopPropagation()
-    const form = event.currentTarget
-
-    // if (form.checkValidity() === false) {
-    // }
+    const form = document.getElementById('customerAddForm')
+    const formData = new FormData(form)
 
     if (form.checkValidity() === true) {
-      // const formDataToSend = new FormData()
-      // if (formData.dateOfBirth === '') {
-      //   delete formData.dateOfBirth
-      // }
-      // if (formData.gender === '') {
-      //   delete formData.gender
-      // }
-      // for (const [key, value] of Object.entries(formData)) {
-      //   formDataToSend.append(key, value)
-      // }
-      // formDataToSend.append('image', image)
-      // console.log(formDataToSend)
-
-      const data = new FormData(event.target)
-      console.log(data)
-      dispatch(createCustomer(data)).then((res) => {
+      dispatch(createCustomer(formData)).then((res) => {
         navigate('/customers')
       })
     }
@@ -186,8 +134,6 @@ const CustomerAdd = () => {
               name="firstName"
               id="firstName"
               pattern={regexPatterns.firstName}
-              // value={formData.firstName}
-              // onChange={handleInputChange}
               required
             />
           </CCol>
@@ -199,8 +145,6 @@ const CustomerAdd = () => {
               name="lastName"
               id="lastName"
               pattern={regexPatterns.lastName}
-              // value={formData.lastName}
-              // onChange={handleInputChange}
               required
               className="mt-3 mt-md-0"
             />
@@ -217,8 +161,6 @@ const CustomerAdd = () => {
                 feedbackInvalid="Enter a valid email address"
                 name="email"
                 id="email"
-                // value={formData.email}
-                // onChange={handleInputChange}
                 required
                 className="input-group-custom"
               />
@@ -236,8 +178,6 @@ const CustomerAdd = () => {
                 name="password"
                 id="password"
                 pattern={regexPatterns.password}
-                // value={formData.password}
-                // onChange={handleInputChange}
                 required
                 className="input-group-custom"
               />
@@ -245,14 +185,7 @@ const CustomerAdd = () => {
           </CCol>
           <CFormLabel htmlFor="street">Address</CFormLabel>
           <CCol md={12} className="mt-0">
-            <CFormInput
-              type="text"
-              placeholder="Street"
-              name="street"
-              id="street"
-              // value={formData.street}
-              // onChange={handleInputChange}
-            />
+            <CFormInput type="text" placeholder="Street" name="street" id="street" />
           </CCol>
           <CCol md={6} lg={3}>
             <CFormSelect
@@ -302,8 +235,6 @@ const CustomerAdd = () => {
               name="zip"
               id="zip"
               pattern={regexPatterns.zip}
-              // value={formData.zip}
-              // onChange={handleInputChange}
             />
           </CCol>
           <CFormLabel htmlFor="phoneCode">Phone</CFormLabel>
@@ -333,42 +264,21 @@ const CustomerAdd = () => {
                 name="phoneNumber"
                 id="phoneNumber"
                 pattern={phoneRegex}
-                // value={formData.phoneNumber}
-                // onChange={handleInputChange}
                 className="input-group-custom mt-3 mt-md-0"
               />
             </CInputGroup>
           </CCol>
           <CCol md={6}>
-            <CFormInput
-              type="date"
-              label="Date of Birth"
-              id="dateOfBirth"
-              name="dateOfBirth"
-              // value={formData.dateOfBirth}
-              // onChange={handleInputChange}
-            />
+            <CFormInput type="date" label="Date of Birth" id="dateOfBirth" name="dateOfBirth" />
           </CCol>
           <CCol md={6}>
-            <CFormSelect
-              label="Gender"
-              name="gender"
-              id="gender"
-              // value={formData.gender}
-              // onChange={handleInputChange}
-            >
+            <CFormSelect label="Gender" name="gender" id="gender">
               <option value="male">Male</option>
               <option value="female">Female</option>
             </CFormSelect>
           </CCol>
           <CCol md={12}>
-            <CFormInput
-              type="file"
-              name="image"
-              label="Image"
-              id="image"
-              // onChange={handleInputChange}
-            />
+            <CFormInput type="file" name="image" label="Image" id="image" />
           </CCol>
           <CCol xs={12} className="d-flex justify-content-end mt-5">
             <CButton

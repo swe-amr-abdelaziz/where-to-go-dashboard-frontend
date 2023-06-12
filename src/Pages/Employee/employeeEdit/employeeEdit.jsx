@@ -32,7 +32,10 @@ const EmployeeEdit = () => {
       event.stopPropagation()
       const data = new FormData(event.target)
       dispatch(updateEmployee(data)).then((res) => {
-        navigate('/employees')
+        console.log(res)
+        if (res.payload.mssg === 'Updated') {
+          navigate('/employees')
+        }
       })
     }
   }

@@ -27,8 +27,8 @@ const VendorAdd = () => {
   const states = useSelector((state) => state.location.states)
   const cities = useSelector((state) => state.location.cities)
   const [categories, setCategories] = useState([])
-  const [tags, setTags] = useState([])
-  const [selectedTags, setSelectedTags] = useState([])
+  // const [tags, setTags] = useState([])
+  // const [selectedTags, setSelectedTags] = useState([])
 
   const [vendorData, setVendorData] = useState({
     firstName: '',
@@ -51,7 +51,6 @@ const VendorAdd = () => {
   useEffect(() => {
     dispatch(getCountries())
     getCategories()
-    getTags()
   }, [])
   useEffect(() => {
     if (vendorData.country) {
@@ -73,26 +72,26 @@ const VendorAdd = () => {
     console.log(vendorData.tags)
   }
 
-  const getTags = () => {
-    axios
-      .get('http://localhost:8001/api/v1/tags')
-      .then((res) => {
-        setTags(res.data.data)
-        console.log(tags)
-      })
-      .catch((error) => console.log(error))
-  }
-  const handleSelectAndRemoveTag = (data) => {
-    setSelectedTags(data)
-    setVendorData((prevFormData) => ({
-      ...prevFormData,
-      tags: selectedTags,
-    }))
-  }
+  // const getTags = () => {
+  //   axiosInstance
+  //     .get('/api/v1/tags')
+  //     .then((res) => {
+  //       setTags(res.data.data)
+  //       console.log(tags)
+  //     })
+  //     .catch((error) => console.log(error))
+  // }
+  // const handleSelectAndRemoveTag = (data) => {
+  //   setSelectedTags(data)
+  //   setVendorData((prevFormData) => ({
+  //     ...prevFormData,
+  //     tags: selectedTags,
+  //   }))
+  // }
 
   const getCategories = async () => {
     try {
-      let res = await axiosInstance.get('api/v1/categories')
+      let res = await axiosInstance.get('/api/v1/categories')
       setCategories(res.data.data)
     } catch (error) {
       console.log(error)
@@ -110,12 +109,9 @@ const VendorAdd = () => {
       event.preventDefault()
       event.stopPropagation()
       const data = new FormData(event.target)
-
-      let tagsId = []
-      selectedTags.forEach((tag) => tagsId.push(tag._id))
-      data.set('tags', tagsId)
-      axios
-        .post('http://localhost:8001/api/v1/vendors', data)
+      console.log(data.get('thumbnail'))
+      axiosInstance
+        .post('/api/v1/vendors', data)
         .then((res) => navigate('/vendors'))
         .catch((error) => console.log(error))
     }
@@ -150,7 +146,7 @@ const VendorAdd = () => {
                   className="me-2"
                   type="text"
                   placeholder="First Name"
-                  pattern={regexPatterns.firstName}
+                  // pattern={regexPatterns.firstName}
                   feedbackInvalid="Please Enter Owner Last Name"
                   name={'firstName'}
                   value={vendorData.firstName}
@@ -161,7 +157,7 @@ const VendorAdd = () => {
                   className="ms-2"
                   type="text"
                   placeholder="Last Name"
-                  pattern={regexPatterns.lastName}
+                  // pattern={regexPatterns.lastName}
                   feedbackInvalid="Please Enter Owner First Name"
                   name={'lastName'}
                   value={vendorData.lastName}
@@ -200,7 +196,7 @@ const VendorAdd = () => {
                   ))}
                 </CFormSelect>
               </div>
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <CFormLabel>Tags</CFormLabel>
                 <Multiselect
                   name={'tags'}
@@ -211,7 +207,7 @@ const VendorAdd = () => {
                   onSelect={handleSelectAndRemoveTag}
                   onRemove={handleSelectAndRemoveTag}
                 />
-              </div>
+              </div> */}
               <div className="mb-3">
                 <CFormLabel>Location</CFormLabel>
                 <CFormInput
@@ -278,7 +274,7 @@ const VendorAdd = () => {
                       name={'zip'}
                       value={vendorData.zip}
                       onChange={handleInputChange}
-                      pattern={regexPatterns.zip}
+                      // pattern={regexPatterns.zip}
                     />
                   </CCol>
                 </div>

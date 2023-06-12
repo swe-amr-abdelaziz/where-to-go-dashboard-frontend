@@ -40,12 +40,14 @@ import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import 'primereact/resources/themes/lara-light-indigo/theme.css'
 import 'primereact/resources/primereact.min.css'
+import { Dialog } from 'primereact/dialog'
 
 const EmployeeList = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const employees = useSelector((state) => state.employee.employees)
   const [visible, setVisible] = React.useState(false)
+  const [detailsVisible, setDetailsVisible] = React.useState(false)
   const [emp, setEmp] = useState({})
   const [demployee, setDemployee] = React.useState(null)
   const menu = useRef(null)
@@ -97,6 +99,7 @@ const EmployeeList = () => {
             {
               label: 'Details',
               icon: 'pi pi-info-circle',
+              command: (e) => setDetailsVisible(true),
             },
             {
               label: 'Edit',
@@ -206,12 +209,88 @@ const EmployeeList = () => {
             style={{ width: '10%' }}
           ></Column>
           <Column
+            header={'Actions'}
             body={(employee) => actionsBodyTemplate(employee)}
             bodyClassName="text-center"
             style={{ width: '5%' }}
           ></Column>
         </DataTable>
       </CCardBody>
+      {/* Details Dialog */}
+      <Dialog
+        header="Customer Details"
+        visible={detailsVisible}
+        style={{ width: '75vw' }}
+        onHide={() => setDetailsVisible(false)}
+      >
+        <div className="details-table d-flex flex-column flex-lg-row justify-content-between align-items-center">
+          <table className="table mx-4">
+            <tbody>
+              <tr>
+                <th>First Name</th>
+                <td>{emp.name || ''}</td>
+              </tr>
+              <tr>
+                <th>Email</th>
+                <td>{emp.email || ''}</td>
+              </tr>
+              <tr>
+                <th>Role</th>
+                <td>{emp.role?.name || ''}</td>
+              </tr>
+              <tr>
+                <th>City</th>
+                <td>{emp.address ? emp.address.city : ''}</td>
+              </tr>
+              <tr>
+                <th>Deactivated At</th>
+                <td>
+                  {emp.deactivatedAt
+                    ? new Date(emp.deactivatedAt).toLocaleDateString('en-UK')
+                    : 'Activated'}
+                </td>
+              </tr>
+              <tr>
+                <th>Gender</th>
+                <td>{emp.gender || ''}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="table mx-4">
+            <tbody>
+              <tr>
+                <th>Phone Number</th>
+                <td>{emp.phoneNumber || ''}</td>
+              </tr>
+              <tr>
+                <th>Country</th>
+                <td>{emp.address ? emp.address.country : ''}</td>
+              </tr>
+              <tr>
+                <th>City</th>
+                <td>{emp.address ? emp.address.city : ''}</td>
+              </tr>
+              <tr>
+                <th>Street</th>
+                <td>{emp.address ? emp.address.street : ''}</td>
+              </tr>
+              <tr>
+                <th>Banned At</th>
+                <td>
+                  {emp.bannedAt ? new Date(emp.bannedAt).toLocaleDateString('en-UK') : 'Not Banned'}
+                </td>
+              </tr>
+              <tr>
+                <th>Date of Birth</th>
+                <td>
+                  {emp.dateOfBirth ? new Date(emp.dateOfBirth).toLocaleDateString('en-UK') : ''}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </Dialog>
+
       <CModal visible={visible} onClose={() => setVisible(false)}>
         <CModalHeader onClose={() => setVisible(false)}>
           <CModalTitle>Warning !!! ????</CModalTitle>

@@ -1,136 +1,307 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CButton,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CForm,
   CFormInput,
   CFormLabel,
-  CFormTextarea,
   CFormSelect,
+  CInputGroup,
+  CInputGroupText,
   CRow,
 } from '@coreui/react'
-import UploadImage from '../../../components/uploadImage/uploadImage'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { editCustomer } from '../../../Redux/CustomerSlice/customerSlice'
+import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
+import phoneCodes from '../../../assets/js/phoneCodes'
+
+const RandExp = require('randexp')
 
 const CustomerEdit = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const [validated, setValidated] = useState(false)
+  const [phoneExample, setPhoneExample] = useState('')
+  const [phoneRegex, setPhoneRegex] = useState(phoneCodes[49].regex)
+  const customer = useSelector((state) => state.customer.customer)
+
+  const countries = useSelector((state) => state.location.countries)
+  const states = useSelector((state) => state.location.states)
+  const cities = useSelector((state) => state.location.cities)
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      event.stopPropagation()
+      handleSubmit(event)
+    }
+  }
+
+  const [location, setLocation] = useState({
+    country: '',
+    state: '',
+    city: '',
+  })
+
+  useEffect(() => {
+    dispatch(getCountries())
+    setLocation({ country: customer.address.country })
+    const form = document.getElementById('customerEditForm')
+    form.addEventListener('keydown', handleKeyDown)
+    return () => {
+      form.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (location.country) {
+      dispatch(getStates({ country: location.country }))
+    }
+  }, [location.country])
+
+  useEffect(() => {
+    if (location.country && location.state) {
+      dispatch(getCities({ country: location.country, state: location.state }))
+    }
+  }, [location.state])
+
+  useEffect(() => {
+    const randexp = new RandExp(new RegExp(phoneRegex))
+    setPhoneExample(randexp.gen())
+  }, [phoneRegex])
+
+  const regexPatterns = {
+    firstName: '^[A-Za-z]+$',
+    lastName: '^[A-Za-z]+$',
+    password: '^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$',
+    zip: '^(\\d{5}(?:[-\\s]\\d{4})?)?$',
+  }
+
+  const handleLocationChange = (event) => {
+    const { name, value } = event.target
+    setLocation((prevLocation) => ({
+      ...prevLocation,
+      [name]: value,
+    }))
+  }
+
+  const handlePhoneInputChange = (event) => {
+    setPhoneRegex(event.target.value)
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    const form = document.getElementById('customerEditForm')
+    const formData = new FormData(form)
+
+    if (form.checkValidity() === true) {
+      dispatch(editCustomer(formData)).then((res) => {
+        navigate('/customers')
+      })
+    }
+    setValidated(true)
+  }
+
   return (
-    <CRow>
-      <CCol xs={12}>
-        <CCard className="m-3 mb-5 p-4 shadow">
-          <CCardBody>
-            <h3 className="mb-4 mt-2">Edit Customer</h3>
-            <CForm>
-              <CFormLabel htmlFor="firstName">Name</CFormLabel>
-              <div className="mb-3 d-flex">
-                <CFormInput
-                  id="firstName"
-                  className="me-2"
-                  type="text"
-                  placeholder="First name"
-                  aria-label="default input example"
-                />
-                <CFormInput
-                  className="ms-2"
-                  type="text"
-                  placeholder="Last name"
-                  aria-label="default input example"
-                />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Place Name</CFormLabel>
-                <CFormInput
-                  className="me-2"
-                  type="text"
-                  placeholder="Place Name"
-                  aria-label="default input example"
-                />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Tags</CFormLabel>
-                <CFormInput
-                  className="me-2"
-                  type="text"
-                  placeholder="Tags"
-                  aria-label="default input example"
-                />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Location</CFormLabel>
-                <CFormInput
-                  className="me-2"
-                  type="text"
-                  placeholder="Street"
-                  aria-label="default input example"
-                />
-                <div className="mb-3 d-flex my-3">
-                  <CFormSelect className="me-2">
-                    <option disabled>Country</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3" disabled>
-                      Three
-                    </option>
-                  </CFormSelect>
-                  <CFormSelect className="mx-2">
-                    <option disabled>Governorate</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3" disabled>
-                      Three
-                    </option>
-                  </CFormSelect>
-                  <CFormInput
-                    className="mx-2"
-                    type="text"
-                    placeholder="City"
-                    aria-label="default input example"
-                  />
-                  <CFormInput
-                    className="ms-2"
-                    type="text"
-                    placeholder="Postal Code"
-                    aria-label="default input example"
-                  />
-                </div>
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Contact Number</CFormLabel>
-                <CFormInput
-                  type="text"
-                  id="exampleFormControlInput1"
-                  placeholder="Contact Number"
-                />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlInput1">Email address</CFormLabel>
-                <CFormInput
-                  type="email"
-                  id="exampleFormControlInput1"
-                  placeholder="Enter Your Email"
-                />
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Description</CFormLabel>
-                <CFormTextarea id="exampleFormControlTextarea1" rows="3"></CFormTextarea>
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Thumbnail</CFormLabel>
-                <UploadImage></UploadImage>
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="exampleFormControlTextarea1">Gallery</CFormLabel>
-                <UploadImage></UploadImage>
-              </div>
-              <div>
-                <CButton className="bg-base">Submit</CButton>
-              </div>
-            </CForm>
-          </CCardBody>
-        </CCard>
-      </CCol>
-    </CRow>
+    <CCard className="m-3 mb-5 p-4 shadow">
+      <CCardBody>
+        <CRow>
+          <CCol sm={5}>
+            <h3 id="users-list" className="card-title mb-4 mt-2">
+              Edit Customer
+            </h3>
+          </CCol>
+        </CRow>
+        <CForm
+          id="customerEditForm"
+          className="row g-3 needs-validation"
+          noValidate
+          validated={validated}
+          onSubmit={handleSubmit}
+        >
+          <CFormLabel htmlFor="firstName">Name</CFormLabel>
+          <CCol md={6} className="mt-0">
+            <CFormInput
+              type="text"
+              placeholder="First name"
+              feedbackInvalid="Enter a valid first name"
+              name="firstName"
+              id="firstName"
+              value={customer.firstName}
+              pattern={regexPatterns.firstName}
+              required
+            />
+          </CCol>
+          <CCol md={6} className="mt-0">
+            <CFormInput
+              type="text"
+              placeholder="Last name"
+              feedbackInvalid="Enter a valid last name"
+              name="lastName"
+              id="lastName"
+              value={customer.lastName}
+              pattern={regexPatterns.lastName}
+              required
+              className="mt-3 mt-md-0"
+            />
+          </CCol>
+          <CCol md={12}>
+            <CFormLabel htmlFor="email">Email</CFormLabel>
+            <CInputGroup>
+              <CInputGroupText>
+                <i className="pi pi-envelope"></i>
+              </CInputGroupText>
+              <CFormInput
+                type="email"
+                placeholder="example@xyz.com"
+                feedbackInvalid="Enter a valid email address"
+                name="email"
+                id="email"
+                value={customer.email}
+                required
+                className="input-group-custom"
+              />
+            </CInputGroup>
+          </CCol>
+          <CCol md={12}>
+            <CFormLabel htmlFor="password">Password</CFormLabel>
+            <CInputGroup>
+              <CInputGroupText>
+                <i className="pi pi-lock"></i>
+              </CInputGroupText>
+              <CFormInput
+                type="password"
+                feedbackInvalid="Enter a strong password with at least 8 characters"
+                name="password"
+                id="password"
+                pattern={regexPatterns.password}
+                className="input-group-custom"
+              />
+            </CInputGroup>
+          </CCol>
+          <CFormLabel htmlFor="street">Address</CFormLabel>
+          <CCol md={12} className="mt-0">
+            <CFormInput
+              type="text"
+              placeholder="Street"
+              name="street"
+              id="street"
+              value={customer.address.street}
+            />
+          </CCol>
+          <CCol md={6} lg={3}>
+            <CFormSelect
+              name="country"
+              id="country"
+              value={location.country}
+              onChange={handleLocationChange}
+            >
+              <option value="">Select Country</option>
+              {countries.map((country) => (
+                <option key={country.Iso3} value={country.name}>
+                  {country.name}
+                </option>
+              ))}
+            </CFormSelect>
+          </CCol>
+          <CCol md={6} lg={3}>
+            <CFormSelect
+              name="state"
+              id="state"
+              value={location.state}
+              onChange={handleLocationChange}
+            >
+              <option value="">Select State</option>
+              {states.map((state) => (
+                <option key={state.state_code} value={state.name}>
+                  {state.name}
+                </option>
+              ))}
+            </CFormSelect>
+          </CCol>
+          <CCol md={6} lg={3}>
+            <CFormSelect name="city" id="city">
+              <option value="">Select City</option>
+              {cities.map((city) => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </CFormSelect>
+          </CCol>
+          <CCol md={6} lg={3}>
+            <CFormInput
+              type="text"
+              placeholder="Zip Code"
+              feedbackInvalid="Enter a valid zip code , eg. 12345 or 12345-6789"
+              name="zip"
+              id="zip"
+              pattern={regexPatterns.zip}
+            />
+          </CCol>
+          <CFormLabel htmlFor="phoneCode">Phone</CFormLabel>
+          <CCol md={6} className="mt-0">
+            <CFormSelect
+              name="phoneCode"
+              id="phoneCode"
+              value={phoneRegex}
+              onChange={handlePhoneInputChange}
+            >
+              {phoneCodes.map((item, index) => (
+                <option key={`code_${index}`} value={item.regex}>
+                  {`${item.country} (${item.code})`}
+                </option>
+              ))}
+            </CFormSelect>
+          </CCol>
+          <CCol md={6} className="mt-0">
+            <CInputGroup>
+              <CInputGroupText>
+                <i className="pi pi-phone"></i>
+              </CInputGroupText>
+              <CFormInput
+                type="text"
+                placeholder={`eg. ${phoneExample}`}
+                feedbackInvalid={`Enter a valid phone number (eg. ${phoneExample})`}
+                name="phoneNumber"
+                id="phoneNumber"
+                pattern={phoneRegex}
+                className="input-group-custom mt-3 mt-md-0"
+              />
+            </CInputGroup>
+          </CCol>
+          <CCol md={6}>
+            <CFormInput type="date" label="Date of Birth" id="dateOfBirth" name="dateOfBirth" />
+          </CCol>
+          <CCol md={6}>
+            <CFormSelect label="Gender" name="gender" id="gender">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md={12}>
+            <CFormInput type="file" name="image" label="Image" id="image" />
+          </CCol>
+          <CCol xs={12} className="d-flex justify-content-end mt-5">
+            <CButton
+              className="bg-secondary me-3"
+              type="submit"
+              onClick={() => navigate('/customers')}
+            >
+              Back
+            </CButton>
+            <CButton className="bg-base" type="submit">
+              Submit
+            </CButton>
+          </CCol>
+        </CForm>
+      </CCardBody>
+    </CCard>
   )
 }
 

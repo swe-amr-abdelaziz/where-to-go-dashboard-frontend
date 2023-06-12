@@ -37,6 +37,7 @@ const VendorEdit = () => {
     state: '',
     city: '',
     street: '',
+    zip: '',
     phoneNumber: '',
     email: '',
     description: '',
@@ -61,11 +62,7 @@ const VendorEdit = () => {
       dispatch(getCities({ country: vendorData.country, state: vendorData.state }))
     }
   }, [vendorData.state])
-  // useEffect(() => {
-  //   console.log('states :', states)
-  //   console.log('cities : ', cities)
-  //   console.log('countries: ', countries)
-  // })
+
   const getCurrentVendor = async () => {
     try {
       const response = await axiosInstance.get(`api/v1/Vendors/${id}`)
@@ -79,6 +76,7 @@ const VendorEdit = () => {
           state: data.address.state,
           street: data.address.street,
           city: data.address.city,
+          zip: data.address.zip,
         }))
       }
     } catch (error) {
@@ -110,16 +108,8 @@ const VendorEdit = () => {
     if (form.checkValidity() === false) {
       return setValidated(true)
     }
-
     const data = new FormData(form)
-    // console.log(data.getAll('firstName'))
-    // console.log(data.getAll('lastName'))
-    // console.log(data.getAll('email'))
-    // console.log(data.getAll('placeName'))
-    // console.log(data.getAll('phoneNumber'))
-    // console.log(data.getAll('description'))
-    // console.log(data.getAll('thumbnail'))
-    // console.log(data.getAll('gallery'))
+    console.log(data.get('zip'))
     axiosInstance
       .patch(`/api/v1/vendors/${id}`, data)
       .then((res) => navigate('/vendors'))
@@ -358,8 +348,8 @@ const VendorEdit = () => {
                 <CButton className="bg-base" type="submit">
                   Submit
                 </CButton>
-                <CButton onClick={handleBack} className="bg-secondary ms-3">
-                  Back
+                <CButton onClick={handleBack} className="bg-secondary ms-2">
+                  Cancel
                 </CButton>
               </div>
             </CForm>

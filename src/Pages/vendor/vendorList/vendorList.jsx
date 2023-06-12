@@ -188,6 +188,7 @@ const VendorList = () => {
           <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
           <Column field="email" header="Email" style={{ width: '15%' }}></Column>
           <Column field="isApproved" header="Approved" style={{ width: '15%' }}></Column>
+          <Column field="deactivatedAt" header="Deactivated At" style={{ width: '15%' }}></Column>
           <Column
             body={actionsBodyTemplate}
             bodyClassName="text-center"

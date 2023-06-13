@@ -18,6 +18,7 @@ import axios from 'axios'
 import { Multiselect } from 'multiselect-react-dropdown'
 import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import VendorDetails from '../vendorDetails/vendorDetails'
 
 const VendorAdd = () => {
   const navigate = useNavigate()
@@ -27,8 +28,6 @@ const VendorAdd = () => {
   const states = useSelector((state) => state.location.states)
   const cities = useSelector((state) => state.location.cities)
   const [categories, setCategories] = useState([])
-  // const [tags, setTags] = useState([])
-  // const [selectedTags, setSelectedTags] = useState([])
 
   const [vendorData, setVendorData] = useState({
     firstName: '',
@@ -72,23 +71,6 @@ const VendorAdd = () => {
     console.log(vendorData.tags)
   }
 
-  // const getTags = () => {
-  //   axiosInstance
-  //     .get('/api/v1/tags')
-  //     .then((res) => {
-  //       setTags(res.data.data)
-  //       console.log(tags)
-  //     })
-  //     .catch((error) => console.log(error))
-  // }
-  // const handleSelectAndRemoveTag = (data) => {
-  //   setSelectedTags(data)
-  //   setVendorData((prevFormData) => ({
-  //     ...prevFormData,
-  //     tags: selectedTags,
-  //   }))
-  // }
-
   const getCategories = async () => {
     try {
       let res = await axiosInstance.get('/api/v1/categories')
@@ -109,7 +91,6 @@ const VendorAdd = () => {
       event.preventDefault()
       event.stopPropagation()
       const data = new FormData(event.target)
-      console.log(data.get('thumbnail'))
       axiosInstance
         .post('/api/v1/vendors', data)
         .then((res) => navigate('/vendors'))
@@ -306,7 +287,6 @@ const VendorAdd = () => {
                 <CFormLabel>Thumbnail</CFormLabel>
                 <CFormInput
                   type="file"
-                  aria-describedby="validationCustom05Feedback"
                   feedbackInvalid="Please provide a valid image."
                   name={'thumbnail'}
                   required
@@ -337,7 +317,11 @@ const VendorAdd = () => {
                 ></UploadImage> */}
               </div>
               <div className="text-end">
-                <CButton className="bg-base" type="submit">
+                <CButton
+                  className="bg-base"
+                  disabled={vendorData.gallery && vendorData.gallery.length < 3}
+                  type="submit"
+                >
                   Submit
                 </CButton>
                 <CButton onClick={handleBack} className="bg-secondary ms-3">

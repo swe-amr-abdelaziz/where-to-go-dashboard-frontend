@@ -34,9 +34,12 @@ import { useNavigate } from 'react-router-dom'
 import 'primereact/resources/themes/lara-light-indigo/theme.css'
 import 'primereact/resources/primereact.min.css'
 import { DataTable } from 'primereact/datatable'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])
+  const [selectedVendor, setSelectedVendor] = useState({})
 
   const [id, setId] = useState(null)
 
@@ -50,7 +53,6 @@ const VendorList = () => {
     await axiosInstance
       .get(url)
       .then((res) => {
-        console.log(res.data.data)
         setVendorList(res.data.data)
       })
       .catch((error) => {
@@ -74,16 +76,12 @@ const VendorList = () => {
         event.target.classList.add('bg-base')
         break
       case 'Approved':
-        console.log('inside Approved')
         getVendorsList('/api/v1/vendors/approved')
         event.target.classList.add('bg-base')
-
         break
       case 'Not Approved':
-        console.log('inside Not')
         getVendorsList('/api/v1/vendors/rejected')
         event.target.classList.add('bg-base')
-
         break
       default:
         break
@@ -102,41 +100,55 @@ const VendorList = () => {
   const menu = useRef(null)
 
   const actionsBodyTemplate = (rowData) => {
+    const _model = [
+      {
+        label: 'Details',
+        icon: 'pi pi-info-circle',
+        command: (e) => {
+          // console.log(e)
+          navigate(`/vendors/${id}`)
+        },
+      },
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: (e) => {
+          navigate(`/vendors/edit/${id}`)
+        },
+      },
+      {
+        label: selectedVendor.deactivatedAt === null ? 'Deactivate' : 'Activate',
+        icon: 'pi pi-info-circle',
+        command: (e) => {
+          if (selectedVendor.deactivatedAt === null) {
+            axiosInstance.patch(`/api/v1/vendors/${id}/deactivate`)
+          } else {
+            axiosInstance.patch(`/api/v1/vendors/${id}/restore`)
+          }
+        },
+      },
+      {
+        label: 'Approve',
+        icon: 'pi pi-info-circle',
+        command: (e) => {
+          axiosInstance.patch(`/api/v1/vendors/${id}`, { isApproved: true })
+        },
+      },
+    ]
+
+    if (selectedVendor.isApproved === true) {
+      _model.splice(3, 1)
+    }
+
     return (
       <>
-        <Menu
-          model={[
-            {
-              label: 'Details',
-              icon: 'pi pi-info-circle',
-              command: (e) => {
-                console.log(id)
-                navigate(`/vendors/${id}`)
-              },
-            },
-            {
-              label: 'Edit',
-              icon: 'pi pi-pencil',
-              command: (e) => {
-                navigate(`/vendors/edit/${id}`)
-              },
-            },
-            {
-              label: 'Deactivate',
-              icon: 'pi pi-info-circle',
-              command: (e) => {
-                axiosInstance.patch(`/api/v1/vendors/${id}/deactivate`)
-              },
-            },
-          ]}
-          popup
-          ref={menu}
-          id={`actions_${rowData.id}`}
-        />
+        <Menu model={_model} popup ref={menu} id={`actions_${rowData.id}`} />
         <Button
           label={<ThreeDotsVertical />}
+          icon=""
           className="mr-2 three-dots"
           onClick={(event) => {
+            setSelectedVendor(rowData)
             menu.current.toggle(event)
             setId(rowData._id)
           }}
@@ -144,6 +156,26 @@ const VendorList = () => {
           aria-haspopup
         />
       </>
+    )
+  }
+
+  const handleOptionsClick = (e) => {
+    console.log(e.target)
+  }
+
+  const handleIsApprovedDisplay = (currentVendor) => {
+    return currentVendor.isApproved === true ? (
+      <FontAwesomeIcon className="text-success" icon={faDotCircle} />
+    ) : (
+      <FontAwesomeIcon className="text-secondary" icon={faDotCircle} />
+    )
+  }
+
+  const handleActivateDisplay = (currentVendor) => {
+    return currentVendor.deactivatedAt === null ? (
+      <FontAwesomeIcon className="text-success" icon={faDotCircle} />
+    ) : (
+      <FontAwesomeIcon className="text-secondary" icon={faDotCircle} />
     )
   }
 
@@ -187,9 +219,21 @@ const VendorList = () => {
           <Column field="placeName" header="Place Name" style={{ width: '15%' }}></Column>
           <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
           <Column field="email" header="Email" style={{ width: '15%' }}></Column>
-          <Column field="isApproved" header="Approved" style={{ width: '15%' }}></Column>
+          <Column
+            field="isApproved"
+            body={handleIsApprovedDisplay}
+            header="Approved"
+            style={{ width: '15%' }}
+          ></Column>
+          <Column
+            field="deactivatedAt"
+            body={handleActivateDisplay}
+            header="Activate"
+            style={{ width: '15%' }}
+          ></Column>
           <Column
             body={actionsBodyTemplate}
+            onClick={handleOptionsClick}
             bodyClassName="text-center"
             style={{ width: '5%' }}
           ></Column>

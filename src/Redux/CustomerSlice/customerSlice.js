@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axiosInstance from '../../Axios'
+import { axiosInstance, axiosInstanceFormData } from '../../Axios'
 const URL = '/api/v1/customers'
 
 const initialState = {
@@ -31,7 +31,7 @@ export const createCustomer = createAsyncThunk(
   'customers/createCustomer',
   async (data, thunkAPI) => {
     try {
-      const response = await axiosInstance.post(URL, data)
+      const response = await axiosInstanceFormData.post(URL, data)
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)
@@ -39,11 +39,11 @@ export const createCustomer = createAsyncThunk(
   },
 )
 
-export const updateCustomer = createAsyncThunk(
-  'customers/updateCustomer',
+export const editCustomer = createAsyncThunk(
+  'customers/editCustomer',
   async (customer, thunkAPI) => {
     try {
-      const response = await axiosInstance.put(`${URL}/${customer.get('_id')}`, customer)
+      const response = await axiosInstance.patch(`${URL}/${customer.get('id')}`, customer)
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)
@@ -171,16 +171,16 @@ const customerSlice = createSlice({
       state.error = action.payload
       state.loading = false
     },
-    [updateCustomer.pending]: (state, action) => {
+    [editCustomer.pending]: (state, action) => {
       state.loading = true
     },
-    [updateCustomer.fulfilled]: (state, action) => {
+    [editCustomer.fulfilled]: (state, action) => {
       state.customers = state.customers.map((customer) =>
-        customer._id === action.payload._id ? action.payload : customer,
+        customer._id === action.payload.id ? action.payload : customer,
       )
       state.loading = false
     },
-    [updateCustomer.rejected]: (state, action) => {
+    [editCustomer.rejected]: (state, action) => {
       state.error = action.payload
       state.loading = false
     },

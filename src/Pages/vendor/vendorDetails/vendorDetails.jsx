@@ -19,23 +19,40 @@ const VendorDetails = () => {
 
   useEffect(() => {
     getPlace()
+    // getImages()
   }, [])
+  // useEffect(() => {
+  //   getImages()
+  // }, [placeDetails])
 
   const getPlace = async () => {
     await axiosInstance
       .get(`/api/v1/vendors/${id}`)
       .then((res) => {
-        setPlaceDetails(res.data.data[0])
+        setPlaceDetails(res.data.data)
         console.log(res.data.data)
       })
       .catch((error) => console.log(error))
   }
 
+  // const getImages = async () => {
+  //   let thumbnail = await axiosInstance.get(`api/v1/images/vendors/${placeDetails.thumbnail}`)
+  //   setPlaceDetails({ ...placeDetails, thumbnail: thumbnail })
+  //   let gallery = []
+  //   placeDetails.gallery &&
+  //     placeDetails.gallery.forEach(async (imgName) => {
+  //       let image = await axiosInstance.get(`api/v1/images/vendors/${imgName}`)
+  //       gallery.push(image)
+  //     })
+  //   setPlaceDetails({ ...placeDetails, gallery: gallery })
+  //   console.log(placeDetails)
+  // }
+
   return (
     <CCard className="p-5">
       <CCardBody>
         <h5>
-          <strong>{placeDetails.placeName}</strong>
+          <strong>{placeDetails?.placeName}</strong>
         </h5>
 
         <div className="d-flex mb-4">
@@ -49,33 +66,31 @@ const VendorDetails = () => {
         <div className="d-flex justify-content-between gallery ">
           <img
             className="thumbnail m-0"
-            src={
-              'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2100&q=80'
-            }
+            src={`http://localhost:8001/api/v1/images/vendors/${placeDetails.thumbnail}`}
             alt="Thumbnail"
           />
           <div className="d-flex flex-column justify-content-between imagesColumn">
-            <img
-              className="mb-1 image"
-              src={
-                'https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1934&q=80'
-              }
-              alt="Thumbnail"
-            />
-            <img
-              className="my-1 image"
-              src={
-                'https://images.unsplash.com/photo-1495467033336-2effd8753d51?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2100&q=80'
-              }
-              alt="Thumbnail"
-            />
-            <img
-              className="mt-1 image"
-              src={
-                'https://images.unsplash.com/photo-1522735338363-cc7313be0ae0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2689&q=80'
-              }
-              alt="Thumbnail"
-            />
+            {placeDetails.gallery && (
+              <img
+                className="mb-1 image"
+                src={`http://localhost:8001/api/v1/images/vendors/${placeDetails.gallery[0]}`}
+                alt="Gallery 0"
+              />
+            )}
+            {placeDetails.gallery && (
+              <img
+                className="mb-1 image"
+                src={`http://localhost:8001/api/v1/images/vendors/${placeDetails.gallery[1]}`}
+                alt="Gallery 0"
+              />
+            )}
+            {placeDetails.gallery && (
+              <img
+                className="mb-1 image"
+                src={`http://localhost:8001/api/v1/images/vendors/${placeDetails.gallery[2]}`}
+                alt="Gallery 0"
+              />
+            )}
           </div>
         </div>
         <div className="d-flex py-5">
@@ -87,11 +102,11 @@ const VendorDetails = () => {
               <div className="col-6">
                 <small className="d-flex align-items-center mb-2">
                   <GeoAltFill className="me-2 text-primary" />
-                  Address
+                  address
                 </small>
                 <small className="d-flex align-items-center mt-2">
                   <TagFill className="me-2 text-primary" />
-                  Categpry
+                  {placeDetails.category?.[0]?.name}
                 </small>
                 <small className="d-flex align-items-center mt-2">
                   <EnvelopeAtFill className="me-2 text-primary" />
@@ -101,15 +116,15 @@ const VendorDetails = () => {
               <div className="col-6">
                 <small className="d-flex align-items-center mb-2">
                   <PersonFill className="me-2 text-primary" />
-                  {placeDetails.firstName + ' ' + placeDetails.lastName}
+                  {placeDetails?.firstName + ' ' + placeDetails?.lastName}
                 </small>
                 <small className="d-flex align-items-center mt-2">
                   <TelephoneFill className="me-2 text-primary" />
-                  {placeDetails.phoneNumber}
+                  {placeDetails?.phoneNumber}
                 </small>
               </div>
             </div>
-            <div className="description">{placeDetails.description}</div>
+            <div className="description">{placeDetails?.description}</div>
           </div>
           <div className="w-50 ms-5 ps-5">
             <h6>

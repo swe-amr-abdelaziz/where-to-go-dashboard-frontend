@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-// import axios from 'axios'
-// const URL = 'http://localhost:8001/api/v1/employees'
-import axios from './../../Axios'
-const URL = '/api/v1/employees'
+import axios from 'axios'
+const URL = 'http://localhost:8001/api/v1/employees'
+//import axios from './../../Axios'
+//const URL = '/api/v1/employees'
 
 const initialState = {
   employees: [],
@@ -13,19 +13,30 @@ const initialState = {
 
 export const getEmployees = createAsyncThunk('employees/getEmployees', async (thunkAPI) => {
   try {
-    const response = await axios.get(URL)
-    console.log(response)
+    const token = localStorage.getItem('token')
+    const response = await axios.get(URL, { headers: { Authorization: `Bearer ${token}` } })
     return response.data.data
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data)
+    if (error.response.data.message === 'UnAuthorized..!') {
+      localStorage.clear()
+      window.location.href = '/login'
+    }
+    return thunkAPI.rejectWithValue(error.response.data.message)
   }
 })
 
 export const getEmployee = createAsyncThunk('employees/getEmployee', async (id, thunkAPI) => {
   try {
-    const response = await axios.get(`${URL}/${id}`)
+    const token = localStorage.getItem('token')
+    const response = await axios.get(`${URL}/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     return response.data
   } catch (error) {
+    if (error.response.data.message === 'UnAuthorized..!') {
+      localStorage.clear()
+      window.location.href = '/login'
+    }
     return thunkAPI.rejectWithValue(error.response.data)
   }
 })
@@ -34,9 +45,16 @@ export const createEmployee = createAsyncThunk(
   'employees/createEmployee',
   async (data, thunkAPI) => {
     try {
-      const response = await axios.post(URL, data)
+      const token = localStorage.getItem('token')
+      const response = await axios.post(URL, data, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       return response.data.data
     } catch (error) {
+      if (error.response.data.message === 'UnAuthorized..!') {
+        localStorage.clear()
+        window.location.href = '/login'
+      }
       return thunkAPI.rejectWithValue(error.response.data)
     }
   },
@@ -46,9 +64,16 @@ export const updateEmployee = createAsyncThunk(
   'employees/updateEmployee',
   async (employee, thunkAPI) => {
     try {
-      const response = await axios.put(`${URL}/${employee.get('_id')}`, employee)
+      const token = localStorage.getItem('token')
+      const response = await axios.put(`${URL}/${employee.get('_id')}`, employee, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       return response.data
     } catch (error) {
+      if (error.response.data.message === 'UnAuthorized..!') {
+        localStorage.clear()
+        window.location.href = '/login'
+      }
       return thunkAPI.rejectWithValue(error.response.data)
     }
   },
@@ -56,27 +81,56 @@ export const updateEmployee = createAsyncThunk(
 
 export const deleteEmployee = createAsyncThunk('employees/deleteEmployee', async (id, thunkAPI) => {
   try {
-    const response = await axios.delete(`${URL}/${id}`)
+    const token = localStorage.getItem('token')
+    const response = await axios.delete(`${URL}/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     return response.data.oldData
   } catch (error) {
+    if (error.response.data.message === 'UnAuthorized..!') {
+      localStorage.clear()
+      window.location.href = '/login'
+    }
     return thunkAPI.rejectWithValue(error.response.data)
   }
 })
 
 export const banEmployee = createAsyncThunk('employees/banEmployee', async (id, thunkAPI) => {
   try {
-    const response = await axios.put(`${URL}/ban/${id}`)
+    const token = localStorage.getItem('token')
+    const response = await axios.put(
+      `${URL}/ban/${id}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
     return response.data
   } catch (error) {
+    if (error.response.data.message === 'UnAuthorized..!') {
+      localStorage.clear()
+      window.location.href = '/login'
+    }
     return thunkAPI.rejectWithValue(error.response.data)
   }
 })
 
 export const unbanEmployee = createAsyncThunk('employees/unbanEmployee', async (id, thunkAPI) => {
   try {
-    const response = await axios.put(`${URL}/unban/${id}`)
+    const token = localStorage.getItem('token')
+    const response = await axios.put(
+      `${URL}/unban/${id}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
     return response.data
   } catch (error) {
+    if (error.response.data.message === 'UnAuthorized..!') {
+      localStorage.clear()
+      window.location.href = '/login'
+    }
     return thunkAPI.rejectWithValue(error.response.data)
   }
 })
@@ -85,9 +139,20 @@ export const deactivateEmployee = createAsyncThunk(
   'employees/deactivateEmployee',
   async (id, thunkAPI) => {
     try {
-      const response = await axios.put(`${URL}/deactivate/${id}`)
+      const token = localStorage.getItem('token')
+      const response = await axios.put(
+        `${URL}/deactivate/${id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
       return response.data
     } catch (error) {
+      if (error.response.data.message === 'UnAuthorized..!') {
+        localStorage.clear()
+        window.location.href = '/login'
+      }
       return thunkAPI.rejectWithValue(error.response.data)
     }
   },
@@ -97,9 +162,20 @@ export const activateEmployee = createAsyncThunk(
   'employees/activateEmployee',
   async (id, thunkAPI) => {
     try {
-      const response = await axios.put(`${URL}/activate/${id}`)
+      const token = localStorage.getItem('token')
+      const response = await axios.put(
+        `${URL}/activate/${id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
       return response.data
     } catch (error) {
+      if (error.response.data.message === 'UnAuthorized..!') {
+        localStorage.clear()
+        window.location.href = '/login'
+      }
       return thunkAPI.rejectWithValue(error.response.data)
     }
   },

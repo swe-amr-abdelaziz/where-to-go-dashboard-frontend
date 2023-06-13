@@ -43,7 +43,7 @@ export const editCustomer = createAsyncThunk(
   'customers/editCustomer',
   async (customer, thunkAPI) => {
     try {
-      const response = await axiosInstance.patch(`${URL}/${customer.get('_id')}`, customer)
+      const response = await axiosInstance.patch(`${URL}/${customer.get('id')}`, customer)
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)

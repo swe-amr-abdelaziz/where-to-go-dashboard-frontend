@@ -28,8 +28,18 @@ import { useNavigate } from 'react-router-dom'
 const AppHeaderDropdown = () => {
   const navigate = useNavigate()
   const handleLogout = () => {
-    localStorage.clear()
-    navigate('/employee/login')
+    const role = localStorage.getItem('role')
+
+    if (
+      role === '72dd04b7-4d1d-4434-af60-d6804d8ec991' ||
+      role === '405ac1d7-5956-479e-9967-48da40aebb79'
+    ) {
+      localStorage.clear()
+      navigate('/employee/login')
+    } else if (role === 'af7656fd-f147-47cd-a33d-03b323d7ea9b') {
+      localStorage.clear()
+      navigate('/vendor/login')
+    }
   }
 
   return (

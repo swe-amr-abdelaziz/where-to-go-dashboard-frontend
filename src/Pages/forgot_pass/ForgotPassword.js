@@ -21,7 +21,6 @@ import 'react-toastify/dist/ReactToastify.css'
 
 const Login = () => {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
@@ -29,49 +28,37 @@ const Login = () => {
     setEmail(e.target.value)
   }
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value)
-  }
-
-  const handleLogin = async () => {
+  const handleForgotPassword = async () => {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:8001/api/v1/auth/employee/login', {
-        email,
-        password,
-      })
+      const response = await axios.post(
+        'http://localhost:8001/api/v1/auth/employee/forgotPassword',
+        { email },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': 'http://localhost:3000/',
+          },
+        },
+      )
 
       if (response.status === 200) {
-        const Admin = '72dd04b7-4d1d-4434-af60-d6804d8ec991'
-        const Employee = '405ac1d7-5956-479e-9967-48da40aebb79'
-
-        localStorage.setItem('token', response.data.token)
-        if (response.data.role === 'Admin') {
-          localStorage.setItem('role', Admin)
-        } else if (response.data.role === 'Employee') {
-          localStorage.setItem('role', Employee)
-        }
-
-        toast.success('Login succeeded!', {
+        toast.success('Check your mail!', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         })
 
-        navigate('/')
+        navigate('/employee/verifyPassword')
       }
       setLoading(false)
     } catch (error) {
-      toast.error('Login failed!', {
+      toast.error('Invalid Email!', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
       })
       setLoading(false)
     }
-  }
-
-  const handleForgotPassword = () => {
-    navigate('/employee/forgotPassword')
   }
 
   return (
@@ -83,8 +70,8 @@ const Login = () => {
               <CCard className="p-4">
                 <CCardBody>
                   <CForm>
-                    <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
+                    <h1>Forgot Password</h1>
+                    <p className="text-medium-emphasis">Search for your account</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
@@ -95,43 +82,19 @@ const Login = () => {
                         onChange={handleEmailChange}
                       />
                     </CInputGroup>
-                    <CInputGroup className="mb-4">
-                      <CInputGroupText>
-                        <CIcon icon={cilLockLocked} />
-                      </CInputGroupText>
-                      <CFormInput
-                        type="password"
-                        placeholder="Password"
-                        autoComplete="current-password"
-                        onChange={handlePasswordChange}
-                      />
-                    </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
                         <CButton
                           color="primary"
                           className="px-4"
-                          onClick={handleLogin}
+                          onClick={handleForgotPassword}
                           disabled={loading}
                         >
-                          {loading ? 'Loading...' : 'Login'}
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton onClick={handleForgotPassword} color="link" className="px-0">
-                          Forgot password?
+                          {loading ? 'Loading...' : 'Search'}
                         </CButton>
                       </CCol>
                     </CRow>
                   </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Employees Login</h2>
-                    <p>Here Admin or Employees can login to the system dashboard.</p>
-                  </div>
                 </CCardBody>
               </CCard>
             </CCardGroup>

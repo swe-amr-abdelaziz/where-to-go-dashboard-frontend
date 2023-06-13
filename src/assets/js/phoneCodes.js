@@ -150,11 +150,6 @@ const phoneCodes = [
     regex: '^\\+237\\d{8}$',
   },
   {
-    country: 'Canada',
-    code: '+1',
-    regex: '^\\+1\\d{10}$',
-  },
-  {
     country: 'Cape Verde',
     code: '+238',
     regex: '^\\+238\\d{7}$',
@@ -418,11 +413,6 @@ const phoneCodes = [
     country: 'Jordan',
     code: '+962',
     regex: '^\\+962\\d{9}$',
-  },
-  {
-    country: 'Kazakhstan',
-    code: '+7',
-    regex: '^\\+7\\d{10}$',
   },
   {
     country: 'Kenya',
@@ -695,7 +685,7 @@ const phoneCodes = [
     regex: '^\\+40\\d{9}$',
   },
   {
-    country: 'Russia',
+    country: 'Russia | Kazakhstan',
     code: '+7',
     regex: '^\\+7\\d{10}$',
   },
@@ -910,7 +900,7 @@ const phoneCodes = [
     regex: '^\\+44\\d{10}$',
   },
   {
-    country: 'United States',
+    country: 'United States | Canada',
     code: '+1',
     regex: '^\\+1\\d{10}$',
   },

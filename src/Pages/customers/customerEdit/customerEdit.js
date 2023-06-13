@@ -14,6 +14,9 @@ import {
 } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 import { editCustomer } from '../../../Redux/CustomerSlice/customerSlice'
 import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
 import phoneCodes from '../../../assets/js/phoneCodes'
@@ -48,8 +51,36 @@ const CustomerEdit = () => {
   })
 
   useEffect(() => {
+    if (!customer.address) {
+      toast.error(
+        'Please navigate to this page from options on customer list page, you will be directed there',
+        {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 5000,
+        },
+      )
+      setTimeout(() => {
+        navigate('/customers')
+      }, 7000)
+    }
     dispatch(getCountries())
-    setLocation({ country: customer.address.country })
+      .then(() => {
+        dispatch(getStates({ country: customer.address?.country }))
+      })
+      .then(() => {
+        dispatch(getCities({ country: customer.address?.country, state: customer.address?.state }))
+      })
+      .then(() => {
+        setLocation({
+          country: customer.address?.country,
+          state: customer.address?.state,
+          city: customer.address?.city,
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
     const form = document.getElementById('customerEditForm')
     form.addEventListener('keydown', handleKeyDown)
     return () => {
@@ -108,200 +139,204 @@ const CustomerEdit = () => {
   }
 
   return (
-    <CCard className="m-3 mb-5 p-4 shadow">
-      <CCardBody>
-        <CRow>
-          <CCol sm={5}>
-            <h3 id="users-list" className="card-title mb-4 mt-2">
-              Edit Customer
-            </h3>
-          </CCol>
-        </CRow>
-        <CForm
-          id="customerEditForm"
-          className="row g-3 needs-validation"
-          noValidate
-          validated={validated}
-          onSubmit={handleSubmit}
-        >
-          <CFormLabel htmlFor="firstName">Name</CFormLabel>
-          <CCol md={6} className="mt-0">
-            <CFormInput
-              type="text"
-              placeholder="First name"
-              feedbackInvalid="Enter a valid first name"
-              name="firstName"
-              id="firstName"
-              value={customer.firstName}
-              pattern={regexPatterns.firstName}
-              required
-            />
-          </CCol>
-          <CCol md={6} className="mt-0">
-            <CFormInput
-              type="text"
-              placeholder="Last name"
-              feedbackInvalid="Enter a valid last name"
-              name="lastName"
-              id="lastName"
-              value={customer.lastName}
-              pattern={regexPatterns.lastName}
-              required
-              className="mt-3 mt-md-0"
-            />
-          </CCol>
-          <CCol md={12}>
-            <CFormLabel htmlFor="email">Email</CFormLabel>
-            <CInputGroup>
-              <CInputGroupText>
-                <i className="pi pi-envelope"></i>
-              </CInputGroupText>
-              <CFormInput
-                type="email"
-                placeholder="example@xyz.com"
-                feedbackInvalid="Enter a valid email address"
-                name="email"
-                id="email"
-                value={customer.email}
-                required
-                className="input-group-custom"
-              />
-            </CInputGroup>
-          </CCol>
-          <CCol md={12}>
-            <CFormLabel htmlFor="password">Password</CFormLabel>
-            <CInputGroup>
-              <CInputGroupText>
-                <i className="pi pi-lock"></i>
-              </CInputGroupText>
-              <CFormInput
-                type="password"
-                feedbackInvalid="Enter a strong password with at least 8 characters"
-                name="password"
-                id="password"
-                pattern={regexPatterns.password}
-                className="input-group-custom"
-              />
-            </CInputGroup>
-          </CCol>
-          <CFormLabel htmlFor="street">Address</CFormLabel>
-          <CCol md={12} className="mt-0">
-            <CFormInput
-              type="text"
-              placeholder="Street"
-              name="street"
-              id="street"
-              value={customer.address.street}
-            />
-          </CCol>
-          <CCol md={6} lg={3}>
-            <CFormSelect
-              name="country"
-              id="country"
-              value={location.country}
-              onChange={handleLocationChange}
-            >
-              <option value="">Select Country</option>
-              {countries.map((country) => (
-                <option key={country.Iso3} value={country.name}>
-                  {country.name}
-                </option>
-              ))}
-            </CFormSelect>
-          </CCol>
-          <CCol md={6} lg={3}>
-            <CFormSelect
-              name="state"
-              id="state"
-              value={location.state}
-              onChange={handleLocationChange}
-            >
-              <option value="">Select State</option>
-              {states.map((state) => (
-                <option key={state.state_code} value={state.name}>
-                  {state.name}
-                </option>
-              ))}
-            </CFormSelect>
-          </CCol>
-          <CCol md={6} lg={3}>
-            <CFormSelect name="city" id="city">
-              <option value="">Select City</option>
-              {cities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
-                </option>
-              ))}
-            </CFormSelect>
-          </CCol>
-          <CCol md={6} lg={3}>
-            <CFormInput
-              type="text"
-              placeholder="Zip Code"
-              feedbackInvalid="Enter a valid zip code , eg. 12345 or 12345-6789"
-              name="zip"
-              id="zip"
-              pattern={regexPatterns.zip}
-            />
-          </CCol>
-          <CFormLabel htmlFor="phoneCode">Phone</CFormLabel>
-          <CCol md={6} className="mt-0">
-            <CFormSelect
-              name="phoneCode"
-              id="phoneCode"
-              value={phoneRegex}
-              onChange={handlePhoneInputChange}
-            >
-              {phoneCodes.map((item, index) => (
-                <option key={`code_${index}`} value={item.regex}>
-                  {`${item.country} (${item.code})`}
-                </option>
-              ))}
-            </CFormSelect>
-          </CCol>
-          <CCol md={6} className="mt-0">
-            <CInputGroup>
-              <CInputGroupText>
-                <i className="pi pi-phone"></i>
-              </CInputGroupText>
+    <>
+      <CCard className="m-3 mb-5 p-4 shadow">
+        <CCardBody>
+          <CRow>
+            <CCol sm={5}>
+              <h3 id="users-list" className="card-title mb-4 mt-2">
+                Edit Customer
+              </h3>
+            </CCol>
+          </CRow>
+          <CForm
+            id="customerEditForm"
+            className="row g-3 needs-validation"
+            noValidate
+            validated={validated}
+            onSubmit={handleSubmit}
+          >
+            <CFormLabel htmlFor="firstName">Name</CFormLabel>
+            <CCol md={6} className="mt-0">
               <CFormInput
                 type="text"
-                placeholder={`eg. ${phoneExample}`}
-                feedbackInvalid={`Enter a valid phone number (eg. ${phoneExample})`}
-                name="phoneNumber"
-                id="phoneNumber"
-                pattern={phoneRegex}
-                className="input-group-custom mt-3 mt-md-0"
+                placeholder="First name"
+                feedbackInvalid="Enter a valid first name"
+                name="firstName"
+                id="firstName"
+                value={customer.firstName}
+                pattern={regexPatterns.firstName}
+                required
               />
-            </CInputGroup>
-          </CCol>
-          <CCol md={6}>
-            <CFormInput type="date" label="Date of Birth" id="dateOfBirth" name="dateOfBirth" />
-          </CCol>
-          <CCol md={6}>
-            <CFormSelect label="Gender" name="gender" id="gender">
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </CFormSelect>
-          </CCol>
-          <CCol md={12}>
-            <CFormInput type="file" name="image" label="Image" id="image" />
-          </CCol>
-          <CCol xs={12} className="d-flex justify-content-end mt-5">
-            <CButton
-              className="bg-secondary me-3"
-              type="submit"
-              onClick={() => navigate('/customers')}
-            >
-              Back
-            </CButton>
-            <CButton className="bg-base" type="submit">
-              Submit
-            </CButton>
-          </CCol>
-        </CForm>
-      </CCardBody>
-    </CCard>
+            </CCol>
+            <CCol md={6} className="mt-0">
+              <CFormInput
+                type="text"
+                placeholder="Last name"
+                feedbackInvalid="Enter a valid last name"
+                name="lastName"
+                id="lastName"
+                value={customer.lastName}
+                pattern={regexPatterns.lastName}
+                required
+                className="mt-3 mt-md-0"
+              />
+            </CCol>
+            <CCol md={12}>
+              <CFormLabel htmlFor="email">Email</CFormLabel>
+              <CInputGroup>
+                <CInputGroupText>
+                  <i className="pi pi-envelope"></i>
+                </CInputGroupText>
+                <CFormInput
+                  type="email"
+                  placeholder="example@xyz.com"
+                  feedbackInvalid="Enter a valid email address"
+                  name="email"
+                  id="email"
+                  value={customer.email}
+                  required
+                  className="input-group-custom"
+                />
+              </CInputGroup>
+            </CCol>
+            <CCol md={12}>
+              <CFormLabel htmlFor="password">Password</CFormLabel>
+              <CInputGroup>
+                <CInputGroupText>
+                  <i className="pi pi-lock"></i>
+                </CInputGroupText>
+                <CFormInput
+                  type="password"
+                  feedbackInvalid="Enter a strong password with at least 8 characters"
+                  name="password"
+                  id="password"
+                  pattern={regexPatterns.password}
+                  className="input-group-custom"
+                />
+              </CInputGroup>
+            </CCol>
+            <CFormLabel htmlFor="street">Address</CFormLabel>
+            <CCol md={12} className="mt-0">
+              <CFormInput
+                type="text"
+                placeholder="Street"
+                name="street"
+                id="street"
+                value={customer.address?.street}
+              />
+            </CCol>
+            <CCol md={6} lg={3}>
+              <CFormSelect
+                name="country"
+                id="country"
+                value={location.country}
+                onChange={handleLocationChange}
+              >
+                <option value="">Select Country</option>
+                {countries.map((country) => (
+                  <option key={country.Iso3} value={country.name}>
+                    {country.name}
+                  </option>
+                ))}
+              </CFormSelect>
+            </CCol>
+            <CCol md={6} lg={3}>
+              <CFormSelect
+                name="state"
+                id="state"
+                value={location.state}
+                onChange={handleLocationChange}
+              >
+                <option value="">Select State</option>
+                {states.map((state) => (
+                  <option key={state.state_code} value={state.name}>
+                    {state.name}
+                  </option>
+                ))}
+              </CFormSelect>
+            </CCol>
+            <CCol md={6} lg={3}>
+              <CFormSelect name="city" id="city" value={location.city}>
+                <option value="">Select City</option>
+                {cities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </CFormSelect>
+            </CCol>
+            <CCol md={6} lg={3}>
+              <CFormInput
+                type="text"
+                placeholder="Zip Code"
+                feedbackInvalid="Enter a valid zip code , eg. 12345 or 12345-6789"
+                name="zip"
+                id="zip"
+                value={customer.address?.zip}
+                pattern={regexPatterns.zip}
+              />
+            </CCol>
+            <CFormLabel htmlFor="phoneCode">Phone</CFormLabel>
+            <CCol md={6} className="mt-0">
+              <CFormSelect
+                name="phoneCode"
+                id="phoneCode"
+                value={phoneRegex}
+                onChange={handlePhoneInputChange}
+              >
+                {phoneCodes.map((item, index) => (
+                  <option key={`code_${index}`} value={item.regex}>
+                    {`${item.country} (${item.code})`}
+                  </option>
+                ))}
+              </CFormSelect>
+            </CCol>
+            <CCol md={6} className="mt-0">
+              <CInputGroup>
+                <CInputGroupText>
+                  <i className="pi pi-phone"></i>
+                </CInputGroupText>
+                <CFormInput
+                  type="text"
+                  placeholder={`eg. ${phoneExample}`}
+                  feedbackInvalid={`Enter a valid phone number (eg. ${phoneExample})`}
+                  name="phoneNumber"
+                  id="phoneNumber"
+                  pattern={phoneRegex}
+                  className="input-group-custom mt-3 mt-md-0"
+                />
+              </CInputGroup>
+            </CCol>
+            <CCol md={6}>
+              <CFormInput type="date" label="Date of Birth" id="dateOfBirth" name="dateOfBirth" />
+            </CCol>
+            <CCol md={6}>
+              <CFormSelect label="Gender" name="gender" id="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </CFormSelect>
+            </CCol>
+            <CCol md={12}>
+              <CFormInput type="file" name="image" label="Image" id="image" />
+            </CCol>
+            <CCol xs={12} className="d-flex justify-content-end mt-5">
+              <CButton
+                className="bg-secondary me-3"
+                type="submit"
+                onClick={() => navigate('/customers')}
+              >
+                Back
+              </CButton>
+              <CButton className="bg-base" type="submit">
+                Submit
+              </CButton>
+            </CCol>
+          </CForm>
+        </CCardBody>
+      </CCard>
+      <ToastContainer></ToastContainer>
+    </>
   )
 }
 

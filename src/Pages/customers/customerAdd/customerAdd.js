@@ -14,6 +14,9 @@ import {
 } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 import { createCustomer } from '../../../Redux/CustomerSlice/customerSlice'
 import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
 import phoneCodes from '../../../assets/js/phoneCodes'
@@ -26,7 +29,6 @@ const CustomerAdd = () => {
 
   const [validated, setValidated] = useState(false)
   const [phoneExample, setPhoneExample] = useState('')
-  const [phoneRegex, setPhoneRegex] = useState(phoneCodes[49].regex)
 
   const countries = useSelector((state) => state.location.countries)
   const states = useSelector((state) => state.location.states)
@@ -44,6 +46,11 @@ const CustomerAdd = () => {
     country: '',
     state: '',
     city: '',
+  })
+
+  const [phone, setPhone] = useState({
+    code: '',
+    regex: '',
   })
 
   useEffect(() => {
@@ -71,15 +78,15 @@ const CustomerAdd = () => {
   }, [location.state])
 
   useEffect(() => {
-    const randexp = new RandExp(new RegExp(phoneRegex))
+    const randexp = new RandExp(new RegExp(phone.regex))
     setPhoneExample(randexp.gen())
-  }, [phoneRegex])
+  }, [phone.regex])
 
   const regexPatterns = {
     firstName: '^[A-Za-z]+$',
     lastName: '^[A-Za-z]+$',
-    password: '^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$',
-    zip: '^(\\d{5}(?:[-\\s]\\d{4})?)?$',
+    password: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#^])[A-Za-z\\d@$!%*?&#^]{8,}$',
+    zip: '^(?:\\d{5}(?:-\\d{4})?|)$',
   }
 
   const handleLocationChange = (event) => {
@@ -91,7 +98,21 @@ const CustomerAdd = () => {
   }
 
   const handlePhoneInputChange = (event) => {
-    setPhoneRegex(event.target.value)
+    const { code, regex } = phoneCodes[event.target.value]
+    setPhone({ code, regex })
+  }
+
+  const validateAge = (dateOfBirth) => {
+    // Get the current date
+    const today = new Date()
+
+    // Subtract 13 years from the current date
+    const dateToCompare = new Date()
+    dateToCompare.setFullYear(today.getFullYear() - 13)
+    dateToCompare.setMonth(today.getMonth(), today.getDate())
+    dateToCompare.setDate(today.getDate())
+
+    return new Date(dateOfBirth) > dateToCompare
   }
 
   const handleSubmit = (event) => {
@@ -99,202 +120,211 @@ const CustomerAdd = () => {
     event.stopPropagation()
     const form = document.getElementById('customerAddForm')
     const formData = new FormData(form)
+    setValidated(true)
 
-    if (form.checkValidity() === true) {
+    if (validateAge(formData.get('dateOfBirth'))) {
+      return toast.error('Invalid Date of Birth, customer must be at least 13 years old', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000,
+      })
+    } else if (form.checkValidity() === true) {
       dispatch(createCustomer(formData)).then((res) => {
         navigate('/customers')
       })
     }
-    setValidated(true)
   }
 
   return (
-    <CCard className="m-3 mb-5 p-4 shadow">
-      <CCardBody>
-        <CRow>
-          <CCol sm={5}>
-            <h3 id="users-list" className="card-title mb-4 mt-2">
-              Add Customer
-            </h3>
-          </CCol>
-        </CRow>
-        <CForm
-          id="customerAddForm"
-          className="row g-3 needs-validation"
-          noValidate
-          validated={validated}
-          onSubmit={handleSubmit}
-        >
-          <CFormLabel htmlFor="firstName">Name</CFormLabel>
-          <CCol md={6} className="mt-0">
-            <CFormInput
-              type="text"
-              placeholder="First name"
-              feedbackInvalid="Enter a valid first name"
-              name="firstName"
-              id="firstName"
-              pattern={regexPatterns.firstName}
-              required
-            />
-          </CCol>
-          <CCol md={6} className="mt-0">
-            <CFormInput
-              type="text"
-              placeholder="Last name"
-              feedbackInvalid="Enter a valid last name"
-              name="lastName"
-              id="lastName"
-              pattern={regexPatterns.lastName}
-              required
-              className="mt-3 mt-md-0"
-            />
-          </CCol>
-          <CCol md={12}>
-            <CFormLabel htmlFor="email">Email</CFormLabel>
-            <CInputGroup>
-              <CInputGroupText>
-                <i className="pi pi-envelope"></i>
-              </CInputGroupText>
-              <CFormInput
-                type="email"
-                placeholder="example@xyz.com"
-                feedbackInvalid="Enter a valid email address"
-                name="email"
-                id="email"
-                required
-                className="input-group-custom"
-              />
-            </CInputGroup>
-          </CCol>
-          <CCol md={12}>
-            <CFormLabel htmlFor="password">Password</CFormLabel>
-            <CInputGroup>
-              <CInputGroupText>
-                <i className="pi pi-lock"></i>
-              </CInputGroupText>
-              <CFormInput
-                type="password"
-                feedbackInvalid="Enter a strong password with at least 8 characters"
-                name="password"
-                id="password"
-                pattern={regexPatterns.password}
-                required
-                className="input-group-custom"
-              />
-            </CInputGroup>
-          </CCol>
-          <CFormLabel htmlFor="street">Address</CFormLabel>
-          <CCol md={12} className="mt-0">
-            <CFormInput type="text" placeholder="Street" name="street" id="street" />
-          </CCol>
-          <CCol md={6} lg={3}>
-            <CFormSelect
-              name="country"
-              id="country"
-              value={location.country}
-              onChange={handleLocationChange}
-            >
-              <option value="">Select Country</option>
-              {countries.map((country) => (
-                <option key={country.Iso3} value={country.name}>
-                  {country.name}
-                </option>
-              ))}
-            </CFormSelect>
-          </CCol>
-          <CCol md={6} lg={3}>
-            <CFormSelect
-              name="state"
-              id="state"
-              value={location.state}
-              onChange={handleLocationChange}
-            >
-              <option value="">Select State</option>
-              {states.map((state) => (
-                <option key={state.state_code} value={state.name}>
-                  {state.name}
-                </option>
-              ))}
-            </CFormSelect>
-          </CCol>
-          <CCol md={6} lg={3}>
-            <CFormSelect name="city" id="city">
-              <option value="">Select City</option>
-              {cities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
-                </option>
-              ))}
-            </CFormSelect>
-          </CCol>
-          <CCol md={6} lg={3}>
-            <CFormInput
-              type="text"
-              placeholder="Zip Code"
-              feedbackInvalid="Enter a valid zip code , eg. 12345 or 12345-6789"
-              name="zip"
-              id="zip"
-              pattern={regexPatterns.zip}
-            />
-          </CCol>
-          <CFormLabel htmlFor="phoneCode">Phone</CFormLabel>
-          <CCol md={6} className="mt-0">
-            <CFormSelect
-              name="phoneCode"
-              id="phoneCode"
-              value={phoneRegex}
-              onChange={handlePhoneInputChange}
-            >
-              {phoneCodes.map((item, index) => (
-                <option key={`code_${index}`} value={item.regex}>
-                  {`${item.country} (${item.code})`}
-                </option>
-              ))}
-            </CFormSelect>
-          </CCol>
-          <CCol md={6} className="mt-0">
-            <CInputGroup>
-              <CInputGroupText>
-                <i className="pi pi-phone"></i>
-              </CInputGroupText>
+    <>
+      <CCard className="m-3 mb-5 p-4 shadow">
+        <CCardBody>
+          <CRow>
+            <CCol sm={5}>
+              <h3 id="users-list" className="card-title mb-4 mt-2">
+                Add Customer
+              </h3>
+            </CCol>
+          </CRow>
+          <CForm
+            id="customerAddForm"
+            className="row g-3 needs-validation"
+            noValidate
+            validated={validated}
+            onSubmit={handleSubmit}
+          >
+            <CFormLabel htmlFor="firstName">Name</CFormLabel>
+            <CCol md={6} className="mt-0">
               <CFormInput
                 type="text"
-                placeholder={`eg. ${phoneExample}`}
-                feedbackInvalid={`Enter a valid phone number (eg. ${phoneExample})`}
-                name="phoneNumber"
-                id="phoneNumber"
-                pattern={phoneRegex}
-                className="input-group-custom mt-3 mt-md-0"
+                placeholder="First name"
+                feedbackInvalid="Enter a valid first name"
+                name="firstName"
+                id="firstName"
+                pattern={regexPatterns.firstName}
+                required
               />
-            </CInputGroup>
-          </CCol>
-          <CCol md={6}>
-            <CFormInput type="date" label="Date of Birth" id="dateOfBirth" name="dateOfBirth" />
-          </CCol>
-          <CCol md={6}>
-            <CFormSelect label="Gender" name="gender" id="gender">
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </CFormSelect>
-          </CCol>
-          <CCol md={12}>
-            <CFormInput type="file" name="image" label="Image" id="image" />
-          </CCol>
-          <CCol xs={12} className="d-flex justify-content-end mt-5">
-            <CButton
-              className="bg-secondary me-3"
-              type="submit"
-              onClick={() => navigate('/customers')}
-            >
-              Back
-            </CButton>
-            <CButton className="bg-base" type="submit">
-              Submit
-            </CButton>
-          </CCol>
-        </CForm>
-      </CCardBody>
-    </CCard>
+            </CCol>
+            <CCol md={6} className="mt-0">
+              <CFormInput
+                type="text"
+                placeholder="Last name"
+                feedbackInvalid="Enter a valid last name"
+                name="lastName"
+                id="lastName"
+                pattern={regexPatterns.lastName}
+                required
+                className="mt-3 mt-md-0"
+              />
+            </CCol>
+            <CCol md={12}>
+              <CFormLabel htmlFor="email">Email</CFormLabel>
+              <CInputGroup>
+                <CInputGroupText>
+                  <i className="pi pi-envelope"></i>
+                </CInputGroupText>
+                <CFormInput
+                  type="email"
+                  placeholder="example@xyz.com"
+                  feedbackInvalid="Enter a valid email address"
+                  name="email"
+                  id="email"
+                  required
+                  className="input-group-custom"
+                />
+              </CInputGroup>
+            </CCol>
+            <CCol md={12}>
+              <CFormLabel htmlFor="password">Password</CFormLabel>
+              <CInputGroup>
+                <CInputGroupText>
+                  <i className="pi pi-lock"></i>
+                </CInputGroupText>
+                <CFormInput
+                  type="password"
+                  feedbackInvalid="Enter a strong password with at least 8 characters"
+                  name="password"
+                  id="password"
+                  pattern={regexPatterns.password}
+                  required
+                  className="input-group-custom"
+                />
+              </CInputGroup>
+            </CCol>
+            <CFormLabel htmlFor="street">Address</CFormLabel>
+            <CCol md={12} className="mt-0">
+              <CFormInput type="text" placeholder="Street" name="street" id="street" />
+            </CCol>
+            <CCol md={6} lg={3}>
+              <CFormSelect
+                name="country"
+                id="country"
+                value={location.country}
+                onChange={handleLocationChange}
+              >
+                <option value="">Select Country</option>
+                {countries.map((country) => (
+                  <option key={country.Iso3} value={country.name}>
+                    {country.name}
+                  </option>
+                ))}
+              </CFormSelect>
+            </CCol>
+            <CCol md={6} lg={3}>
+              <CFormSelect
+                name="state"
+                id="state"
+                value={location.state}
+                onChange={handleLocationChange}
+              >
+                <option value="">Select State</option>
+                {states.map((state) => (
+                  <option key={state.state_code} value={state.name}>
+                    {state.name}
+                  </option>
+                ))}
+              </CFormSelect>
+            </CCol>
+            <CCol md={6} lg={3}>
+              <CFormSelect name="city" id="city">
+                <option value="">Select City</option>
+                {cities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </CFormSelect>
+            </CCol>
+            <CCol md={6} lg={3}>
+              <CFormInput
+                type="text"
+                placeholder="Zip Code"
+                feedbackInvalid="Enter a valid zip code , eg. 12345 or 12345-6789"
+                name="zip"
+                id="zip"
+                pattern={regexPatterns.zip}
+              />
+            </CCol>
+            <CFormLabel htmlFor="phoneCodeShown">Phone</CFormLabel>
+            <CCol md={6} className="mt-0">
+              <CFormSelect
+                name="phoneCodeShown"
+                id="phoneCodeShown"
+                onChange={handlePhoneInputChange}
+              >
+                <option value="">Select Phone Code</option>
+                {phoneCodes.map((item, index) => (
+                  <option key={`code_${index}`} value={index}>
+                    {`${item.country} (${item.code})`}
+                  </option>
+                ))}
+              </CFormSelect>
+              <CFormInput name="phoneCode" id="phoneCode" value={phone.code} hidden />
+            </CCol>
+            <CCol md={6} className="mt-0">
+              <CInputGroup>
+                <CInputGroupText>
+                  <i className="pi pi-phone"></i>
+                </CInputGroupText>
+                <CFormInput
+                  type="text"
+                  placeholder={`eg. ${phoneExample}`}
+                  feedbackInvalid={`Enter a valid phone number (eg. ${phoneExample})`}
+                  name="phoneNumber"
+                  id="phoneNumber"
+                  pattern={phone.regex}
+                  className="input-group-custom mt-3 mt-md-0"
+                />
+              </CInputGroup>
+            </CCol>
+            <CCol md={6}>
+              <CFormInput type="date" label="Date of Birth" id="dateOfBirth" name="dateOfBirth" />
+            </CCol>
+            <CCol md={6}>
+              <CFormSelect label="Gender" name="gender" id="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </CFormSelect>
+            </CCol>
+            <CCol md={12}>
+              <CFormInput type="file" name="image" label="Image" id="image" />
+            </CCol>
+            <CCol xs={12} className="d-flex justify-content-end mt-5">
+              <CButton
+                className="bg-secondary me-3"
+                type="submit"
+                onClick={() => navigate('/customers')}
+              >
+                Back
+              </CButton>
+              <CButton className="bg-base" onClick={handleSubmit}>
+                Submit
+              </CButton>
+            </CCol>
+          </CForm>
+        </CCardBody>
+      </CCard>
+      <ToastContainer></ToastContainer>
+    </>
   )
 }
 

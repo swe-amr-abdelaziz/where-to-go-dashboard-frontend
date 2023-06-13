@@ -20,14 +20,9 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 const Login = () => {
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value)
-  }
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value)
@@ -37,42 +32,26 @@ const Login = () => {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:8001/api/v1/auth/vendor/login', {
-        email,
-        password,
+      const response = await axios.put('http://localhost:8001/api/v1/auth/vendor/resetPassword', {
+        newPassword: password,
       })
 
       if (response.status === 200) {
-        const Vendor = 'af7656fd-f147-47cd-a33d-03b323d7ea9b'
-        localStorage.setItem('token', response.data.token)
-        if (response.data.role === 'Vendor') {
-          localStorage.setItem('role', Vendor)
-          navigate('/')
+        toast.success('Password Updated Successfully!', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        })
 
-          toast.success('Login succeeded!', {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-          })
-        } else {
-          navigate('/vendor/login')
-          toast.error('Login failed!', {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-          })
-        }
+        navigate('/vendor/login')
       }
       setLoading(false)
     } catch (error) {
-      toast.error('Login failed!', {
+      toast.error('Invalid Process!', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
       })
       setLoading(false)
     }
-  }
-
-  const handleForgotPassword = () => {
-    navigate('/vendor/forgotPassword')
   }
 
   return (
@@ -84,25 +63,15 @@ const Login = () => {
               <CCard className="p-4">
                 <CCardBody>
                   <CForm>
-                    <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupText>
-                        <CIcon icon={cilUser} />
-                      </CInputGroupText>
-                      <CFormInput
-                        placeholder="Email"
-                        autoComplete="email"
-                        onChange={handleEmailChange}
-                      />
-                    </CInputGroup>
+                    <h1>Reset Password</h1>
+                    <p className="text-medium-emphasis">Type new password.</p>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
                         type="password"
-                        placeholder="Password"
+                        placeholder="New Password"
                         autoComplete="current-password"
                         onChange={handlePasswordChange}
                       />
@@ -115,12 +84,7 @@ const Login = () => {
                           onClick={handleLogin}
                           disabled={loading}
                         >
-                          {loading ? 'Loading...' : 'Login'}
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton onClick={handleForgotPassword} color="link" className="px-0">
-                          Forgot password?
+                          {loading ? 'Loading...' : 'Reset'}
                         </CButton>
                       </CCol>
                     </CRow>
@@ -130,8 +94,8 @@ const Login = () => {
               <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
                 <CCardBody className="text-center">
                   <div>
-                    <h2>Vendors Login</h2>
-                    <p>Here Vendor can login to the vendor dashboard.</p>
+                    <h2>Reset Password</h2>
+                    <p>Here you can reset your new password for your account.</p>
                   </div>
                 </CCardBody>
               </CCard>

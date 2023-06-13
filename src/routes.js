@@ -78,6 +78,9 @@ const VerifyPassword = React.lazy(() => import('./Pages/forgot_pass/VerifyPasswo
 const ResetPassword = React.lazy(() => import('./Pages/forgot_pass/ResetPassword'))
 
 const VendorLogin = React.lazy(() => import('./Pages/login/VendorLogin'))
+const VendorForgotPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/ForgotPassword'))
+const VendorVerifyPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/VerifyPassword'))
+const VendorResetPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/ResetPassword'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -169,20 +172,20 @@ const routes = [
   {
     path: '/vendor/forgotPassword',
     private: false,
-    name: 'ForgotPassword',
-    element: ForgotPassword,
+    name: 'VendorForgotPassword',
+    element: VendorForgotPassword,
   },
   {
     path: '/vendor/verifyPassword',
     private: false,
-    name: 'VerifyPassword',
-    element: VerifyPassword,
+    name: 'VendorVerifyPassword',
+    element: VendorVerifyPassword,
   },
   {
     path: '/vendor/resetPassword',
     private: false,
-    name: 'ResetPassword',
-    element: ResetPassword,
+    name: 'VendorResetPassword',
+    element: VendorResetPassword,
   },
 ]
 

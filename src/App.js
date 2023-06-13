@@ -17,7 +17,6 @@ const VendorLayout = React.lazy(() => import('./layout/VendorLayout'))
 
 // Pages
 const Login = React.lazy(() => import('./Pages/login/Login'))
-const VendorLogin = React.lazy(() => import('./Pages/login/VendorLogin'))
 const ForgotPassword = React.lazy(() => import('./Pages/forgot_pass/ForgotPassword'))
 const VerifyPassword = React.lazy(() => import('./Pages/forgot_pass/VerifyPassword'))
 const ResetPassword = React.lazy(() => import('./Pages/forgot_pass/ResetPassword'))
@@ -25,6 +24,11 @@ const Register = React.lazy(() => import('./Pages/register/Register'))
 const Page404 = React.lazy(() => import('./Pages/page404/Page404'))
 const Page403 = React.lazy(() => import('./Pages/page403/Page403'))
 const Page500 = React.lazy(() => import('./Pages/page500/Page500'))
+
+const VendorLogin = React.lazy(() => import('./Pages/login/VendorLogin'))
+const VendorForgotPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/ForgotPassword'))
+const VendorVerifyPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/VerifyPassword'))
+const VendorResetPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/ResetPassword'))
 
 // Component for private routes...
 const PrivateRoute = ({ element: Component, roles, ...rest }) => {
@@ -36,9 +40,13 @@ const PrivateRoute = ({ element: Component, roles, ...rest }) => {
   const isExcludedPage =
     rest.path === '/employee/forgotPassword' ||
     rest.path === '/employee/verifyPassword' ||
-    rest.path === '/employee/resetPassword'
+    rest.path === '/employee/resetPassword' ||
+    rest.path === '/vendor/forgotPassword' ||
+    rest.path === '/vendor/verifyPassword' ||
+    rest.path === '/vendor/resetPassword'
 
-  const isPublic = rest.path === '/employee/login' || '/employee/login' || isExcludedPage
+  const isPublic =
+    rest.path === '/employee/login' || rest.path === '/vendor/login' || isExcludedPage
 
   if (!token && !isPublic) {
     return <Navigate to="/employee/login" />
@@ -89,6 +97,24 @@ const App = () => {
             element={<ResetPassword />}
           />
           <Route exact path="/vendor/login" name="Vendor Login Page" element={<VendorLogin />} />
+          <Route
+            exact
+            path="/vendor/forgotPassword"
+            name="ForgotPassword"
+            element={<VendorForgotPassword />}
+          />
+          <Route
+            exact
+            path="/vendor/verifyPassword"
+            name="VerifyPassword Page"
+            element={<VendorVerifyPassword />}
+          />
+          <Route
+            exact
+            path="/vendor/resetPassword"
+            name="ResetPassword Page"
+            element={<VendorResetPassword />}
+          />
           <Route exact path="/register" name="Register Page" element={<Register />} />
           <Route exact path="/404" name="Page 404" element={<Page404 />} />
           <Route exact path="/403" name="Page 403" element={<Page403 />} />

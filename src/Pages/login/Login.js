@@ -49,16 +49,27 @@ const Login = () => {
         localStorage.setItem('token', response.data.token)
         if (response.data.role === 'Admin') {
           localStorage.setItem('role', Admin)
+          navigate('/')
+
+          toast.success('Login succeeded!', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000,
+          })
         } else if (response.data.role === 'Employee') {
           localStorage.setItem('role', Employee)
+          navigate('/')
+
+          toast.success('Login succeeded!', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000,
+          })
+        } else {
+          navigate('/vendor/login')
+          toast.error('Login failed!', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000,
+          })
         }
-
-        toast.success('Login succeeded!', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        })
-
-        navigate('/')
       }
       setLoading(false)
     } catch (error) {

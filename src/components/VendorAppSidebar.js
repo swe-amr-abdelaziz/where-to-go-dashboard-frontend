@@ -16,7 +16,7 @@ import LogoIcon from './../assets/brand/Icon.svg'
 import LogoText from './../assets/brand/Text.svg'
 
 // sidebar nav config
-import navigationAdmin from '../_nav_employee'
+import navigationAdmin from '../_nav_vendor'
 
 const EmpAppSidebar = () => {
   const dispatch = useDispatch()

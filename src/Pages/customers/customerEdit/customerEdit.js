@@ -29,7 +29,6 @@ const CustomerEdit = () => {
 
   const [validated, setValidated] = useState(false)
   const [phoneExample, setPhoneExample] = useState('')
-  const [phoneRegex, setPhoneRegex] = useState(phoneCodes[49].regex)
   const customer = useSelector((state) => state.customer.customer)
 
   const countries = useSelector((state) => state.location.countries)
@@ -48,6 +47,11 @@ const CustomerEdit = () => {
     country: '',
     state: '',
     city: '',
+  })
+
+  const [phone, setPhone] = useState({
+    code: '',
+    regex: '',
   })
 
   useEffect(() => {
@@ -81,6 +85,12 @@ const CustomerEdit = () => {
         console.log(error)
       })
 
+    const index = getPhoneCode()
+    setPhone({
+      code: phoneCodes[index].code,
+      regex: phoneCodes[index].regex,
+    })
+
     const form = document.getElementById('customerEditForm')
     form.addEventListener('keydown', handleKeyDown)
     return () => {
@@ -101,15 +111,15 @@ const CustomerEdit = () => {
   }, [location.state])
 
   useEffect(() => {
-    const randexp = new RandExp(new RegExp(phoneRegex))
+    const randexp = new RandExp(new RegExp(phone.regex))
     setPhoneExample(randexp.gen())
-  }, [phoneRegex])
+  }, [phone.regex])
 
   const regexPatterns = {
     firstName: '^[A-Za-z]+$',
     lastName: '^[A-Za-z]+$',
-    password: '^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$',
-    zip: '^(\\d{5}(?:[-\\s]\\d{4})?)?$',
+    password: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#^])[A-Za-z\\d@$!%*?&#^]{8,}$',
+    zip: '^(?:\\d{5}(?:-\\d{4})?|)$',
   }
 
   const handleLocationChange = (event) => {
@@ -121,7 +131,27 @@ const CustomerEdit = () => {
   }
 
   const handlePhoneInputChange = (event) => {
-    setPhoneRegex(event.target.value)
+    const { code, regex } = phoneCodes[event.target.value]
+    setPhone({ code, regex })
+  }
+
+  const getPhoneCode = () => {
+    return phoneCodes.findIndex((phoneCode) => {
+      return phoneCode.code === customer.phoneCode
+    })
+  }
+
+  const validateAge = (dateOfBirth) => {
+    // Get the current date
+    const today = new Date()
+
+    // Subtract 13 years from the current date
+    const dateToCompare = new Date()
+    dateToCompare.setFullYear(today.getFullYear() - 13)
+    dateToCompare.setMonth(today.getMonth(), today.getDate())
+    dateToCompare.setDate(today.getDate())
+
+    return new Date(dateOfBirth) > dateToCompare
   }
 
   const handleSubmit = (event) => {
@@ -129,13 +159,18 @@ const CustomerEdit = () => {
     event.stopPropagation()
     const form = document.getElementById('customerEditForm')
     const formData = new FormData(form)
+    setValidated(true)
 
-    if (form.checkValidity() === true) {
+    if (validateAge(formData.get('dateOfBirth'))) {
+      return toast.error('Invalid Date of Birth, customer must be at least 13 years old', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000,
+      })
+    } else if (form.checkValidity() === true) {
       dispatch(editCustomer(formData)).then((res) => {
         navigate('/customers')
       })
     }
-    setValidated(true)
   }
 
   return (
@@ -156,6 +191,7 @@ const CustomerEdit = () => {
             validated={validated}
             onSubmit={handleSubmit}
           >
+            <CFormInput name="id" id="id" defaultValue={customer._id} hidden />
             <CFormLabel htmlFor="firstName">Name</CFormLabel>
             <CCol md={6} className="mt-0">
               <CFormInput
@@ -164,7 +200,7 @@ const CustomerEdit = () => {
                 feedbackInvalid="Enter a valid first name"
                 name="firstName"
                 id="firstName"
-                value={customer.firstName}
+                defaultValue={customer.firstName}
                 pattern={regexPatterns.firstName}
                 required
               />
@@ -176,7 +212,7 @@ const CustomerEdit = () => {
                 feedbackInvalid="Enter a valid last name"
                 name="lastName"
                 id="lastName"
-                value={customer.lastName}
+                defaultValue={customer.lastName}
                 pattern={regexPatterns.lastName}
                 required
                 className="mt-3 mt-md-0"
@@ -194,7 +230,7 @@ const CustomerEdit = () => {
                   feedbackInvalid="Enter a valid email address"
                   name="email"
                   id="email"
-                  value={customer.email}
+                  defaultValue={customer.email}
                   required
                   className="input-group-custom"
                 />
@@ -223,7 +259,7 @@ const CustomerEdit = () => {
                 placeholder="Street"
                 name="street"
                 id="street"
-                value={customer.address?.street}
+                defaultValue={customer.address?.street}
               />
             </CCol>
             <CCol md={6} lg={3}>
@@ -257,7 +293,7 @@ const CustomerEdit = () => {
               </CFormSelect>
             </CCol>
             <CCol md={6} lg={3}>
-              <CFormSelect name="city" id="city" value={location.city}>
+              <CFormSelect name="city" id="city" defaultValue={customer.address?.city}>
                 <option value="">Select City</option>
                 {cities.map((city) => (
                   <option key={city} value={city}>
@@ -273,24 +309,26 @@ const CustomerEdit = () => {
                 feedbackInvalid="Enter a valid zip code , eg. 12345 or 12345-6789"
                 name="zip"
                 id="zip"
-                value={customer.address?.zip}
+                defaultValue={customer.address?.zip}
                 pattern={regexPatterns.zip}
               />
             </CCol>
-            <CFormLabel htmlFor="phoneCode">Phone</CFormLabel>
+            <CFormLabel htmlFor="phoneCodeShown">Phone</CFormLabel>
             <CCol md={6} className="mt-0">
               <CFormSelect
-                name="phoneCode"
-                id="phoneCode"
-                value={phoneRegex}
+                name="phoneCodeShown"
+                id="phoneCodeShown"
+                defaultValue={getPhoneCode()}
                 onChange={handlePhoneInputChange}
               >
+                <option value="">Select Phone Code</option>
                 {phoneCodes.map((item, index) => (
-                  <option key={`code_${index}`} value={item.regex}>
+                  <option key={`code_${index}`} value={index}>
                     {`${item.country} (${item.code})`}
                   </option>
                 ))}
               </CFormSelect>
+              <CFormInput name="phoneCode" id="phoneCode" defaultValue={phone.code} hidden />
             </CCol>
             <CCol md={6} className="mt-0">
               <CInputGroup>
@@ -303,16 +341,23 @@ const CustomerEdit = () => {
                   feedbackInvalid={`Enter a valid phone number (eg. ${phoneExample})`}
                   name="phoneNumber"
                   id="phoneNumber"
-                  pattern={phoneRegex}
+                  defaultValue={customer.phoneNumber}
+                  pattern={phone.regex}
                   className="input-group-custom mt-3 mt-md-0"
                 />
               </CInputGroup>
             </CCol>
             <CCol md={6}>
-              <CFormInput type="date" label="Date of Birth" id="dateOfBirth" name="dateOfBirth" />
+              <CFormInput
+                type="date"
+                label="Date of Birth"
+                id="dateOfBirth"
+                name="dateOfBirth"
+                defaultValue={customer.dateOfBirth?.split('T')[0]}
+              />
             </CCol>
             <CCol md={6}>
-              <CFormSelect label="Gender" name="gender" id="gender">
+              <CFormSelect label="Gender" name="gender" id="gender" defaultValue={customer.gender}>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
               </CFormSelect>

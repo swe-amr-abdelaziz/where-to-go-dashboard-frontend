@@ -73,6 +73,14 @@ const TagAdd = React.lazy(() => import('./Pages/Tag/TagAdd/TagAdd'))
 const TagEdit = React.lazy(() => import('./Pages/Tag/TagEdit/TagEdit'))
 const rolesList = React.lazy(() => import('./Pages/roles/rolesList'))
 // const Gallery = React.lazy(() => import('./components/gallery/gallery'))
+const ForgotPassword = React.lazy(() => import('./Pages/forgot_pass/ForgotPassword'))
+const VerifyPassword = React.lazy(() => import('./Pages/forgot_pass/VerifyPassword'))
+const ResetPassword = React.lazy(() => import('./Pages/forgot_pass/ResetPassword'))
+
+const VendorLogin = React.lazy(() => import('./Pages/login/VendorLogin'))
+const VendorForgotPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/ForgotPassword'))
+const VendorVerifyPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/VerifyPassword'))
+const VendorResetPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/ResetPassword'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -142,6 +150,43 @@ const routes = [
   { path: '/roles', name: 'RolesList', element: rolesList },
   { path: '/permissions', name: 'permissionList', element: PermissionsList },
   { path: '/employee/login', private: false, name: 'EmpLogin', element: Login },
+  {
+    path: '/employee/forgotPassword',
+    private: false,
+    name: 'ForgotPassword',
+    element: ForgotPassword,
+  },
+  {
+    path: '/employee/verifyPassword',
+    private: false,
+    name: 'VerifyPassword',
+    element: VerifyPassword,
+  },
+  {
+    path: '/employee/resetPassword',
+    private: false,
+    name: 'ResetPassword',
+    element: ResetPassword,
+  },
+  { path: '/vendor/login', private: false, name: 'VendorLogin', element: VendorLogin },
+  {
+    path: '/vendor/forgotPassword',
+    private: false,
+    name: 'VendorForgotPassword',
+    element: VendorForgotPassword,
+  },
+  {
+    path: '/vendor/verifyPassword',
+    private: false,
+    name: 'VendorVerifyPassword',
+    element: VendorVerifyPassword,
+  },
+  {
+    path: '/vendor/resetPassword',
+    private: false,
+    name: 'VendorResetPassword',
+    element: VendorResetPassword,
+  },
 ]
 
 export default routes

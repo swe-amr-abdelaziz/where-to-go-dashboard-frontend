@@ -37,7 +37,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Profile',
-    to: '/profile',
+    to: '/vendor/details',
     icon: <CIcon icon={cilUser} className="me-2" />,
   },
 ]

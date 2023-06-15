@@ -45,6 +45,7 @@ const Login = () => {
       if (response.status === 200) {
         const Vendor = 'af7656fd-f147-47cd-a33d-03b323d7ea9b'
         localStorage.setItem('token', response.data.token)
+        localStorage.setItem('v_id', response.data.id)
         if (response.data.role === 'Vendor') {
           localStorage.setItem('role', Vendor)
           navigate('/')

@@ -81,6 +81,8 @@ const VendorLogin = React.lazy(() => import('./Pages/login/VendorLogin'))
 const VendorForgotPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/ForgotPassword'))
 const VendorVerifyPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/VerifyPassword'))
 const VendorResetPassword = React.lazy(() => import('./Pages/vendor_forgot_pass/ResetPassword'))
+const VendorDashboardDetails = React.lazy(() => import('./Pages/veondor_dashboard/vendorDetails'))
+const VendorDashboardEdit = React.lazy(() => import('./Pages/veondor_dashboard/vendorEdit'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -186,6 +188,18 @@ const routes = [
     private: false,
     name: 'VendorResetPassword',
     element: VendorResetPassword,
+  },
+  {
+    path: '/vendor/details',
+    private: false,
+    name: 'VendorDashboardDetails',
+    element: VendorDashboardDetails,
+  },
+  {
+    path: '/vendor/edit',
+    private: false,
+    name: 'VendorDashboardEdit',
+    element: VendorDashboardEdit,
   },
 ]
 

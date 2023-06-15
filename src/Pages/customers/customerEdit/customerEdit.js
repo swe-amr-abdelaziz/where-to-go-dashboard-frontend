@@ -358,8 +358,8 @@ const CustomerEdit = () => {
             </CCol>
             <CCol md={6}>
               <CFormSelect label="Gender" name="gender" id="gender" defaultValue={customer.gender}>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
               </CFormSelect>
             </CCol>
             <CCol md={12}>

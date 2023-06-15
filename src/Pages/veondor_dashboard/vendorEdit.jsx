@@ -112,7 +112,7 @@ const VendorEdit = () => {
     console.log(data.get('zip'))
     axiosInstance
       .patch(`/api/v1/vendors/${id}`, data)
-      .then((res) => navigate('/vendors'))
+      .then((res) => navigate('/vendor/details'))
       .catch((error) => console.log(error))
   }
 

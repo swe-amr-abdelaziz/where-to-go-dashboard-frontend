@@ -1,0 +1,15 @@
+.thumbnail {
+  width: 74%;
+}
+.imagesColumn {
+  width: 25%;
+}
+.image {
+  height: 32%;
+}
+.gallery {
+  height: 80vh;
+}
+.description {
+  min-height: 100px;
+}

@@ -39,13 +39,24 @@ import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])
-  const [selectedVendor, setSelectedVendor] = useState({})
+  const [selectedVendor, setSelectedVendor] = useState({
+    isApproved: false,
+  })
 
   const [id, setId] = useState(null)
-
   useEffect(() => {
     getVendorsList()
   }, [])
+
+  useEffect(() => {
+    let index = vendorList.findIndex((element) => element._id === selectedVendor._id)
+    setVendorList([...vendorList.slice(0, index), ...vendorList.slice(index + 1)])
+  }, [selectedVendor.isApproved])
+
+  useEffect(() => {
+    let index = vendorList.findIndex((element) => element._id === selectedVendor._id)
+    setVendorList([...vendorList.slice(0, index), selectedVendor, ...vendorList.slice(index + 1)])
+  }, [selectedVendor.deactivatedAt])
 
   const getVendorsList = async (_url) => {
     let url = _url === undefined ? '/api/v1/vendors' : _url
@@ -122,8 +133,10 @@ const VendorList = () => {
         command: (e) => {
           if (selectedVendor.deactivatedAt === null) {
             axiosInstance.patch(`/api/v1/vendors/${id}/deactivate`)
+            setSelectedVendor({ ...selectedVendor, deactivatedAt: Date.now() })
           } else {
             axiosInstance.patch(`/api/v1/vendors/${id}/restore`)
+            setSelectedVendor({ ...selectedVendor, deactivatedAt: null })
           }
         },
       },
@@ -131,7 +144,8 @@ const VendorList = () => {
         label: 'Approve',
         icon: 'pi pi-info-circle',
         command: (e) => {
-          axiosInstance.patch(`/api/v1/vendors/${id}`, { isApproved: true })
+          axiosInstance.patch(`/api/v1/vendors/${id}/activate`)
+          setSelectedVendor({ ...selectedVendor, isApproved: true })
         },
       },
     ]

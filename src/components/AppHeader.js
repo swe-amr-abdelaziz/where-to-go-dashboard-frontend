@@ -21,6 +21,7 @@ import { logo } from 'src/assets/brand/logo'
 import LogoIcon from './../assets/brand/Icon.svg'
 import LogoText from './../assets/brand/Text.svg'
 import { changeState } from '../Redux/SlidebarSlice/slidebarSlice'
+import Notification from './header/notification'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
@@ -51,21 +52,7 @@ const AppHeader = () => {
           </CNavItem> */}
         </CHeaderNav>
         <CHeaderNav>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilBell} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          {/* <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilList} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilEnvelopeOpen} size="lg" />
-            </CNavLink>
-          </CNavItem> */}
+          <Notification />
         </CHeaderNav>
         <CHeaderNav className="ms-3">
           <AppHeaderDropdown />

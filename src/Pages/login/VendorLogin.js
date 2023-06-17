@@ -37,26 +37,17 @@ const Login = () => {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:8001/api/v1/auth/employee/login', {
+      const response = await axios.post('http://localhost:8001/api/v1/auth/vendor/login', {
         email,
         password,
       })
 
       if (response.status === 200) {
-        const Admin = '72dd04b7-4d1d-4434-af60-d6804d8ec991'
-        const Employee = '405ac1d7-5956-479e-9967-48da40aebb79'
-
+        const Vendor = 'af7656fd-f147-47cd-a33d-03b323d7ea9b'
         localStorage.setItem('token', response.data.token)
-        if (response.data.role === 'Admin') {
-          localStorage.setItem('role', Admin)
-          navigate('/')
-
-          toast.success('Login succeeded!', {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-          })
-        } else if (response.data.role === 'Employee') {
-          localStorage.setItem('role', Employee)
+        localStorage.setItem('v_id', response.data.id)
+        if (response.data.role === 'Vendor') {
+          localStorage.setItem('role', Vendor)
           navigate('/')
 
           toast.success('Login succeeded!', {
@@ -82,7 +73,7 @@ const Login = () => {
   }
 
   const handleForgotPassword = () => {
-    navigate('/employee/forgotPassword')
+    navigate('/vendor/forgotPassword')
   }
 
   return (
@@ -140,8 +131,8 @@ const Login = () => {
               <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
                 <CCardBody className="text-center">
                   <div>
-                    <h2>Employees Login</h2>
-                    <p>Here Admin or Employees can login to the system dashboard.</p>
+                    <h2>Vendors Login</h2>
+                    <p>Here Vendor can login to the vendor dashboard.</p>
                   </div>
                 </CCardBody>
               </CCard>

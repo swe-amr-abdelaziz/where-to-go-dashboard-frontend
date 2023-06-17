@@ -20,14 +20,9 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 const Login = () => {
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value)
-  }
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value)
@@ -37,52 +32,26 @@ const Login = () => {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:8001/api/v1/auth/employee/login', {
-        email,
-        password,
+      const response = await axios.put('http://localhost:8001/api/v1/auth/employee/resetPassword', {
+        newPassword: password,
       })
 
       if (response.status === 200) {
-        const Admin = '72dd04b7-4d1d-4434-af60-d6804d8ec991'
-        const Employee = '405ac1d7-5956-479e-9967-48da40aebb79'
+        toast.success('Password Updated Successfully!', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        })
 
-        localStorage.setItem('token', response.data.token)
-        if (response.data.role === 'Admin') {
-          localStorage.setItem('role', Admin)
-          navigate('/')
-
-          toast.success('Login succeeded!', {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-          })
-        } else if (response.data.role === 'Employee') {
-          localStorage.setItem('role', Employee)
-          navigate('/')
-
-          toast.success('Login succeeded!', {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-          })
-        } else {
-          navigate('/vendor/login')
-          toast.error('Login failed!', {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-          })
-        }
+        navigate('/employee/login')
       }
       setLoading(false)
     } catch (error) {
-      toast.error('Login failed!', {
+      toast.error('Invalid Process!', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
       })
       setLoading(false)
     }
-  }
-
-  const handleForgotPassword = () => {
-    navigate('/employee/forgotPassword')
   }
 
   return (
@@ -94,25 +63,15 @@ const Login = () => {
               <CCard className="p-4">
                 <CCardBody>
                   <CForm>
-                    <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupText>
-                        <CIcon icon={cilUser} />
-                      </CInputGroupText>
-                      <CFormInput
-                        placeholder="Email"
-                        autoComplete="email"
-                        onChange={handleEmailChange}
-                      />
-                    </CInputGroup>
+                    <h1>Reset Password</h1>
+                    <p className="text-medium-emphasis">Type new password.</p>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
                         type="password"
-                        placeholder="Password"
+                        placeholder="New Password"
                         autoComplete="current-password"
                         onChange={handlePasswordChange}
                       />
@@ -125,12 +84,7 @@ const Login = () => {
                           onClick={handleLogin}
                           disabled={loading}
                         >
-                          {loading ? 'Loading...' : 'Login'}
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton onClick={handleForgotPassword} color="link" className="px-0">
-                          Forgot password?
+                          {loading ? 'Loading...' : 'Reset'}
                         </CButton>
                       </CCol>
                     </CRow>
@@ -140,8 +94,8 @@ const Login = () => {
               <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
                 <CCardBody className="text-center">
                   <div>
-                    <h2>Employees Login</h2>
-                    <p>Here Admin or Employees can login to the system dashboard.</p>
+                    <h2>Reset Password</h2>
+                    <p>Here you can reset your new password for your account.</p>
                   </div>
                 </CCardBody>
               </CCard>

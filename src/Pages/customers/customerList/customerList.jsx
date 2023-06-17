@@ -148,6 +148,11 @@ const CustomerList = () => {
     setDetailsVisible(true)
   }
 
+  const handleEditCustomer = async () => {
+    await dispatch(getCustomer(selectedCustomer.id))
+    navigate('/customers/edit')
+  }
+
   const handleBanCustomer = async () => {
     if (!selectedCustomer.bannedAt) {
       dispatch(banCustomer(selectedCustomer.id))
@@ -210,9 +215,7 @@ const CustomerList = () => {
       {
         label: 'Edit',
         icon: 'pi pi-pencil',
-        command: (e) => {
-          navigate('/customers/edit')
-        },
+        command: (e) => handleEditCustomer(),
       },
       {
         label: selectedCustomer.deletedAt ? 'Delete Forever' : 'Soft Delete',

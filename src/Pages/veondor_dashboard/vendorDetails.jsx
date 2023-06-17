@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axiosInstance from 'src/Axios'
 import ReactStars from 'react-rating-stars-component'
-import { CCard, CCardBody } from '@coreui/react'
+import { CCard, CCardBody, CButton } from '@coreui/react'
 import './vendorDetails.css'
 import {
   GeoAltFill,
@@ -10,11 +10,12 @@ import {
   TelephoneFill,
   EnvelopeAtFill,
   BookmarkCheckFill,
+  PencilSquare,
 } from 'react-bootstrap-icons'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 
 const VendorDetails = () => {
-  const { id } = useParams()
+  const id = localStorage.getItem('v_id')
   const [placeDetails, setPlaceDetails] = useState({})
 
   useEffect(() => {
@@ -50,6 +51,12 @@ const VendorDetails = () => {
 
   return (
     <CCard className="p-5">
+      <Link to="/vendor/edit">
+        <CButton className="me-2 bg-base d-flex align-items-center">
+          <PencilSquare className="me-1" />
+          Edit Profile Data
+        </CButton>
+      </Link>
       <CCardBody>
         <h5>
           <strong>{placeDetails?.placeName}</strong>

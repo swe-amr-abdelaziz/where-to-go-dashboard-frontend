@@ -3,6 +3,9 @@ import { BrowserRouter, Route, Routes, Navigate, Redirect } from 'react-router-d
 import 'primeicons/primeicons.css'
 import './scss/style.scss'
 import PropTypes from 'prop-types'
+import { io } from 'socket.io-client'
+import { useDispatch } from 'react-redux'
+import { addNotification } from './Redux/NotificationSlice/NotificationSlice'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -73,6 +76,23 @@ PrivateRoute.propTypes = {
 }
 
 const App = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const socket = io('http://localhost:8001')
+
+    socket.on('connect', () => {
+      console.log('connected', socket.id)
+    })
+    socket.on('message', (data) => {
+      dispatch(addNotification(data))
+    })
+
+    socket.on('disconnect', () => {
+      console.log('disconnected')
+    })
+  }, [])
+
   return (
     <BrowserRouter>
       <Suspense fallback={loading}>

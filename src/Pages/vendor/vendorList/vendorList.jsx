@@ -70,6 +70,7 @@ const VendorList = () => {
         console.log(error)
       })
   }
+
   const handleNavigation = (event) => {
     let currentTab = event.target
 

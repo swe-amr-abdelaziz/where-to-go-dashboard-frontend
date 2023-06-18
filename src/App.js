@@ -4,8 +4,14 @@ import 'primeicons/primeicons.css'
 import './scss/style.scss'
 import PropTypes from 'prop-types'
 import { io } from 'socket.io-client'
-import { useDispatch } from 'react-redux'
-import { addNotification } from './Redux/NotificationSlice/NotificationSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { changeRole, getNotifications } from './Redux/NotificationSlice/NotificationSlice'
+import {
+  getCustomers,
+  getNewCustomers,
+  getPlaces,
+  getVendors,
+} from './Redux/StatisticsSlice/statisticsSlice'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -77,21 +83,37 @@ PrivateRoute.propTypes = {
 
 const App = () => {
   const dispatch = useDispatch()
+  const logedIn = useSelector((state) => state.notification.role)
 
   useEffect(() => {
+    dispatch(getCustomers())
+    dispatch(getVendors())
+    dispatch(getPlaces())
+    dispatch(getNewCustomers())
+  }, [])
+
+  useEffect(() => {
+    if (logedIn === '' && localStorage.getItem('token') !== null) {
+      if (localStorage.getItem('v_id') !== null) {
+        dispatch(changeRole('Vendor'))
+      } else {
+        dispatch(changeRole('Employee'))
+      }
+    }
+
     const socket = io('http://localhost:8001')
 
     socket.on('connect', () => {
       console.log('connected', socket.id)
     })
-    socket.on('message', (data) => {
-      dispatch(addNotification(data))
+    socket.on('changeInVendorTable', (data) => {
+      dispatch(getNotifications())
     })
 
     socket.on('disconnect', () => {
       console.log('disconnected')
     })
-  }, [])
+  }, [logedIn])
 
   return (
     <BrowserRouter>

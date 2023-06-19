@@ -39,7 +39,9 @@ const Notification = () => {
   const [notificationCount, setNotificationCount] = useState(0)
 
   useEffect(() => {
-    dispatch(getNotifications())
+    if (logedInUser === 'Employee') {
+      dispatch(getNotifications())
+    }
   }, [logedInUser])
 
   useEffect(() => {
@@ -53,29 +55,37 @@ const Notification = () => {
   }, [notification])
 
   return (
-    <CDropdown variant="nav-item">
-      <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
-        {notifications.length > 0 ? (
-          <>
-            <FontAwesomeIcon icon={faBell} size={'lg'} color={'red'} />
-            <CBadge color="info" className="ms-2">
-              {notificationCount}
-            </CBadge>
-          </>
-        ) : (
-          <FontAwesomeIcon icon={faBell} size={'lg'} />
-        )}
-      </CDropdownToggle>
-      <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-light fw-semibold py-2">Vendors To Approve</CDropdownHeader>
-        <CDropdownItem onClick={() => navigate('/vendors')} href="#">
-          New Vendors
-          <CBadge color="info" className="ms-2">
-            {notificationCount}
-          </CBadge>
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
+    <>
+      {logedInUser === 'Employee' ? (
+        <CDropdown variant="nav-item">
+          <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
+            {notifications.length > 0 ? (
+              <>
+                <FontAwesomeIcon icon={faBell} size={'lg'} color={'red'} />
+                <CBadge color="info" className="ms-2">
+                  {notificationCount}
+                </CBadge>
+              </>
+            ) : (
+              <FontAwesomeIcon icon={faBell} size={'lg'} />
+            )}
+          </CDropdownToggle>
+          <CDropdownMenu className="pt-0" placement="bottom-end">
+            <CDropdownHeader className="bg-light fw-semibold py-2">
+              Vendors To Approve
+            </CDropdownHeader>
+            <CDropdownItem onClick={() => navigate('/vendors')} href="#">
+              New Vendors
+              <CBadge color="info" className="ms-2">
+                {notificationCount}
+              </CBadge>
+            </CDropdownItem>
+          </CDropdownMenu>
+        </CDropdown>
+      ) : (
+        <></>
+      )}
+    </>
   )
 }
 

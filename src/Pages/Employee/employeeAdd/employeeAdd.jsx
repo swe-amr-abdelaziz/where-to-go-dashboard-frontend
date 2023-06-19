@@ -23,8 +23,63 @@ const EmployeeAdd = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [validated, setValidated] = useState(false)
+  const [validationFromBackEnd, setValidationFromBackEnd] = useState({
+    name: {
+      notValid: false,
+      msg: 'Please Enter Owner Last Name',
+    },
+    email: {
+      notValid: false,
+      msg: 'Please Provide Email',
+    },
+    password: {
+      notValid: false,
+      msg: 'Please Provide password',
+    },
+    salary: {
+      notValid: false,
+      msg: 'Please Provide Salary',
+    },
+    gender: {
+      notValid: false,
+      msg: 'Please Provide Gender',
+    },
+    role: {
+      notValid: false,
+      msg: 'Please Provide role',
+    },
+    country: {
+      notValid: false,
+      msg: 'Please Enter Place Country',
+    },
+    city: {
+      notValid: false,
+      msg: 'Please Enter Place City',
+    },
+    street: {
+      notValid: false,
+      msg: 'Please Enter Place Street',
+    },
+    phoneNumer: {
+      notValid: false,
+      msg: 'Please Provide Thumbnail Image For The Place',
+    },
+    dateOfBirth: {
+      notValid: false,
+      msg: 'Please Choose Date Of Birth',
+    },
+    hireDate: {
+      notValid: false,
+      msg: 'Please Choose Hiring Date',
+    },
+    image: {
+      notValid: false,
+      msg: 'Please Provide Image',
+    },
+  })
   const handleSubmit = (event) => {
     const form = event.currentTarget
+
     if (form.checkValidity() === false) {
       event.preventDefault()
       event.stopPropagation()
@@ -36,8 +91,93 @@ const EmployeeAdd = () => {
       const data = new FormData(event.target)
       console.log(data.get('image'))
       dispatch(createEmployee(data)).then((res) => {
-        if (res.payload.address) {
+        console.log(res.payload.errors)
+        if (!res.payload.errors) {
           navigate('/employees')
+        } else if (res.payload.errors) {
+          const errors = res.payload.errors
+          let tempError = {}
+          errors.forEach((error) => {
+            if (error.path === 'name') {
+              tempError.name = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'email') {
+              tempError.email = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'password') {
+              tempError.password = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'salary') {
+              tempError.salary = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'gender') {
+              tempError.gender = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'role') {
+              tempError.role = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'country') {
+              tempError.country = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'city') {
+              tempError.city = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'street') {
+              tempError.street = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'phoneNumber') {
+              tempError.phoneNumber = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'dateOfBirth') {
+              tempError.dateOfBirth = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'hireDate') {
+              tempError.hireDate = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'image') {
+              tempError.image = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+          })
+          setValidationFromBackEnd(tempError)
         }
       })
     }
@@ -60,7 +200,7 @@ const EmployeeAdd = () => {
         <CForm
           className="row g-3 needs-validation"
           noValidate
-          validated={validated}
+          validated={false}
           onSubmit={handleSubmit}
         >
           <CCol md={4}>
@@ -69,6 +209,8 @@ const EmployeeAdd = () => {
               feedbackValid="Looks good!"
               id="validationCustom01"
               label="Name"
+              invalid={validationFromBackEnd.name?.notValid}
+              feedbackInvalid={validationFromBackEnd.name?.msg || 'Please Enter Your Name '}
               name={'name'}
               required
             />
@@ -77,6 +219,8 @@ const EmployeeAdd = () => {
             <CFormInput
               type="email"
               feedbackValid="Looks good!"
+              invalid={validationFromBackEnd.email?.notValid}
+              feedbackInvalid={validationFromBackEnd.email?.msg || 'Please Provide Email '}
               id="validationCustom02"
               label="Email"
               name={'email'}
@@ -88,6 +232,8 @@ const EmployeeAdd = () => {
             <CInputGroup className="has-validation">
               <CFormInput
                 type="password"
+                invalid={validationFromBackEnd.password?.notValid}
+                feedbackInvalid={validationFromBackEnd.password?.msg || 'Please Provide Password '}
                 aria-describedby="inputGroupPrependFeedback"
                 feedbackValid="Please choose a username."
                 id="validationCustomUsername"
@@ -100,8 +246,9 @@ const EmployeeAdd = () => {
             <CFormInput
               type="number"
               aria-describedby="validationCustom03Feedback"
-              feedbackInvalid="Please provide a valid salary."
               id="validationCustom03"
+              invalid={validationFromBackEnd.salary?.notValid}
+              feedbackInvalid={validationFromBackEnd.salary?.msg || 'Please Provide Salary '}
               label="Salary"
               name={'salary'}
               required
@@ -110,9 +257,10 @@ const EmployeeAdd = () => {
           <CCol md={4}>
             <CFormSelect
               aria-describedby="validationCustom04Feedback"
-              feedbackInvalid="Please select a valid gender."
               id="validationCustom04"
               label="Gender"
+              invalid={validationFromBackEnd.gender?.notValid}
+              feedbackInvalid={validationFromBackEnd.gender?.msg || 'Please Choose Gender '}
               name={'gender'}
               required
             >
@@ -125,10 +273,11 @@ const EmployeeAdd = () => {
           <CCol md={4}>
             <CFormSelect
               aria-describedby="validationCustom04Feedback"
-              feedbackInvalid="Please select a valid role."
               id="validationCustom04"
               label="Role"
               name={'role'}
+              invalid={validationFromBackEnd.role?.notValid}
+              feedbackInvalid={validationFromBackEnd.role?.msg || 'Please Provide Role '}
               required
             >
               <option selected value={'Employee'}>
@@ -141,10 +290,11 @@ const EmployeeAdd = () => {
             <CFormInput
               type="text"
               aria-describedby="validationCustom03Feedback"
-              feedbackInvalid="Please provide a valid Country."
               id="validationCustom03"
               label="Country"
               name={'country'}
+              invalid={validationFromBackEnd.country?.notValid}
+              feedbackInvalid={validationFromBackEnd.country?.msg || 'Please Provide Country '}
               required
             />
           </CCol>
@@ -152,9 +302,10 @@ const EmployeeAdd = () => {
             <CFormInput
               type="text"
               aria-describedby="validationCustom03Feedback"
-              feedbackInvalid="Please provide a valid city."
               id="validationCustom03"
               label="City"
+              invalid={validationFromBackEnd.city?.notValid}
+              feedbackInvalid={validationFromBackEnd.city?.msg || 'Please Provide City '}
               name={'city'}
               required
             />
@@ -163,7 +314,8 @@ const EmployeeAdd = () => {
             <CFormInput
               type="text"
               aria-describedby="validationCustom05Feedback"
-              feedbackInvalid="Please provide a valid street."
+              invalid={validationFromBackEnd.street?.notValid}
+              feedbackInvalid={validationFromBackEnd.street?.msg || 'Please Provide Street '}
               id="validationCustom05"
               label="Street"
               name={'street'}
@@ -174,9 +326,12 @@ const EmployeeAdd = () => {
             <CFormInput
               type="number"
               aria-describedby="validationCustom05Feedback"
-              feedbackInvalid="Please provide a valid phone."
               id="validationCustom05"
               label="Phone"
+              invalid={validationFromBackEnd.phoneNumer?.notValid}
+              feedbackInvalid={
+                validationFromBackEnd.phoneNumer?.msg || 'Please Provide Phone Number '
+              }
               name={'phoneNumber'}
               required
             />
@@ -185,9 +340,12 @@ const EmployeeAdd = () => {
             <CFormInput
               type="date"
               aria-describedby="validationCustom05Feedback"
-              feedbackInvalid="Please provide a valid date of birth."
               id="validationCustom05"
               label="Date of Birth"
+              invalid={validationFromBackEnd.dateOfBirth?.notValid}
+              feedbackInvalid={
+                validationFromBackEnd.dateOfBirth?.msg || 'Please Provide Date Of Birth '
+              }
               name={'dateOfBirth'}
               required
             />
@@ -196,7 +354,8 @@ const EmployeeAdd = () => {
             <CFormInput
               type="date"
               aria-describedby="validationCustom05Feedback"
-              feedbackInvalid="Please provide a valid date of birth."
+              invalid={validationFromBackEnd.hireDate?.notValid}
+              feedbackInvalid={validationFromBackEnd.hireDate?.msg || 'Please Provide Hire Date '}
               id="validationCustom05"
               label="Hire Date"
               name={'hireDate'}
@@ -207,9 +366,10 @@ const EmployeeAdd = () => {
             <CFormInput
               type="file"
               aria-describedby="validationCustom05Feedback"
-              feedbackInvalid="Please provide a valid image."
               id="validationCustom05"
               label="image"
+              invalid={validationFromBackEnd.image?.notValid}
+              feedbackInvalid={validationFromBackEnd.image?.msg || 'Please Provide Image '}
               name={'image'}
               required
             />

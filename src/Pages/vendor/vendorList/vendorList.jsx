@@ -49,11 +49,14 @@ const VendorList = () => {
     getVendorsList()
   }, [])
 
+  // useEffect(() => {
+  //   let index = vendorList.findIndex((element) => element._id === selectedVendor._id)
+  //   setVendorList([...vendorList.slice(0, index), ...vendorList.slice(index + 1)])
+  // }, [selectedVendor.isApproved && currentTab === 'Not Approved'])
+
   useEffect(() => {
-    if (currentTab === 'Not Approved') {
-      let index = vendorList.findIndex((element) => element._id === selectedVendor._id)
-      setVendorList([...vendorList.slice(0, index), ...vendorList.slice(index + 1)])
-    }
+    let index = vendorList.findIndex((element) => element._id === selectedVendor._id)
+    setVendorList([...vendorList.slice(0, index), selectedVendor, ...vendorList.slice(index + 1)])
   }, [selectedVendor.isApproved])
 
   useEffect(() => {

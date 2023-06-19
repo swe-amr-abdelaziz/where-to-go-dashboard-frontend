@@ -21,11 +21,15 @@ import 'react-toastify/dist/ReactToastify.css'
 
 const Login = () => {
   const [password, setPassword] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value)
+  }
+  const handlePasswordConfirmChange = (e) => {
+    setPasswordConfirm(e.target.value)
   }
 
   const handleLogin = async () => {
@@ -33,7 +37,8 @@ const Login = () => {
 
     try {
       const response = await axios.put('http://localhost:8001/api/v1/auth/vendor/resetPassword', {
-        newPassword: password,
+        password: password,
+        passwordConfirm: passwordConfirm,
       })
 
       if (response.status === 200) {
@@ -74,6 +79,17 @@ const Login = () => {
                         placeholder="New Password"
                         autoComplete="current-password"
                         onChange={handlePasswordChange}
+                      />
+                    </CInputGroup>
+                    <CInputGroup className="mb-4">
+                      <CInputGroupText>
+                        <CIcon icon={cilLockLocked} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="password"
+                        placeholder="Confirm Password"
+                        autoComplete="current-password"
+                        onChange={handlePasswordConfirmChange}
                       />
                     </CInputGroup>
                     <CRow>

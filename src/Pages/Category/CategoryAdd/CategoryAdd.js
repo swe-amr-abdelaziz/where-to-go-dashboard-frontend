@@ -7,7 +7,12 @@ const CategoryAdd = () => {
   const navigate = useNavigate()
   const [validated, setValidated] = useState(false)
   const [categoryObject, setCategoryObject] = useState(new FormData())
-
+  const [validationFromBackEnd, setValidationFromBackEnd] = useState({
+    name: {
+      notValid: false,
+      msg: 'Please Provide Category Name',
+    },
+  })
   const handleChange = (e) => {
     setCategoryObject({ [e.target.name]: e.target.value })
   }
@@ -26,7 +31,16 @@ const CategoryAdd = () => {
         .then((res) => {
           navigate(`/categories`)
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          let nameErrorMsg = error.response.data.errors[0].msg
+          setValidationFromBackEnd({
+            ...validationFromBackEnd,
+            name: {
+              notValid: true,
+              msg: nameErrorMsg,
+            },
+          })
+        })
     }
   }
 
@@ -46,8 +60,9 @@ const CategoryAdd = () => {
               <CFormInput
                 type="text"
                 placeholder="Category Name"
-                feedbackInvalid="Please enter Category Name"
                 name="name"
+                feedbackInvalid={validationFromBackEnd.name.msg || 'Please Provide Category Name'}
+                invalid={validationFromBackEnd.name.notValid}
                 onChange={handleChange}
                 required
               />

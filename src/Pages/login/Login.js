@@ -18,8 +18,11 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useDispatch } from 'react-redux'
+import { changeRole } from '../../Redux/NotificationSlice/NotificationSlice'
 
 const Login = () => {
+  const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -50,6 +53,7 @@ const Login = () => {
         if (response.data.role === 'Admin') {
           localStorage.setItem('role', Admin)
           navigate('/')
+          dispatch(changeRole('Employee'))
 
           toast.success('Login succeeded!', {
             position: toast.POSITION.TOP_RIGHT,
@@ -58,6 +62,7 @@ const Login = () => {
         } else if (response.data.role === 'Employee') {
           localStorage.setItem('role', Employee)
           navigate('/')
+          dispatch(changeRole('Employee'))
 
           toast.success('Login succeeded!', {
             position: toast.POSITION.TOP_RIGHT,

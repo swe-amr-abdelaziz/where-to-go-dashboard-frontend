@@ -1,23 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  CCard,
-  CCardBody,
-  CTable,
-  CTableHead,
-  CTableRow,
-  CTableHeaderCell,
-  CTableBody,
-  CTableDataCell,
-  CButton,
-  CRow,
-  CFormInput,
-} from '@coreui/react'
+import { CCard, CCardBody, CButton, CRow, CFormInput } from '@coreui/react'
+import { Column } from 'primereact/column'
+import { Menu } from 'primereact/menu'
+import { Button } from 'primereact/button'
+import { DataTable } from 'primereact/datatable'
 import axiosInstance from 'src/Axios'
-import { PlusCircleFill, ThreeDotsVertical, PencilSquare, Trash } from 'react-bootstrap-icons'
+import { PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons'
 
 const CategoryList = () => {
   const [categoryList, setCategoryList] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const menu = useRef(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -50,6 +44,49 @@ const CategoryList = () => {
     }
   }
 
+  const actionsBodyTemplate = (rowData) => {
+    const _model = [
+      {
+        label: 'Details',
+        icon: 'pi pi-info-circle',
+        command: (e) => {
+          handleShowCategoryDetails(selectedCategory._id)
+        },
+      },
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: (e) => {
+          handleEditCategory(selectedCategory._id)
+        },
+      },
+      {
+        label: 'Delete',
+        icon: 'pi pi-times',
+        command: (e) => {
+          handleDeleteCategory(selectedCategory._id)
+        },
+      },
+    ]
+
+    return (
+      <>
+        <Menu model={_model} popup ref={menu} id={`actions_${rowData.id}`} />
+        <Button
+          label={<ThreeDotsVertical />}
+          icon=""
+          className="mr-2 three-dots"
+          onClick={(event) => {
+            setSelectedCategory(rowData)
+            menu.current.toggle(event)
+          }}
+          aria-controls={`actions_${rowData.id}`}
+          aria-haspopup
+        />
+      </>
+    )
+  }
+
   return (
     <CCard className="m-3 mb-5 p-4 shadow">
       <CCardBody>
@@ -68,46 +105,20 @@ const CategoryList = () => {
             </div>
           </div>
         </CRow>
-        <CTable striped hover>
-          <CTableHead>
-            <CTableRow>
-              <CTableHeaderCell scope="col">Name</CTableHeaderCell>
-              <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
-            </CTableRow>
-          </CTableHead>
-          <CTableBody>
-            {categoryList.map((category) => (
-              <CTableRow key={category._id}>
-                <CTableDataCell>{category.name}</CTableDataCell>
-                <CTableDataCell>
-                  <CButton
-                    className="me-2"
-                    color="primary"
-                    size="sm"
-                    onClick={() => handleShowCategoryDetails(category._id)}
-                  >
-                    Show Details
-                  </CButton>
-                  <CButton
-                    className="me-2"
-                    color="primary"
-                    size="sm"
-                    onClick={() => handleEditCategory(category._id)}
-                  >
-                    <PencilSquare />
-                  </CButton>
-                  <CButton
-                    color="danger"
-                    size="sm"
-                    onClick={() => handleDeleteCategory(category._id)}
-                  >
-                    <Trash />
-                  </CButton>
-                </CTableDataCell>
-              </CTableRow>
-            ))}
-          </CTableBody>
-        </CTable>
+        <DataTable
+          value={categoryList}
+          paginator
+          rows={10}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          tableStyle={{ minWidth: '50rem' }}
+        >
+          <Column field="name" header="Name" style={{ width: '15%' }}></Column>
+          <Column
+            body={actionsBodyTemplate}
+            bodyClassName="text-center"
+            style={{ width: '5%' }}
+          ></Column>
+        </DataTable>
       </CCardBody>
     </CCard>
   )

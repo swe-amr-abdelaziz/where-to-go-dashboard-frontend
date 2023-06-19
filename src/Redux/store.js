@@ -6,6 +6,7 @@ import rolesReducer from './RolesSlice/rolesSlice'
 import permissionsReducer from './PermissionsSlice/permissionsSlice'
 import locationReducer from './LocationSlice/locationSlice'
 import notificationSlice from './NotificationSlice/NotificationSlice'
+import statisticsSlice from './StatisticsSlice/statisticsSlice'
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     permissions: permissionsReducer,
     location: locationReducer,
     notification: notificationSlice,
+    statistics: statisticsSlice,
   },
 })
 

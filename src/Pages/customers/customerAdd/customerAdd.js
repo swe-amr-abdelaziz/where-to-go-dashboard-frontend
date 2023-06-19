@@ -27,21 +27,6 @@ const CustomerAdd = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const [validated, setValidated] = useState(false)
-  const [phoneExample, setPhoneExample] = useState('')
-
-  const countries = useSelector((state) => state.location.countries)
-  const states = useSelector((state) => state.location.states)
-  const cities = useSelector((state) => state.location.cities)
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      event.stopPropagation()
-      handleSubmit(event)
-    }
-  }
-
   const [validationFromBackEnd, setValidationFromBackEnd] = useState({
     firstName: {
       notValid: false,
@@ -96,6 +81,22 @@ const CustomerAdd = () => {
       msg: 'Please Provide Image',
     },
   })
+
+  const [validated, setValidated] = useState(false)
+  const [phoneExample, setPhoneExample] = useState('')
+
+  const countries = useSelector((state) => state.location.countries)
+  const states = useSelector((state) => state.location.states)
+  const cities = useSelector((state) => state.location.cities)
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      event.stopPropagation()
+      handleSubmit(event)
+    }
+  }
+
   const [location, setLocation] = useState({
     country: '',
     state: '',
@@ -175,101 +176,104 @@ const CustomerAdd = () => {
     const form = document.getElementById('customerAddForm')
     const formData = new FormData(form)
     setValidated(true)
-    dispatch(createCustomer(formData)).then((res) => {
-      // navigate('/customers')
-      if (res.payload.errors) {
-        const errors = res.payload.errors
-        let tempError = {}
-        errors.forEach((error) => {
-          if (error.path === 'firstName') {
-            tempError.firstName = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'lastName') {
-            tempError.lastName = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'email') {
-            tempError.email = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'password') {
-            tempError.password = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'street') {
-            tempError.street = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'country') {
-            tempError.country = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'state') {
-            tempError.state = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'city') {
-            tempError.city = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'zip') {
-            tempError.zip = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'phoneNumber') {
-            tempError.phoneNumber = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'dateOfBirth') {
-            tempError.dateOfBirth = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'gender') {
-            tempError.gender = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-          if (error.path === 'image') {
-            tempError.thumbnail = {
-              notValid: true,
-              msg: error.msg,
-            }
-          }
-        })
-        setValidationFromBackEnd(tempError)
-        console.log(res.payload.errors)
-      }
-    })
+
     if (validateAge(formData.get('dateOfBirth'))) {
       return toast.error('Invalid Date of Birth, customer must be at least 13 years old', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 5000,
       })
     } else if (form.checkValidity() === true) {
+      dispatch(createCustomer(formData)).then((res) => {
+        console.log(res.payload)
+        if (!res.payload.errors) {
+          navigate('/customers')
+        } else if (res.payload.errors) {
+          const errors = res.payload.errors
+          let tempError = {}
+          errors.forEach((error) => {
+            if (error.path === 'firstName') {
+              tempError.firstName = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'lastName') {
+              tempError.lastName = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'email') {
+              tempError.email = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'password') {
+              tempError.password = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'street') {
+              tempError.street = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'country') {
+              tempError.country = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'state') {
+              tempError.state = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'city') {
+              tempError.city = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'zip') {
+              tempError.zip = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'phoneNumber') {
+              tempError.phoneNumber = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'dateOfBirth') {
+              tempError.dateOfBirth = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'gender') {
+              tempError.gender = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'image') {
+              tempError.thumbnail = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+          })
+          setValidationFromBackEnd(tempError)
+          console.log(res.payload.errors)
+        }
+      })
     }
   }
 
@@ -288,7 +292,7 @@ const CustomerAdd = () => {
             id="customerAddForm"
             className="row g-3 needs-validation"
             noValidate
-            validated={false}
+            validated={validated}
             onSubmit={handleSubmit}
           >
             <CFormLabel htmlFor="firstName">Name</CFormLabel>
@@ -297,9 +301,7 @@ const CustomerAdd = () => {
                 type="text"
                 placeholder="First name"
                 invalid={validationFromBackEnd.firstName?.notValid}
-                feedbackInvalid={
-                  validationFromBackEnd.firstName?.msg || 'Please Enter Owner First Name '
-                }
+                feedbackInvalid={validationFromBackEnd.firstName?.msg || 'Please Enter First Name '}
                 name="firstName"
                 id="firstName"
                 pattern={regexPatterns.firstName}
@@ -311,9 +313,7 @@ const CustomerAdd = () => {
                 type="text"
                 placeholder="Last name"
                 invalid={validationFromBackEnd.lastName?.notValid}
-                feedbackInvalid={
-                  validationFromBackEnd.lastName?.msg || 'Please Enter Owner First Name '
-                }
+                feedbackInvalid={validationFromBackEnd.lastName?.msg || 'Please Enter Last Name '}
                 name="lastName"
                 id="lastName"
                 pattern={regexPatterns.lastName}
@@ -331,9 +331,7 @@ const CustomerAdd = () => {
                   type="email"
                   placeholder="example@xyz.com"
                   invalid={validationFromBackEnd.email?.notValid}
-                  feedbackInvalid={
-                    validationFromBackEnd.email?.msg || 'Please Enter Owner First Name '
-                  }
+                  feedbackInvalid={validationFromBackEnd.email?.msg || 'Please Enter Email '}
                   name="email"
                   id="email"
                   required
@@ -351,7 +349,7 @@ const CustomerAdd = () => {
                   type="password"
                   invalid={validationFromBackEnd.password?.notValid}
                   feedbackInvalid={
-                    validationFromBackEnd.password?.msg || 'Please Enter Owner First Name '
+                    validationFromBackEnd.password?.msg || 'Please Provide A Password'
                   }
                   name="password"
                   id="password"
@@ -363,7 +361,16 @@ const CustomerAdd = () => {
             </CCol>
             <CFormLabel htmlFor="street">Address</CFormLabel>
             <CCol md={12} className="mt-0">
-              <CFormInput type="text" placeholder="Street" name="street" id="street" />
+              <CFormInput
+                type="text"
+                invalid={validationFromBackEnd.country?.notValid}
+                feedbackInvalid={
+                  validationFromBackEnd.country?.msg || 'Please Provide Your Street '
+                }
+                placeholder="Street"
+                name="street"
+                id="street"
+              />
             </CCol>
             <CCol md={6} lg={3}>
               <CFormSelect
@@ -371,7 +378,7 @@ const CustomerAdd = () => {
                 id="country"
                 invalid={validationFromBackEnd.country?.notValid}
                 feedbackInvalid={
-                  validationFromBackEnd.country?.msg || 'Please Enter Owner First Name '
+                  validationFromBackEnd.country?.msg || 'Please Choose Your Country '
                 }
                 value={location.country}
                 onChange={handleLocationChange}
@@ -389,9 +396,7 @@ const CustomerAdd = () => {
                 name="state"
                 id="state"
                 invalid={validationFromBackEnd.state?.notValid}
-                feedbackInvalid={
-                  validationFromBackEnd.state?.msg || 'Please Enter Owner First Name '
-                }
+                feedbackInvalid={validationFromBackEnd.state?.msg || 'Please Choose Your State '}
                 value={location.state}
                 onChange={handleLocationChange}
               >
@@ -406,9 +411,7 @@ const CustomerAdd = () => {
             <CCol md={6} lg={3}>
               <CFormSelect
                 invalid={validationFromBackEnd.city?.notValid}
-                feedbackInvalid={
-                  validationFromBackEnd.city?.msg || 'Please Enter Owner First Name '
-                }
+                feedbackInvalid={validationFromBackEnd.city?.msg || 'Please Choose Your City '}
                 name="city"
                 id="city"
               >
@@ -425,7 +428,9 @@ const CustomerAdd = () => {
                 type="text"
                 placeholder="Zip Code"
                 invalid={validationFromBackEnd.zip?.notValid}
-                feedbackInvalid={validationFromBackEnd.zip?.msg || 'Please Enter Owner First Name '}
+                feedbackInvalid={
+                  validationFromBackEnd.zip?.msg || 'Please Provide Your Location Postal Code'
+                }
                 name="zip"
                 id="zip"
                 pattern={regexPatterns.zip}
@@ -457,25 +462,32 @@ const CustomerAdd = () => {
                   placeholder={`eg. ${phoneExample}`}
                   invalid={validationFromBackEnd.phoneNumber?.notValid}
                   feedbackInvalid={
-                    validationFromBackEnd.phoneNumber?.msg || 'Please Enter Owner First Name '
+                    validationFromBackEnd.phoneNumber?.msg || 'Please Provide Phone Number '
                   }
                   name="phoneNumber"
                   id="phoneNumber"
-                  pattern={phone.regex}
+                  // pattern={phone.regex}
                   className="input-group-custom mt-3 mt-md-0"
                 />
               </CInputGroup>
             </CCol>
             <CCol md={6}>
-              <CFormInput type="date" label="Date of Birth" id="dateOfBirth" name="dateOfBirth" />
+              <CFormInput
+                type="date"
+                invalid={validationFromBackEnd.dateOfBirth?.notValid}
+                feedbackInvalid={
+                  validationFromBackEnd.dateOfBirth?.msg || 'Please Choose Ypur Date Of Birth '
+                }
+                label="Date of Birth"
+                id="dateOfBirth"
+                name="dateOfBirth"
+              />
             </CCol>
             <CCol md={6}>
               <CFormSelect
                 label="Gender"
                 invalid={validationFromBackEnd.gender?.notValid}
-                feedbackInvalid={
-                  validationFromBackEnd.gender?.msg || 'Please Enter Owner First Name '
-                }
+                feedbackInvalid={validationFromBackEnd.gender?.msg || 'Please Choose The Gender'}
                 name="gender"
                 id="gender"
               >
@@ -488,7 +500,7 @@ const CustomerAdd = () => {
                 type="file"
                 invalid={validationFromBackEnd.image?.notValid}
                 feedbackInvalid={
-                  validationFromBackEnd.image?.msg || 'Please Enter Owner First Name '
+                  validationFromBackEnd.image?.msg || 'Please Provide Us With Image '
                 }
                 name="image"
                 label="Image"

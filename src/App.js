@@ -6,12 +6,6 @@ import PropTypes from 'prop-types'
 import { io } from 'socket.io-client'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeRole, getNotifications } from './Redux/NotificationSlice/NotificationSlice'
-import {
-  getCustomers,
-  getNewCustomers,
-  getPlaces,
-  getVendors,
-} from './Redux/StatisticsSlice/statisticsSlice'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -84,13 +78,6 @@ PrivateRoute.propTypes = {
 const App = () => {
   const dispatch = useDispatch()
   const logedIn = useSelector((state) => state.notification.role)
-
-  useEffect(() => {
-    dispatch(getCustomers())
-    dispatch(getVendors())
-    dispatch(getPlaces())
-    dispatch(getNewCustomers())
-  }, [])
 
   useEffect(() => {
     if (logedIn === '' && localStorage.getItem('token') !== null) {

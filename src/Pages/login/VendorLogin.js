@@ -18,8 +18,11 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useDispatch } from 'react-redux'
+import { changeRole } from '../../Redux/NotificationSlice/NotificationSlice'
 
 const Login = () => {
+  const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -46,9 +49,10 @@ const Login = () => {
         const Vendor = 'af7656fd-f147-47cd-a33d-03b323d7ea9b'
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('v_id', response.data.id)
-        if (response.data.role === 'Vendor') {
+        if (response.data.role === 'vendor') {
           localStorage.setItem('role', Vendor)
           navigate('/')
+          dispatch(changeRole('Vendor'))
 
           toast.success('Login succeeded!', {
             position: toast.POSITION.TOP_RIGHT,

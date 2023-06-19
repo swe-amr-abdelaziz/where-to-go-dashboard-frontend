@@ -39,6 +39,7 @@ import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])
+  const [currentTab, setCurrentTab] = useState('All Vendors')
   const [selectedVendor, setSelectedVendor] = useState({
     isApproved: false,
   })
@@ -48,9 +49,14 @@ const VendorList = () => {
     getVendorsList()
   }, [])
 
+  // useEffect(() => {
+  //   let index = vendorList.findIndex((element) => element._id === selectedVendor._id)
+  //   setVendorList([...vendorList.slice(0, index), ...vendorList.slice(index + 1)])
+  // }, [selectedVendor.isApproved && currentTab === 'Not Approved'])
+
   useEffect(() => {
     let index = vendorList.findIndex((element) => element._id === selectedVendor._id)
-    setVendorList([...vendorList.slice(0, index), ...vendorList.slice(index + 1)])
+    setVendorList([...vendorList.slice(0, index), selectedVendor, ...vendorList.slice(index + 1)])
   }, [selectedVendor.isApproved])
 
   useEffect(() => {
@@ -70,8 +76,12 @@ const VendorList = () => {
         console.log(error)
       })
   }
+  useEffect(() => {
+    console.log(currentTab)
+  }, [currentTab])
   const handleNavigation = (event) => {
     let currentTab = event.target
+    setCurrentTab(event.target.innerText)
 
     let siblings = Array.from(currentTab.parentNode.parentNode.childNodes).filter(
       (node) => node !== currentTab.parentNode,

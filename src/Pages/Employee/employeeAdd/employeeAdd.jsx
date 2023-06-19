@@ -200,7 +200,7 @@ const EmployeeAdd = () => {
         <CForm
           className="row g-3 needs-validation"
           noValidate
-          validated={false}
+          validated={validated}
           onSubmit={handleSubmit}
         >
           <CCol md={4}>

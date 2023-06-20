@@ -199,7 +199,7 @@ const EmployeeEdit = () => {
             validated={validated}
             onSubmit={handleSubmit}
           >
-            <CCol md={4}>
+            <CCol md={12}>
               <CFormInput
                 type="text"
                 feedbackValid="Looks good!"
@@ -212,7 +212,7 @@ const EmployeeEdit = () => {
                 required
               />
             </CCol>
-            <CCol md={4}>
+            <CCol md={12}>
               <CFormInput
                 type="email"
                 feedbackValid="Looks good!"
@@ -235,7 +235,7 @@ const EmployeeEdit = () => {
                 required
               />
             </CCol>
-            <CCol md={4}>
+            <CCol md={6}>
               <CFormInput
                 type="number"
                 aria-describedby="validationCustom03Feedback"
@@ -248,7 +248,7 @@ const EmployeeEdit = () => {
                 required
               />
             </CCol>
-            <CCol md={4}>
+            <CCol md={6}>
               <CFormSelect
                 aria-describedby="validationCustom04Feedback"
                 id="validationCustom04"
@@ -266,6 +266,45 @@ const EmployeeEdit = () => {
               </CFormSelect>
             </CCol>
             <CCol md={4}>
+              <CFormInput
+                type="text"
+                aria-describedby="validationCustom03Feedback"
+                id="validationCustom03"
+                label="Country"
+                name={'country'}
+                invalid={validationFromBackEnd.country?.notValid}
+                feedbackInvalid={validationFromBackEnd.country?.msg || 'Please Provide Country '}
+                defaultValue={employee.address.country}
+                required
+              />
+            </CCol>
+            <CCol md={4}>
+              <CFormInput
+                type="text"
+                aria-describedby="validationCustom03Feedback"
+                id="validationCustom03"
+                label="City"
+                invalid={validationFromBackEnd.city?.notValid}
+                feedbackInvalid={validationFromBackEnd.city?.msg || 'Please Provide City '}
+                name={'city'}
+                defaultValue={employee.address.city}
+                required
+              />
+            </CCol>
+            <CCol md={4}>
+              <CFormInput
+                type="text"
+                aria-describedby="validationCustom05Feedback"
+                invalid={validationFromBackEnd.street?.notValid}
+                feedbackInvalid={validationFromBackEnd.street?.msg || 'Please Provide Street '}
+                id="validationCustom05"
+                label="Street"
+                name={'street'}
+                defaultValue={employee.address.street}
+                required
+              />
+            </CCol>
+            <CCol md={6}>
               <CFormSelect
                 aria-describedby="validationCustom04Feedback"
                 id="validationCustom04"
@@ -284,45 +323,6 @@ const EmployeeEdit = () => {
             </CCol>
             <CCol md={6}>
               <CFormInput
-                type="text"
-                aria-describedby="validationCustom03Feedback"
-                id="validationCustom03"
-                label="Country"
-                name={'country'}
-                invalid={validationFromBackEnd.country?.notValid}
-                feedbackInvalid={validationFromBackEnd.country?.msg || 'Please Provide Country '}
-                defaultValue={employee.address.country}
-                required
-              />
-            </CCol>
-            <CCol md={3}>
-              <CFormInput
-                type="text"
-                aria-describedby="validationCustom03Feedback"
-                id="validationCustom03"
-                label="City"
-                invalid={validationFromBackEnd.city?.notValid}
-                feedbackInvalid={validationFromBackEnd.city?.msg || 'Please Provide City '}
-                name={'city'}
-                defaultValue={employee.address.city}
-                required
-              />
-            </CCol>
-            <CCol md={3}>
-              <CFormInput
-                type="text"
-                aria-describedby="validationCustom05Feedback"
-                invalid={validationFromBackEnd.street?.notValid}
-                feedbackInvalid={validationFromBackEnd.street?.msg || 'Please Provide Street '}
-                id="validationCustom05"
-                label="Street"
-                name={'street'}
-                defaultValue={employee.address.street}
-                required
-              />
-            </CCol>
-            <CCol md={4}>
-              <CFormInput
                 type="number"
                 aria-describedby="validationCustom05Feedback"
                 id="validationCustom05"
@@ -336,7 +336,7 @@ const EmployeeEdit = () => {
                 required
               />
             </CCol>
-            <CCol md={4}>
+            <CCol md={6}>
               <CFormInput
                 type="date"
                 aria-describedby="validationCustom05Feedback"
@@ -351,7 +351,7 @@ const EmployeeEdit = () => {
                 required
               />
             </CCol>
-            <CCol md={4}>
+            <CCol md={6}>
               <CFormInput
                 type="date"
                 aria-describedby="validationCustom05Feedback"
@@ -364,7 +364,7 @@ const EmployeeEdit = () => {
                 required
               />
             </CCol>
-            <CCol md={11}>
+            <CCol md={12}>
               <CFormInput
                 type="file"
                 aria-describedby="validationCustom05Feedback"

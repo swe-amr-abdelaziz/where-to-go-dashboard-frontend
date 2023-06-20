@@ -14,8 +14,6 @@ import {
 import UploadImage from '../../../components/uploadImage/uploadImage'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
-import axios from 'axios'
-import { Multiselect } from 'multiselect-react-dropdown'
 import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import VendorDetails from '../vendorDetails/vendorDetails'
@@ -24,6 +22,60 @@ const VendorAdd = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [validated, setValidated] = useState(false)
+  const [validationFromBackEnd, setValidationFromBackEnd] = useState({
+    firstName: {
+      notValid: false,
+      msg: 'Please Enter Owner First Name',
+    },
+    lastName: {
+      notValid: false,
+      msg: 'Please Enter Owner Last Name',
+    },
+    placeName: {
+      notValid: false,
+      msg: 'Please enter Place Name',
+    },
+    category: {
+      notValid: false,
+      msg: 'Please Select Category',
+    },
+    street: {
+      notValid: false,
+      msg: 'Please Enter Place Street',
+    },
+    country: {
+      notValid: false,
+      msg: 'Please Enter Place Country',
+    },
+    state: {
+      notValid: false,
+      msg: 'Please Enter Place State',
+    },
+    city: {
+      notValid: false,
+      msg: 'Please Enter Place City',
+    },
+    zip: {
+      notValid: false,
+      msg: 'Please Enter Place Postal Code',
+    },
+    email: {
+      notValid: false,
+      msg: 'Please Provide Email',
+    },
+    description: {
+      notValid: false,
+      msg: 'Please Provide Thumbnail Image For The Place',
+    },
+    thumbnail: {
+      notValid: false,
+      msg: 'Please Provide Thumbnail Image For The Place',
+    },
+    gallery: {
+      notValid: false,
+      msg: 'Please Provide Gallery Images For The Place',
+    },
+  })
   const countries = useSelector((state) => state.location.countries)
   const states = useSelector((state) => state.location.states)
   const cities = useSelector((state) => state.location.cities)
@@ -94,7 +146,97 @@ const VendorAdd = () => {
       axiosInstance
         .post('/api/v1/vendors', data)
         .then((res) => navigate('/vendors'))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          const errors = error.response.data.errors
+          let tempError = {}
+          errors.forEach((error) => {
+            if (error.path === 'firstName') {
+              tempError.firstName = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'lastName') {
+              tempError.lastName = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'placeName') {
+              tempError.placeName = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'category') {
+              tempError.category = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'street') {
+              tempError.street = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'country') {
+              tempError.country = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'state') {
+              tempError.state = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'city') {
+              tempError.city = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'zip') {
+              tempError.zip = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'phoneNumber') {
+              tempError.phoneNumber = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'email') {
+              tempError.email = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'description') {
+              tempError.description = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'thumbnail') {
+              tempError.thumbnail = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'gallery') {
+              tempError.gallery = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+          })
+          setValidationFromBackEnd(tempError)
+        })
     }
   }
 
@@ -122,24 +264,30 @@ const VendorAdd = () => {
               onSubmit={handleSubmit}
             >
               <CFormLabel>Owner</CFormLabel>
-              <div className="mb-3 d-flex">
+              <div>
                 <CFormInput
-                  className="me-2"
                   type="text"
                   placeholder="First Name"
                   // pattern={regexPatterns.firstName}
-                  feedbackInvalid="Please Enter Owner Last Name"
+                  invalid={validationFromBackEnd.firstName?.notValid}
+                  feedbackInvalid={
+                    validationFromBackEnd.firstName?.msg || 'Please Enter Owner First Name '
+                  }
                   name={'firstName'}
                   value={vendorData.firstName}
                   onChange={handleInputChange}
                   required
                 />
+              </div>
+              <div>
                 <CFormInput
-                  className="ms-2"
                   type="text"
                   placeholder="Last Name"
+                  invalid={validationFromBackEnd.lastName?.notValid}
                   // pattern={regexPatterns.lastName}
-                  feedbackInvalid="Please Enter Owner First Name"
+                  feedbackInvalid={
+                    validationFromBackEnd.lastName?.msg || 'Please Enter Owner First Name '
+                  }
                   name={'lastName'}
                   value={vendorData.lastName}
                   onChange={handleInputChange}
@@ -152,7 +300,10 @@ const VendorAdd = () => {
                   className="me-2"
                   type="text"
                   placeholder="Place Name"
-                  feedbackInvalid="Please enter Place Name"
+                  invalid={validationFromBackEnd.placeName?.notValid}
+                  feedbackInvalid={
+                    validationFromBackEnd.placeNam?.msg || 'Please Enter Owner First Name '
+                  }
                   name={'placeName'}
                   value={vendorData.placeName}
                   onChange={handleInputChange}
@@ -163,7 +314,10 @@ const VendorAdd = () => {
                 <CFormLabel>Category</CFormLabel>
                 <CFormSelect
                   name={'category'}
-                  feedbackInvalid="Please choose Country"
+                  invalid={validationFromBackEnd.category?.notValid}
+                  feedbackInvalid={
+                    validationFromBackEnd.category?.msg || 'Please Enter Owner First Name '
+                  }
                   className="me-2"
                   value={vendorData.country}
                   onChange={handleInputChange}
@@ -183,7 +337,10 @@ const VendorAdd = () => {
                   className="me-2"
                   type="text"
                   placeholder="Street"
-                  feedbackInvalid="Please enter Street"
+                  invalid={validationFromBackEnd.street?.notValid}
+                  feedbackInvalid={
+                    validationFromBackEnd.street?.msg || 'Please Enter Owner First Name '
+                  }
                   name={'street'}
                   value={vendorData.street}
                   onChange={handleInputChange}
@@ -192,7 +349,8 @@ const VendorAdd = () => {
                 <div className="mb-3 d-flex my-3">
                   <CFormSelect
                     name={'country'}
-                    feedbackInvalid="Please choose Country"
+                    invalid={validationFromBackEnd.country?.notValid}
+                    feedbackInvalid={validationFromBackEnd.country?.msg || 'Please country '}
                     className="me-2"
                     value={vendorData.country}
                     onChange={handleInputChange}
@@ -208,7 +366,10 @@ const VendorAdd = () => {
 
                   <CFormSelect
                     name={'state'}
-                    feedbackInvalid="Please choose Governorate"
+                    invalid={validationFromBackEnd.state?.notValid}
+                    feedbackInvalid={
+                      validationFromBackEnd.state?.msg || 'Please choose Governorate '
+                    }
                     className="mx-2"
                     value={vendorData.state}
                     onChange={handleInputChange}
@@ -225,6 +386,8 @@ const VendorAdd = () => {
                   <CFormSelect
                     name="city"
                     value={vendorData.city}
+                    invalid={validationFromBackEnd.city?.notValid}
+                    feedbackInvalid={validationFromBackEnd.city?.msg || 'Please Select City '}
                     onChange={handleInputChange}
                     className="mx-2"
                   >
@@ -239,8 +402,9 @@ const VendorAdd = () => {
                     <CFormInput
                       type="text"
                       placeholder="eg. 12345 or 12345-6789"
-                      feedbackInvalid="Enter a valid zip code"
                       name={'zip'}
+                      invalid={validationFromBackEnd.zip?.notValid}
+                      feedbackInvalid={validationFromBackEnd.zip?.msg || 'Enter a valid zip code'}
                       value={vendorData.zip}
                       onChange={handleInputChange}
                       // pattern={regexPatterns.zip}
@@ -253,8 +417,11 @@ const VendorAdd = () => {
                 <CFormInput
                   type="text"
                   placeholder="Contact Number"
-                  feedbackInvalid="Please enter Phone Number"
                   name={'phoneNumber'}
+                  invalid={validationFromBackEnd.phoneNumber?.notValid}
+                  feedbackInvalid={
+                    validationFromBackEnd.phoneNumber?.msg || 'Please enter Phone Number'
+                  }
                   value={vendorData.phoneNumber}
                   onChange={handleInputChange}
                   required
@@ -265,9 +432,10 @@ const VendorAdd = () => {
                 <CFormInput
                   type="email"
                   placeholder="Enter Your Email"
-                  feedbackInvalid="Please enter Email"
                   name={'email'}
                   value={vendorData.email}
+                  invalid={validationFromBackEnd.email?.notValid}
+                  feedbackInvalid={validationFromBackEnd.email?.msg || 'Please enter Email'}
                   onChange={handleInputChange}
                   required
                 />
@@ -277,9 +445,12 @@ const VendorAdd = () => {
                 <CFormTextarea
                   rows="5"
                   name={'description'}
+                  invalid={validationFromBackEnd.description?.notValid}
+                  feedbackInvalid={
+                    validationFromBackEnd.description?.msg || 'Please provide Some Description '
+                  }
                   value={vendorData.description}
                   onChange={handleInputChange}
-                  feedbackInvalid="Please provide Some Description"
                   required
                 ></CFormTextarea>
               </div>
@@ -287,8 +458,11 @@ const VendorAdd = () => {
                 <CFormLabel>Thumbnail</CFormLabel>
                 <CFormInput
                   type="file"
-                  feedbackInvalid="Please provide a valid image."
                   name={'thumbnail'}
+                  invalid={validationFromBackEnd.thumbnail?.notValid}
+                  feedbackInvalid={
+                    validationFromBackEnd.thumbnail?.msg || 'Please provide a valid image.'
+                  }
                   required
                 />
                 {/* <UploadImage
@@ -303,9 +477,12 @@ const VendorAdd = () => {
                 <CFormInput
                   type="file"
                   aria-describedby="validationCustom05Feedback"
-                  feedbackInvalid="Please provide a valid image."
                   id="validationCustom05"
                   name={'gallery'}
+                  invalid={validationFromBackEnd.gallery?.notValid}
+                  feedbackInvalid={
+                    validationFromBackEnd.gallery?.msg || 'Please provide a valid image.'
+                  }
                   multiple
                   required
                 />

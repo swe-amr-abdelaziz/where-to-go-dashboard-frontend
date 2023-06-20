@@ -18,6 +18,12 @@ const CategoryEdit = () => {
   const { id } = useParams()
   const [category, setCategory] = useState(null)
   const [name, setName] = useState('')
+  const [validationFromBackEnd, setValidationFromBackEnd] = useState({
+    name: {
+      notValid: false,
+      msg: 'Please Provide Category Name',
+    },
+  })
 
   const navigate = useNavigate()
 
@@ -44,7 +50,16 @@ const CategoryEdit = () => {
       .then((res) => {
         navigate(`/categories/${id}`)
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        let nameErrorMsg = error.response.data.errors[0].msg
+        setValidationFromBackEnd({
+          ...validationFromBackEnd,
+          name: {
+            notValid: true,
+            msg: nameErrorMsg,
+          },
+        })
+      })
   }
 
   if (!category) {
@@ -65,6 +80,8 @@ const CategoryEdit = () => {
                 type="text"
                 id="name"
                 placeholder="Category Name"
+                feedbackInvalid={validationFromBackEnd.name.msg || 'Please Provide Category Name'}
+                invalid={validationFromBackEnd.name.notValid}
                 value={name}
                 onChange={handleNameChange}
                 required

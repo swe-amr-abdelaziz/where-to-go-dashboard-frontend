@@ -27,6 +27,61 @@ const CustomerAdd = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  const [validationFromBackEnd, setValidationFromBackEnd] = useState({
+    firstName: {
+      notValid: false,
+      msg: 'Please Enter Your First Name',
+    },
+    lastName: {
+      notValid: false,
+      msg: 'Please Enter Your First Name',
+    },
+    email: {
+      notValid: false,
+      msg: 'Please Provide Email',
+    },
+    password: {
+      notValid: false,
+      msg: 'Please Provide Password',
+    },
+    street: {
+      notValid: false,
+      msg: 'Please Enter Place Street',
+    },
+    country: {
+      notValid: false,
+      msg: 'Please Enter Place Country',
+    },
+    state: {
+      notValid: false,
+      msg: 'Please Enter Place State',
+    },
+    city: {
+      notValid: false,
+      msg: 'Please Enter Place City',
+    },
+    zip: {
+      notValid: false,
+      msg: 'Please Enter Place Postal Code',
+    },
+    phonNumber: {
+      notValid: false,
+      msg: 'Please Contact Number',
+    },
+    dateOfBirth: {
+      notValid: false,
+      msg: 'Please Provide Date Of Birth',
+    },
+    gender: {
+      notValid: false,
+      msg: 'Please Enter Your Gender',
+    },
+    image: {
+      notValid: false,
+      msg: 'Please Provide Image',
+    },
+  })
+
   const [validated, setValidated] = useState(false)
   const [phoneExample, setPhoneExample] = useState('')
 
@@ -129,7 +184,95 @@ const CustomerAdd = () => {
       })
     } else if (form.checkValidity() === true) {
       dispatch(createCustomer(formData)).then((res) => {
-        navigate('/customers')
+        console.log(res.payload)
+        if (!res.payload.errors) {
+          navigate('/customers')
+        } else if (res.payload.errors) {
+          const errors = res.payload.errors
+          let tempError = {}
+          errors.forEach((error) => {
+            if (error.path === 'firstName') {
+              tempError.firstName = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'lastName') {
+              tempError.lastName = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'email') {
+              tempError.email = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'password') {
+              tempError.password = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'street') {
+              tempError.street = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'country') {
+              tempError.country = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'state') {
+              tempError.state = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'city') {
+              tempError.city = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'zip') {
+              tempError.zip = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'phoneNumber') {
+              tempError.phoneNumber = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'dateOfBirth') {
+              tempError.dateOfBirth = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'gender') {
+              tempError.gender = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'image') {
+              tempError.thumbnail = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+          })
+          setValidationFromBackEnd(tempError)
+          console.log(res.payload.errors)
+        }
       })
     }
   }
@@ -157,7 +300,8 @@ const CustomerAdd = () => {
               <CFormInput
                 type="text"
                 placeholder="First name"
-                feedbackInvalid="Enter a valid first name"
+                invalid={validationFromBackEnd.firstName?.notValid}
+                feedbackInvalid={validationFromBackEnd.firstName?.msg || 'Please Enter First Name '}
                 name="firstName"
                 id="firstName"
                 pattern={regexPatterns.firstName}
@@ -168,7 +312,8 @@ const CustomerAdd = () => {
               <CFormInput
                 type="text"
                 placeholder="Last name"
-                feedbackInvalid="Enter a valid last name"
+                invalid={validationFromBackEnd.lastName?.notValid}
+                feedbackInvalid={validationFromBackEnd.lastName?.msg || 'Please Enter Last Name '}
                 name="lastName"
                 id="lastName"
                 pattern={regexPatterns.lastName}
@@ -185,7 +330,8 @@ const CustomerAdd = () => {
                 <CFormInput
                   type="email"
                   placeholder="example@xyz.com"
-                  feedbackInvalid="Enter a valid email address"
+                  invalid={validationFromBackEnd.email?.notValid}
+                  feedbackInvalid={validationFromBackEnd.email?.msg || 'Please Enter Email '}
                   name="email"
                   id="email"
                   required
@@ -201,7 +347,10 @@ const CustomerAdd = () => {
                 </CInputGroupText>
                 <CFormInput
                   type="password"
-                  feedbackInvalid="Enter a strong password with at least 8 characters"
+                  invalid={validationFromBackEnd.password?.notValid}
+                  feedbackInvalid={
+                    validationFromBackEnd.password?.msg || 'Please Provide A Password'
+                  }
                   name="password"
                   id="password"
                   pattern={regexPatterns.password}
@@ -212,12 +361,25 @@ const CustomerAdd = () => {
             </CCol>
             <CFormLabel htmlFor="street">Address</CFormLabel>
             <CCol md={12} className="mt-0">
-              <CFormInput type="text" placeholder="Street" name="street" id="street" />
+              <CFormInput
+                type="text"
+                invalid={validationFromBackEnd.country?.notValid}
+                feedbackInvalid={
+                  validationFromBackEnd.country?.msg || 'Please Provide Your Street '
+                }
+                placeholder="Street"
+                name="street"
+                id="street"
+              />
             </CCol>
             <CCol md={6} lg={3}>
               <CFormSelect
                 name="country"
                 id="country"
+                invalid={validationFromBackEnd.country?.notValid}
+                feedbackInvalid={
+                  validationFromBackEnd.country?.msg || 'Please Choose Your Country '
+                }
                 value={location.country}
                 onChange={handleLocationChange}
               >
@@ -233,6 +395,8 @@ const CustomerAdd = () => {
               <CFormSelect
                 name="state"
                 id="state"
+                invalid={validationFromBackEnd.state?.notValid}
+                feedbackInvalid={validationFromBackEnd.state?.msg || 'Please Choose Your State '}
                 value={location.state}
                 onChange={handleLocationChange}
               >
@@ -245,7 +409,12 @@ const CustomerAdd = () => {
               </CFormSelect>
             </CCol>
             <CCol md={6} lg={3}>
-              <CFormSelect name="city" id="city">
+              <CFormSelect
+                invalid={validationFromBackEnd.city?.notValid}
+                feedbackInvalid={validationFromBackEnd.city?.msg || 'Please Choose Your City '}
+                name="city"
+                id="city"
+              >
                 <option value="">Select City</option>
                 {cities.map((city) => (
                   <option key={city} value={city}>
@@ -258,7 +427,10 @@ const CustomerAdd = () => {
               <CFormInput
                 type="text"
                 placeholder="Zip Code"
-                feedbackInvalid="Enter a valid zip code , eg. 12345 or 12345-6789"
+                invalid={validationFromBackEnd.zip?.notValid}
+                feedbackInvalid={
+                  validationFromBackEnd.zip?.msg || 'Please Provide Your Location Postal Code'
+                }
                 name="zip"
                 id="zip"
                 pattern={regexPatterns.zip}
@@ -288,25 +460,52 @@ const CustomerAdd = () => {
                 <CFormInput
                   type="text"
                   placeholder={`eg. ${phoneExample}`}
-                  feedbackInvalid={`Enter a valid phone number (eg. ${phoneExample})`}
+                  invalid={validationFromBackEnd.phoneNumber?.notValid}
+                  feedbackInvalid={
+                    validationFromBackEnd.phoneNumber?.msg || 'Please Provide Phone Number '
+                  }
                   name="phoneNumber"
                   id="phoneNumber"
-                  pattern={phone.regex}
+                  // pattern={phone.regex}
                   className="input-group-custom mt-3 mt-md-0"
                 />
               </CInputGroup>
             </CCol>
             <CCol md={6}>
-              <CFormInput type="date" label="Date of Birth" id="dateOfBirth" name="dateOfBirth" />
+              <CFormInput
+                type="date"
+                invalid={validationFromBackEnd.dateOfBirth?.notValid}
+                feedbackInvalid={
+                  validationFromBackEnd.dateOfBirth?.msg || 'Please Choose Ypur Date Of Birth '
+                }
+                label="Date of Birth"
+                id="dateOfBirth"
+                name="dateOfBirth"
+              />
             </CCol>
             <CCol md={6}>
-              <CFormSelect label="Gender" name="gender" id="gender">
+              <CFormSelect
+                label="Gender"
+                invalid={validationFromBackEnd.gender?.notValid}
+                feedbackInvalid={validationFromBackEnd.gender?.msg || 'Please Choose The Gender'}
+                name="gender"
+                id="gender"
+              >
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </CFormSelect>
             </CCol>
             <CCol md={12}>
-              <CFormInput type="file" name="image" label="Image" id="image" />
+              <CFormInput
+                type="file"
+                invalid={validationFromBackEnd.image?.notValid}
+                feedbackInvalid={
+                  validationFromBackEnd.image?.msg || 'Please Provide Us With Image '
+                }
+                name="image"
+                label="Image"
+                id="image"
+              />
             </CCol>
             <CCol xs={12} className="d-flex justify-content-end mt-5">
               <CButton

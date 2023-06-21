@@ -26,13 +26,10 @@ const VendorDetails = () => {
   // }, [placeDetails])
 
   const getPlace = async () => {
-    await axiosInstance
-      .get(`/api/v1/vendors/${id}`)
-      .then((res) => {
-        setPlaceDetails(res.data.data)
-        console.log(res.data.data)
-      })
-      .catch((error) => console.log(error))
+    await axiosInstance.get(`/api/v1/vendors/${id}`).then((res) => {
+      setPlaceDetails(res.data.data)
+    })
+    //.catch((error) => console.log(error))
   }
 
   // const getImages = async () => {

@@ -28,12 +28,6 @@ const _nav = [
     icon: <LuLayoutDashboard size={24} style={{ marginRight: '16px' }} />,
   },
   {
-    component: CNavItem,
-    name: 'Statistics',
-    to: '/statistics',
-    icon: <ImStatsDots size={24} style={{ marginRight: '16px' }} />,
-  },
-  {
     component: CNavTitle,
     name: 'Vendors',
   },
@@ -42,12 +36,6 @@ const _nav = [
     name: 'All Vendors',
     to: '/vendors',
     icon: <LuFileSpreadsheet size={24} style={{ marginRight: '16px' }} />,
-  },
-  {
-    component: CNavItem,
-    name: 'Approve',
-    to: '/vendorAdd',
-    icon: <LuVerified size={24} style={{ marginRight: '16px' }} />,
   },
   {
     component: CNavTitle,
@@ -74,12 +62,6 @@ const _nav = [
     name: 'Tags',
     to: '/theme/colors',
     icon: <LuTag size={24} style={{ marginRight: '16px' }} />,
-  },
-  {
-    component: CNavItem,
-    name: 'Mood',
-    to: '/theme/colors',
-    icon: <TbMoodSmile size={24} style={{ marginRight: '16px' }} />,
   },
 ]
 

@@ -254,7 +254,6 @@ const employeeSlice = createSlice({
       state.loading = true
     },
     [banEmployee.fulfilled]: (state, action) => {
-      console.log(action.payload)
       state.employees = state.employees.map((employee) =>
         employee._id === action.payload.employee._id ? action.payload.employee : employee,
       )

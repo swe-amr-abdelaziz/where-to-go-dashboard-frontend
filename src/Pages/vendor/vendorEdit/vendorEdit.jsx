@@ -132,9 +132,7 @@ const VendorEdit = () => {
           zip: data.address.zip,
         }))
       }
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
 
   const handleInputChange = (event) => {
@@ -149,9 +147,7 @@ const VendorEdit = () => {
     try {
       const res = await axiosInstance.get('api/v1/categories')
       setCategories(res.data.data)
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
 
   const handleSubmit = (event) => {
@@ -162,12 +158,10 @@ const VendorEdit = () => {
       return setValidated(true)
     }
     const data = new FormData(form)
-    console.log('i am here')
     axiosInstance
       .patch(`/api/v1/vendors/${id}`, data)
       .then((res) => navigate('/vendors'))
       .catch((error) => {
-        console.log(error)
         const errors = error.response.data.errors
         let tempError = {}
         errors.forEach((error) => {

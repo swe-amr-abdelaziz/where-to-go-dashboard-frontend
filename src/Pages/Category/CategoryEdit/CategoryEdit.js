@@ -86,12 +86,14 @@ const CategoryEdit = () => {
                 onChange={handleNameChange}
                 required
               />
-              <CButton className="mt-3" type="submit" color="primary">
-                Save
-              </CButton>
-              <CButton onClick={() => navigate('/categories')} className="bg-secondary mt-3 ms-3">
-                Back
-              </CButton>
+              <div className="text-end mt-4">
+                <CButton className="bg-base" type="submit">
+                  Submit
+                </CButton>
+                <CButton onClick={() => navigate('/categories')} className="bg-secondary ms-3">
+                  Back
+                </CButton>
+              </div>
             </CForm>
           </CCardBody>
         </CCard>

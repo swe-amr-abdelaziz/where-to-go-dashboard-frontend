@@ -275,7 +275,7 @@ const VendorEdit = () => {
               encType="multipart/form-data"
               className="row g-3 needs-validation"
               noValidate
-              validated={false}
+              validated={validated}
               onSubmit={handleSubmit}
             >
               <CFormLabel>Owner</CFormLabel>
@@ -338,7 +338,9 @@ const VendorEdit = () => {
                   onChange={handleInputChange}
                   required
                 >
-                  <option disabled>Select Category</option>
+                  <option key={'selectCategory_ca'} disabled>
+                    Select Category
+                  </option>
                   {categories.map((cat) => (
                     <option key={cat._id} value={cat._id}>
                       {cat.name}
@@ -371,7 +373,9 @@ const VendorEdit = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option disabled>---- Select Country ----</option>
+                    <option key={'selectCountry_co'} disabled>
+                      ---- Select Country ----
+                    </option>
                     {countries.map((country) => (
                       <option key={country.iso3} value={country.name}>
                         {country.name}
@@ -390,7 +394,9 @@ const VendorEdit = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option disabled>Select State</option>
+                    <option key={'selectState_s'} disabled>
+                      Select State
+                    </option>
                     {states.map((state) => (
                       <option key={state.state_code} value={state.name}>
                         {state.name}
@@ -406,7 +412,9 @@ const VendorEdit = () => {
                     onChange={handleInputChange}
                     className="mx-2"
                   >
-                    <option disabled>Select City</option>
+                    <option key={'selectCity_c'} disabled>
+                      Select City
+                    </option>
                     {cities.map((city) => (
                       <option key={city} value={city}>
                         {city}

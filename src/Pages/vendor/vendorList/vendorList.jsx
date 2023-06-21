@@ -36,10 +36,15 @@ import 'primereact/resources/primereact.min.css'
 import { DataTable } from 'primereact/datatable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
+import { FilterMatchMode, FilterOperator } from 'primereact/api'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])
   const [currentTab, setCurrentTab] = useState('All Vendors')
+  const [search, setSearch] = useState('')
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  })
   const [selectedVendor, setSelectedVendor] = useState({
     isApproved: false,
   })
@@ -48,6 +53,16 @@ const VendorList = () => {
   useEffect(() => {
     getVendorsList()
   }, [])
+
+  const handleSearch = (e) => {
+    const value = e.target.value
+    let _filters = { ...filters }
+
+    _filters['global'].value = value
+
+    setFilters(_filters)
+    setSearch(value)
+  }
 
   // useEffect(() => {
   //   let index = vendorList.findIndex((element) => element._id === selectedVendor._id)
@@ -72,13 +87,11 @@ const VendorList = () => {
       .then((res) => {
         setVendorList(res.data.data)
       })
-      .catch((error) => {
-        console.log(error)
-      })
+      .catch((error) => {})
   }
-  useEffect(() => {
+  /*useEffect(() => {
     console.log(currentTab)
-  }, [currentTab])
+  }, [currentTab])*/
   const handleNavigation = (event) => {
     let currentTab = event.target
     setCurrentTab(event.target.innerText)
@@ -111,10 +124,7 @@ const VendorList = () => {
   }
 
   const handleDelete = async (id) => {
-    await axiosInstance
-      .patch(`api/v1/vendors/${id}/deactivate`)
-      .then((res) => console.log(res))
-      .catch((error) => console.log(error))
+    await axiosInstance.patch(`api/v1/vendors/${id}/deactivate`).then().catch()
   }
 
   const navigate = useNavigate()
@@ -183,9 +193,9 @@ const VendorList = () => {
     )
   }
 
-  const handleOptionsClick = (e) => {
+  /*const handleOptionsClick = (e) => {
     console.log(e.target)
-  }
+  }*/
 
   const handleIsApprovedDisplay = (currentVendor) => {
     return currentVendor.isApproved === true ? (
@@ -215,7 +225,13 @@ const VendorList = () => {
                 New
               </CButton>
             </Link>
-            <CFormInput type="search" className="me-2" placeholder="Search" />
+            <CFormInput
+              type="search"
+              value={search}
+              onChange={(e) => handleSearch(e)}
+              className="me-2"
+              placeholder="Search"
+            />
           </div>
         </div>
 
@@ -239,6 +255,7 @@ const VendorList = () => {
           rows={10}
           rowsPerPageOptions={[5, 10, 25, 50]}
           tableStyle={{ minWidth: '50rem' }}
+          filters={filters}
         >
           <Column field="placeName" header="Place Name" style={{ width: '15%' }}></Column>
           <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
@@ -257,7 +274,7 @@ const VendorList = () => {
           ></Column>
           <Column
             body={actionsBodyTemplate}
-            onClick={handleOptionsClick}
+            //onClick={handleOptionsClick}
             bodyClassName="text-center"
             style={{ width: '5%' }}
           ></Column>

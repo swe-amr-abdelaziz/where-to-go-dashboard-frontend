@@ -75,7 +75,6 @@ export const getNewCustomers = createAsyncThunk(
       const response = await axios.get(`${URL}/reports/yearlyReport`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      console.log(response.data)
       return response.data
     } catch (error) {
       if (error.response.data.message === 'UnAuthorized..!') {
@@ -95,7 +94,6 @@ export const getVendorTotalReviews = createAsyncThunk(
       const response = await axios.get(`${URL}/reports/vendorTotalReview`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      console.log(response.data)
       return response.data.numberOfReviews
     } catch (error) {
       if (error.response.data.message === 'UnAuthorized..!') {
@@ -115,7 +113,6 @@ export const getVendorTotalFavorites = createAsyncThunk(
       const response = await axios.get(`${URL}/reports/vendorTotalFav`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      console.log(response.data)
       return response.data.data.totalFavorites
     } catch (error) {
       if (error.response.data.message === 'UnAuthorized..!') {
@@ -135,7 +132,6 @@ export const getVendorMonthlyReviews = createAsyncThunk(
       const response = await axios.get(`${URL}/reports/vendorMonthlyReview`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      console.log(response.data)
       return response.data.reviewsByMonth
     } catch (error) {
       if (error.response.data.message === 'UnAuthorized..!') {
@@ -155,7 +151,6 @@ export const getVendorMonthlyFavorites = createAsyncThunk(
       const response = await axios.get(`${URL}/reports/vendorMonthlyFav`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      console.log(response.data)
       return response.data.data.favoritesByMonth
     } catch (error) {
       if (error.response.data.message === 'UnAuthorized..!') {
@@ -176,7 +171,6 @@ const statisticsSlice = createSlice({
       state.loading = true
     },
     [getCustomers.fulfilled]: (state, action) => {
-      console.log(action.payload)
       state.customers = action.payload
       state.loading = false
     },

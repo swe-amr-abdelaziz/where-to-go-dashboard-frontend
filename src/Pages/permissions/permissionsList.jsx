@@ -30,6 +30,26 @@ const PermissionsList = () => {
     permissions: [], // Provide a default value for description
   })
   const [createVisible, setCreateVisible] = useState(false)
+  const [createvalidationFromBackEnd, setCreateValidationFromBackEnd] = useState({
+    name: {
+      notValid: false,
+      msg: 'Please Insert Permision Name',
+    },
+    description: {
+      notValid: false,
+      msg: 'Please Provide Permision Description',
+    },
+  })
+  const [editValidationFromBackEnd, setEditValidationFromBackEnd] = useState({
+    name: {
+      notValid: false,
+      msg: 'Please Insert Permision Name',
+    },
+    description: {
+      notValid: false,
+      msg: 'Please Provide Permision Description',
+    },
+  })
 
   useEffect(() => {
     dispatch(getPermissions())
@@ -51,9 +71,31 @@ const PermissionsList = () => {
     })
     setCreateVisible(true)
   }
+
   const handleCreatePermission = () => {
-    dispatch(createPermission(currentPermission))
-    setCreateVisible(false)
+    dispatch(createPermission(currentPermission)).then((res) => {
+      if (!res.payload.errors) {
+        setCreateVisible(false)
+      } else {
+        const errors = res.payload.errors
+        // console.log(errors)
+        const tempError = {}
+        errors.forEach((error) => {
+          if (error.path === 'name') {
+            tempError.name = {
+              notValid: true,
+              msg: error.msg,
+            }
+          } else if (error.path === 'description') {
+            tempError.description = {
+              notValid: true,
+              msg: error.msg,
+            }
+          }
+        })
+        setCreateValidationFromBackEnd(tempError)
+      }
+    })
   }
 
   const handleDelete = (rowData) => {
@@ -83,8 +125,30 @@ const PermissionsList = () => {
   }
 
   const handleUpdatePermission = () => {
-    dispatch(updatePermission(currentPermission))
-    setEditVisible(false)
+    dispatch(updatePermission(currentPermission)).then((res) => {
+      if (!res.payload.errors) {
+        setEditVisible(false)
+      } else {
+        const errors = res.payload.errors
+        // console.log(errors)
+        const tempError = {}
+        errors.forEach((error) => {
+          if (error.path === 'name') {
+            tempError.name = {
+              notValid: true,
+              msg: error.msg,
+            }
+          } else if (error.path === 'description') {
+            tempError.description = {
+              notValid: true,
+              msg: error.msg,
+            }
+          }
+        })
+        setEditValidationFromBackEnd(tempError)
+        console.log(tempError)
+      }
+    })
   }
   if (permissions.loading) {
     return <div>Loading...</div>
@@ -165,7 +229,6 @@ const PermissionsList = () => {
       >
         <CFormLabel htmlFor="createPermissionName">Permission Name</CFormLabel>
         <CFormInput
-          id="createPermissionName"
           className="ms-2"
           type="text"
           placeholder="Permission Name"
@@ -173,7 +236,8 @@ const PermissionsList = () => {
           aria-label="Permission Name"
           onChange={handlePermissionNameChange}
           pattern="[A-Za-z\s]+"
-          title="Only text characters are allowed"
+          notValid={createvalidationFromBackEnd.name.notValid}
+          feedbackInvalid={createvalidationFromBackEnd.name?.msg || 'Please Provide Permision Name'}
         />
         <br />
         <CFormLabel htmlFor="createPermissionDescription">Permission Description</CFormLabel>

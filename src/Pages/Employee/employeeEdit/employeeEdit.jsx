@@ -86,7 +86,6 @@ const EmployeeEdit = () => {
       event.stopPropagation()
       const data = new FormData(event.target)
       dispatch(updateEmployee(data)).then((res) => {
-        console.log(res)
         if (!res.payload.errors) {
           navigate('/employees')
         } else if (res.payload.errors) {
@@ -259,9 +258,7 @@ const EmployeeEdit = () => {
                 defaultValue={employee.gender}
                 required
               >
-                <option selected value={'Male'}>
-                  Male
-                </option>
+                <option value={'Male'}>Male</option>
                 <option value={'Female'}>Female</option>
               </CFormSelect>
             </CCol>
@@ -315,9 +312,7 @@ const EmployeeEdit = () => {
                 defaultValue={employee.role}
                 required
               >
-                <option selected value={'Employee'}>
-                  Employee
-                </option>
+                <option value={'Employee'}>Employee</option>
                 <option value={'Admin'}>Admin</option>
               </CFormSelect>
             </CCol>
@@ -373,7 +368,6 @@ const EmployeeEdit = () => {
                 invalid={validationFromBackEnd.image?.notValid}
                 feedbackInvalid={validationFromBackEnd.image?.msg || 'Please Provide Image '}
                 name={'image'}
-                required
               />
             </CCol>
             <CCol xs={2}>

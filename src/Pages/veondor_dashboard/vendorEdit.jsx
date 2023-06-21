@@ -67,7 +67,6 @@ const VendorEdit = () => {
     try {
       const response = await axiosInstance.get(`api/v1/Vendors/${id}`)
       const data = response.data.data
-      console.log(data)
       if (data) {
         setVendorData((prevData) => ({
           ...prevData,
@@ -79,9 +78,7 @@ const VendorEdit = () => {
           zip: data.address.zip,
         }))
       }
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
 
   const handleInputChange = (event) => {

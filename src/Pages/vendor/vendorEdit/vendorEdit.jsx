@@ -132,9 +132,7 @@ const VendorEdit = () => {
           zip: data.address.zip,
         }))
       }
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
 
   const handleInputChange = (event) => {
@@ -149,9 +147,7 @@ const VendorEdit = () => {
     try {
       const res = await axiosInstance.get('api/v1/categories')
       setCategories(res.data.data)
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
 
   const handleSubmit = (event) => {

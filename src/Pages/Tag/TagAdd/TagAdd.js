@@ -21,6 +21,16 @@ const TagAdd = () => {
     category: '',
   })
   const [categories, setCategories] = useState([])
+  const [validationFromBackEnd, setValidationFromBackEnd] = useState({
+    name: {
+      notValid: false,
+      msg: 'Please Provide Tag Name',
+    },
+    categoryId: {
+      notValid: false,
+      msg: 'Please Choose Category ',
+    },
+  })
 
   useEffect(() => {
     // Fetch categories from the server using axios
@@ -54,7 +64,26 @@ const TagAdd = () => {
         .then((res) => {
           navigate(`/tags`)
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          console.log(error)
+          const errors = error.response.data.errors
+          let tempError = {}
+          errors.forEach((error) => {
+            if (error.path === 'name') {
+              tempError.name = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+            if (error.path === 'categoryId') {
+              tempError.categoryId = {
+                notValid: true,
+                msg: error.msg,
+              }
+            }
+          })
+          setValidationFromBackEnd(tempError)
+        })
     }
   }
 
@@ -74,7 +103,8 @@ const TagAdd = () => {
               <CFormInput
                 type="text"
                 placeholder="Tag Name"
-                feedbackInvalid="Please enter Tag Name"
+                feedbackInvalid={validationFromBackEnd.name.msg}
+                invalid={validationFromBackEnd.name.notValid}
                 name="name"
                 value={tagObject.name}
                 onChange={handleChange}
@@ -82,8 +112,9 @@ const TagAdd = () => {
               />
               <CFormLabel htmlFor="exampleFormControlInput1">Category</CFormLabel>
               <CFormSelect
-                name="category"
-                feedbackInvalid="Please choose a Category"
+                name="categoryId"
+                feedbackInvalid={validationFromBackEnd.categoryId.msg}
+                invalid={validationFromBackEnd.categoryId.notValid}
                 value={tagObject.category._id}
                 onChange={handleChange}
                 required

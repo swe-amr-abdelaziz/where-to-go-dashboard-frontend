@@ -42,6 +42,7 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css'
 import 'primereact/resources/primereact.min.css'
 import { Dialog } from 'primereact/dialog'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
+import { ThreeCircles } from 'react-loader-spinner'
 
 const EmployeeList = () => {
   const navigate = useNavigate()
@@ -180,63 +181,86 @@ const EmployeeList = () => {
             </div>
           </div>
         </CRow>
-        <DataTable
-          value={employees}
-          paginator
-          rows={10}
-          rowsPerPageOptions={[5, 10, 25, 50]}
-          tableStyle={{ minWidth: '50rem' }}
-          filters={filters}
-        >
-          <Column
-            field="avatar"
-            header="Avater"
-            body={(employee) => (
-              <img
-                src={`http://localhost:8001/api/v1/images/employees/${employee.image}`}
-                alt="avatar"
-                className="avatar"
-              />
-            )}
-            style={{ width: '5%' }}
-          ></Column>
-          <Column field="name" header="Name" style={{ width: '20%' }}></Column>
-          <Column field="email" header="Email" style={{ width: '30%' }}></Column>
-          <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
-          <Column
-            field="active"
-            header="Active"
-            body={(employee) => (
-              <FontAwesomeIcon
-                color={employee.deactivatedAt ? 'red' : 'green'}
-                icon={faCircleDot}
-              />
-            )}
-            bodyClassName="text-center"
-            style={{ width: '5%' }}
-          ></Column>
-          <Column
-            field="banned"
-            header="Banned"
-            body={(employee) => (
-              <FontAwesomeIcon color={employee.bannedAtt ? 'red' : 'green'} icon={faCircleDot} />
-            )}
-            bodyClassName="text-center"
-            style={{ width: '5%' }}
-          ></Column>
-          <Column
-            field="role"
-            header="Role"
-            body={(employee) => <p className="mb-0">{employee.role.name}</p>}
-            style={{ width: '10%' }}
-          ></Column>
-          <Column
-            header={'Actions'}
-            body={(employee) => actionsBodyTemplate(employee)}
-            bodyClassName="text-center"
-            style={{ width: '5%' }}
-          ></Column>
-        </DataTable>
+
+        {employees.length === 0 ? (
+          <div className="d-flex justify-content-center align-items-center my-5">
+            <ThreeCircles
+              height="100"
+              width="100"
+              color="#4fa94d"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+              ariaLabel="three-circles-rotating"
+              outerCircleColor=""
+              innerCircleColor=""
+              middleCircleColor=""
+            />
+          </div>
+        ) : (
+          <>
+            <DataTable
+              value={employees}
+              paginator
+              rows={10}
+              rowsPerPageOptions={[5, 10, 25, 50]}
+              tableStyle={{ minWidth: '50rem' }}
+              filters={filters}
+            >
+              <Column
+                field="avatar"
+                header="Avater"
+                body={(employee) => (
+                  <img
+                    src={`http://localhost:8001/api/v1/images/employees/${employee.image}`}
+                    alt="avatar"
+                    className="avatar"
+                  />
+                )}
+                style={{ width: '5%' }}
+              ></Column>
+              <Column field="name" header="Name" style={{ width: '20%' }}></Column>
+              <Column field="email" header="Email" style={{ width: '30%' }}></Column>
+              <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
+              <Column
+                field="active"
+                header="Active"
+                body={(employee) => (
+                  <FontAwesomeIcon
+                    color={employee.deactivatedAt ? 'red' : 'green'}
+                    icon={faCircleDot}
+                  />
+                )}
+                bodyClassName="text-center"
+                style={{ width: '5%' }}
+              ></Column>
+              <Column
+                field="banned"
+                header="Banned"
+                body={(employee) => (
+                  <FontAwesomeIcon
+                    color={employee.bannedAtt ? 'red' : 'green'}
+                    icon={faCircleDot}
+                  />
+                )}
+                bodyClassName="text-center"
+                style={{ width: '5%' }}
+              ></Column>
+              <Column
+                field="role"
+                header="Role"
+                body={(employee) => <p className="mb-0">{employee.role.name}</p>}
+                style={{ width: '10%' }}
+              ></Column>
+              <Column
+                header={'Actions'}
+                body={(employee) => actionsBodyTemplate(employee)}
+                bodyClassName="text-center"
+                style={{ width: '5%' }}
+              ></Column>
+            </DataTable>
+          </>
+        )}
       </CCardBody>
       {/* Details Dialog */}
       <Dialog

@@ -7,6 +7,7 @@ import { Button } from 'primereact/button'
 import { DataTable } from 'primereact/datatable'
 import { PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons'
 import axiosInstance from 'src/Axios'
+import { ThreeCircles } from 'react-loader-spinner'
 
 const TagList = () => {
   const [tagList, setTagList] = useState([])
@@ -105,20 +106,39 @@ const TagList = () => {
             </div>
           </div>
         </CRow>
-        <DataTable
-          value={tagList}
-          paginator
-          rows={10}
-          rowsPerPageOptions={[5, 10, 25, 50]}
-          tableStyle={{ minWidth: '50rem' }}
-        >
-          <Column field="name" header="Name" style={{ width: '15%' }}></Column>
-          <Column
-            body={actionsBodyTemplate}
-            bodyClassName="text-center"
-            style={{ width: '5%' }}
-          ></Column>
-        </DataTable>
+        {tagList.length === 0 ? (
+          <div className="d-flex justify-content-center align-items-center my-5">
+            <ThreeCircles
+              height="100"
+              width="100"
+              color="#4fa94d"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+              ariaLabel="three-circles-rotating"
+              outerCircleColor=""
+              innerCircleColor=""
+              middleCircleColor=""
+            />
+          </div>
+        ) : (
+          <>
+            <DataTable
+              value={tagList}
+              paginator
+              rows={10}
+              rowsPerPageOptions={[5, 10, 25, 50]}
+              tableStyle={{ minWidth: '50rem' }}
+            >
+              <Column field="name" header="Name" style={{ width: '15%' }}></Column>
+              <Column
+                body={actionsBodyTemplate}
+                bodyClassName="text-center"
+                style={{ width: '5%' }}
+              ></Column>
+            </DataTable>
+          </>
+        )}
       </CCardBody>
     </CCard>
   )

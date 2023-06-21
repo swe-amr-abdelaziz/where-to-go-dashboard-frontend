@@ -203,7 +203,7 @@ const EmployeeAdd = () => {
           validated={validated}
           onSubmit={handleSubmit}
         >
-          <CCol md={4}>
+          <CCol md={12}>
             <CFormInput
               type="text"
               feedbackValid="Looks good!"
@@ -215,7 +215,7 @@ const EmployeeAdd = () => {
               required
             />
           </CCol>
-          <CCol md={4}>
+          <CCol md={12}>
             <CFormInput
               type="email"
               feedbackValid="Looks good!"
@@ -227,7 +227,7 @@ const EmployeeAdd = () => {
               required
             />
           </CCol>
-          <CCol md={4}>
+          <CCol md={6}>
             <CFormLabel htmlFor="validationCustomUsername">Password</CFormLabel>
             <CInputGroup className="has-validation">
               <CFormInput
@@ -242,7 +242,7 @@ const EmployeeAdd = () => {
               />
             </CInputGroup>
           </CCol>
-          <CCol md={4}>
+          <CCol md={6}>
             <CFormInput
               type="number"
               aria-describedby="validationCustom03Feedback"
@@ -254,7 +254,7 @@ const EmployeeAdd = () => {
               required
             />
           </CCol>
-          <CCol md={4}>
+          <CCol md={6}>
             <CFormSelect
               aria-describedby="validationCustom04Feedback"
               id="validationCustom04"
@@ -270,7 +270,7 @@ const EmployeeAdd = () => {
               <option value={'Female'}>Female</option>
             </CFormSelect>
           </CCol>
-          <CCol md={4}>
+          <CCol md={6}>
             <CFormSelect
               aria-describedby="validationCustom04Feedback"
               id="validationCustom04"
@@ -286,7 +286,7 @@ const EmployeeAdd = () => {
               <option value={'Admin'}>Admin</option>
             </CFormSelect>
           </CCol>
-          <CCol md={6}>
+          <CCol md={4}>
             <CFormInput
               type="text"
               aria-describedby="validationCustom03Feedback"
@@ -298,7 +298,7 @@ const EmployeeAdd = () => {
               required
             />
           </CCol>
-          <CCol md={3}>
+          <CCol md={4}>
             <CFormInput
               type="text"
               aria-describedby="validationCustom03Feedback"
@@ -310,7 +310,7 @@ const EmployeeAdd = () => {
               required
             />
           </CCol>
-          <CCol md={3}>
+          <CCol md={4}>
             <CFormInput
               type="text"
               aria-describedby="validationCustom05Feedback"
@@ -362,7 +362,7 @@ const EmployeeAdd = () => {
               required
             />
           </CCol>
-          <CCol md={11}>
+          <CCol md={12}>
             <CFormInput
               type="file"
               aria-describedby="validationCustom05Feedback"
@@ -374,12 +374,12 @@ const EmployeeAdd = () => {
               required
             />
           </CCol>
-          <CCol xs={2}>
+          <CCol xs={12} md={6}>
             <CButton color="primary" type="submit">
               Submit form
             </CButton>
           </CCol>
-          <CCol xs={1}>
+          <CCol xs={12} md={6}>
             <CButton onClick={handleCancel} color="danger">
               Cancel
             </CButton>

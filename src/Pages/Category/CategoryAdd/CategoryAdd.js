@@ -6,10 +6,15 @@ import axiosInstance from 'src/Axios'
 const CategoryAdd = () => {
   const navigate = useNavigate()
   const [validated, setValidated] = useState(false)
-  const [categoryObject, setCategoryObject] = useState(new FormData())
-
+  const [categoryName, setcategoryName] = useState('')
+  const [validationFromBackEnd, setValidationFromBackEnd] = useState({
+    name: {
+      notValid: false,
+      msg: 'Please Provide Category Name',
+    },
+  })
   const handleChange = (e) => {
-    setCategoryObject({ [e.target.name]: e.target.value })
+    setcategoryName(e.target.value)
   }
 
   const handleSubmit = (event) => {
@@ -20,13 +25,21 @@ const CategoryAdd = () => {
     }
     setValidated(true)
     if (form.checkValidity() === true) {
-      const data = new FormData(event.target)
       axiosInstance
-        .post('/api/v1/categories', data)
+        .post('/api/v1/categories', { name: categoryName })
         .then((res) => {
           navigate(`/categories`)
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          let nameErrorMsg = error.response.data.errors[0].msg
+          setValidationFromBackEnd({
+            ...validationFromBackEnd,
+            name: {
+              notValid: true,
+              msg: nameErrorMsg,
+            },
+          })
+        })
     }
   }
 
@@ -46,8 +59,9 @@ const CategoryAdd = () => {
               <CFormInput
                 type="text"
                 placeholder="Category Name"
-                feedbackInvalid="Please enter Category Name"
                 name="name"
+                feedbackInvalid={validationFromBackEnd.name?.msg || 'Please Provide Category Name'}
+                invalid={validationFromBackEnd.name?.notValid}
                 onChange={handleChange}
                 required
               />
@@ -60,7 +74,7 @@ const CategoryAdd = () => {
                   required
                 ></UploadImage> */}
               </div>
-              <div>
+              <div className="text-end">
                 <CButton className="bg-base" type="submit">
                   Submit
                 </CButton>

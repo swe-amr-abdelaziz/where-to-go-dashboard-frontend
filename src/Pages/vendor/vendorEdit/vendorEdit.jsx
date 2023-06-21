@@ -162,12 +162,10 @@ const VendorEdit = () => {
       return setValidated(true)
     }
     const data = new FormData(form)
-    console.log('i am here')
     axiosInstance
       .patch(`/api/v1/vendors/${id}`, data)
       .then((res) => navigate('/vendors'))
       .catch((error) => {
-        console.log(error)
         const errors = error.response.data.errors
         let tempError = {}
         errors.forEach((error) => {
@@ -176,80 +174,67 @@ const VendorEdit = () => {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'lastName') {
+          } else if (error.path === 'lastName') {
             tempError.lastName = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'placeName') {
+          } else if (error.path === 'placeName') {
             tempError.placeName = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'category') {
+          } else if (error.path === 'category') {
             tempError.category = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'street') {
+          } else if (error.path === 'street') {
             tempError.street = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'country') {
+          } else if (error.path === 'country') {
             tempError.country = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'state') {
+          } else if (error.path === 'state') {
             tempError.state = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'city') {
+          } else if (error.path === 'city') {
             tempError.city = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'zip') {
+          } else if (error.path === 'zip') {
             tempError.zip = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'phoneNumber') {
+          } else if (error.path === 'phoneNumber') {
             tempError.phoneNumber = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'email') {
+          } else if (error.path === 'email') {
             tempError.email = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'description') {
+          } else if (error.path === 'description') {
             tempError.description = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'thumbnail') {
+          } else if (error.path === 'thumbnail') {
             tempError.thumbnail = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'gallery') {
+          } else if (error.path === 'gallery') {
             tempError.gallery = {
               notValid: true,
               msg: error.msg,
@@ -383,7 +368,7 @@ const VendorEdit = () => {
                       ---- Select Country ----
                     </option>
                     {countries.map((country) => (
-                      <option key={country.iso3} value={country.name}>
+                      <option key={country.iso3 + country.name} value={country.name}>
                         {country.name}
                       </option>
                     ))}

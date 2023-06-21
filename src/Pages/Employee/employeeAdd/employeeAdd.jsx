@@ -89,9 +89,7 @@ const EmployeeAdd = () => {
       event.preventDefault()
       event.stopPropagation()
       const data = new FormData(event.target)
-      console.log(data.get('image'))
       dispatch(createEmployee(data)).then((res) => {
-        console.log(res.payload.errors)
         if (!res.payload.errors) {
           navigate('/employees')
         } else if (res.payload.errors) {
@@ -264,7 +262,7 @@ const EmployeeAdd = () => {
               name={'gender'}
               required
             >
-              <option selected value={'Male'}>
+              <option defaultChecked value={'Male'}>
                 Male
               </option>
               <option value={'Female'}>Female</option>
@@ -280,7 +278,7 @@ const EmployeeAdd = () => {
               feedbackInvalid={validationFromBackEnd.role?.msg || 'Please Provide Role '}
               required
             >
-              <option selected value={'Employee'}>
+              <option defaultChecked value={'Employee'}>
                 Employee
               </option>
               <option value={'Admin'}>Admin</option>

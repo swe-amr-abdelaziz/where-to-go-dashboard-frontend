@@ -72,12 +72,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faCircle, faCircleDot, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons'
 import { array } from 'prop-types'
+import { FilterMatchMode, FilterOperator } from 'primereact/api'
 
 const CustomerList = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const customers = useSelector((state) => state.customer.customers)
   const customer = useSelector((state) => state.customer.customer)
+  const [search, setSearch] = useState('')
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  })
   const placeholderCustomer = {
     id: '',
     firstName: '',
@@ -96,6 +101,16 @@ const CustomerList = () => {
   useEffect(() => {
     dispatch(getCustomers())
   }, [])
+
+  const handleSearch = (e) => {
+    const value = e.target.value
+    let _filters = { ...filters }
+
+    _filters['global'].value = value
+
+    setFilters(_filters)
+    setSearch(value)
+  }
 
   const avatarBodyTemplate = (customer) => {
     return (
@@ -279,7 +294,13 @@ const CustomerList = () => {
                   <PlusCircleFill className="me-1" />
                   New
                 </CButton>
-                <CFormInput type="search" className="me-2" placeholder="Search" />
+                <CFormInput
+                  type="search"
+                  value={search}
+                  onChange={(e) => handleSearch(e)}
+                  className="me-2"
+                  placeholder="Search"
+                />
               </div>
             </div>
           </CRow>
@@ -289,6 +310,7 @@ const CustomerList = () => {
             rows={10}
             rowsPerPageOptions={[5, 10, 25, 50]}
             tableStyle={{ minWidth: '50rem' }}
+            filters={filters}
           >
             <Column
               field="avatar"

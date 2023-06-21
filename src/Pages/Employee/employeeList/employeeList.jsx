@@ -41,6 +41,7 @@ import { DataTable } from 'primereact/datatable'
 import 'primereact/resources/themes/lara-light-indigo/theme.css'
 import 'primereact/resources/primereact.min.css'
 import { Dialog } from 'primereact/dialog'
+import { FilterMatchMode, FilterOperator } from 'primereact/api'
 
 const EmployeeList = () => {
   const navigate = useNavigate()
@@ -49,6 +50,10 @@ const EmployeeList = () => {
   const [visible, setVisible] = React.useState(false)
   const [detailsVisible, setDetailsVisible] = React.useState(false)
   const [emp, setEmp] = useState({})
+  const [search, setSearch] = useState('')
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  })
   const [demployee, setDemployee] = React.useState(null)
   const menu = useRef(null)
 
@@ -89,6 +94,16 @@ const EmployeeList = () => {
   const handleDeleteEmployee = () => {
     dispatch(deleteEmployee(demployee._id))
     setVisible(false)
+  }
+
+  const handleSearch = (e) => {
+    const value = e.target.value
+    let _filters = { ...filters }
+
+    _filters['global'].value = value
+
+    setFilters(_filters)
+    setSearch(value)
   }
 
   const actionsBodyTemplate = (rowData) => {
@@ -155,7 +170,13 @@ const EmployeeList = () => {
                 <PlusCircleFill className="me-1" />
                 New
               </CButton>
-              <CFormInput type="search" className="me-2" placeholder="Search" />
+              <CFormInput
+                type="search"
+                value={search}
+                onChange={(e) => handleSearch(e)}
+                className="me-2"
+                placeholder="Search"
+              />
             </div>
           </div>
         </CRow>
@@ -165,6 +186,7 @@ const EmployeeList = () => {
           rows={10}
           rowsPerPageOptions={[5, 10, 25, 50]}
           tableStyle={{ minWidth: '50rem' }}
+          filters={filters}
         >
           <Column
             field="avatar"

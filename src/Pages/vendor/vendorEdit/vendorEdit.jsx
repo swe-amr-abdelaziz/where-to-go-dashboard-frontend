@@ -12,7 +12,7 @@ import {
   CRow,
 } from '@coreui/react'
 import { useNavigate, useParams } from 'react-router-dom'
-import axiosInstance from 'src/Axios'
+import { axiosInstance, axiosInstanceFormData } from 'src/Axios'
 import axios from 'axios'
 import { Multiselect } from 'multiselect-react-dropdown'
 import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
@@ -158,7 +158,8 @@ const VendorEdit = () => {
       return setValidated(true)
     }
     const data = new FormData(form)
-    axiosInstance
+    console.log(data)
+    axiosInstanceFormData
       .patch(`/api/v1/vendors/${id}`, data)
       .then((res) => navigate('/vendors'))
       .catch((error) => {
@@ -473,7 +474,6 @@ const VendorEdit = () => {
                   feedbackInvalid={
                     validationFromBackEnd.thumbnail?.msg || 'Please provide a valid image.'
                   }
-                  required
                 />
                 {/* <UploadImage
                   name={'thumbnail'}
@@ -494,7 +494,6 @@ const VendorEdit = () => {
                     validationFromBackEnd.gallery?.msg || 'Please provide a valid image.'
                   }
                   multiple
-                  required
                 />
                 {/* <UploadImage
                   name={'gallery'}

@@ -76,6 +76,7 @@ const TagAdd = () => {
               }
             }
             if (error.path === 'categoryId') {
+              console.log('inside categoryId')
               tempError.categoryId = {
                 notValid: true,
                 msg: error.msg,
@@ -103,8 +104,8 @@ const TagAdd = () => {
               <CFormInput
                 type="text"
                 placeholder="Tag Name"
-                feedbackInvalid={validationFromBackEnd.name.msg}
-                invalid={validationFromBackEnd.name.notValid}
+                feedbackInvalid={validationFromBackEnd.name?.msg}
+                invalid={validationFromBackEnd.name?.notValid}
                 name="name"
                 value={tagObject.name}
                 onChange={handleChange}
@@ -113,8 +114,8 @@ const TagAdd = () => {
               <CFormLabel htmlFor="exampleFormControlInput1">Category</CFormLabel>
               <CFormSelect
                 name="categoryId"
-                feedbackInvalid={validationFromBackEnd.categoryId.msg}
-                invalid={validationFromBackEnd.categoryId.notValid}
+                feedbackInvalid={validationFromBackEnd.categoryId?.msg}
+                invalid={validationFromBackEnd.categoryId?.notValid}
                 value={tagObject.category._id}
                 onChange={handleChange}
                 required

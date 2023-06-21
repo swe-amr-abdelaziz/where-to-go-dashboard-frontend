@@ -14,7 +14,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from 'src/Axios'
 
-const TagAdd = () => {
+const TagEdit = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [validated, setValidated] = useState(false)
@@ -35,18 +35,6 @@ const TagAdd = () => {
   })
 
   useEffect(() => {
-    // Fetch tag details from the server using axios
-    axiosInstance
-      .get(`/api/v1/tags/${id}`)
-      .then((res) => {
-        console.log(res.data.data)
-        const { name, category } = res.data.data
-        setTagObject({ name: res.data.data.name, category: res.data.data.category })
-      })
-      .catch((error) => console.log(error))
-  }, [id])
-
-  useEffect(() => {
     // Fetch categories from the server using axios
     axiosInstance
       .get('/api/v1/categories')
@@ -56,44 +44,45 @@ const TagAdd = () => {
       .catch((error) => console.log(error))
   }, [])
 
+  useEffect(() => {
+    // Fetch tag details from the server using axios
+    axiosInstance
+      .get(`/api/v1/tags/${id}`)
+      .then((res) => {
+        setTagObject({ name: res.data.data.name, category: res.data.data.category })
+      })
+      .catch((error) => console.log(error))
+  }, [id])
+
   const handleChange = (e) => {
-    console.log(e.target.name)
     setTagObject((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }))
-    console.log(tagObject)
   }
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log(tagObject)
     const form = event.currentTarget
     if (form.checkValidity() === false) {
       event.stopPropagation()
     }
     setValidated(true)
     if (form.checkValidity() === true) {
-      const name = tagObject.name
-      const category = tagObject.category._id
+      // const data = new FormData(event.target)
       axiosInstance
-        .put(`/api/v1/tags/${id}`, { name, category })
+        .patch(`/api/v1/tags/${id}`, { name: tagObject.name, categoryId: tagObject.categoryId })
         .then((res) => {
+          // console.log(tagObject)
           navigate(`/tags/${id}`)
         })
         .catch((error) => {
-          console.log('============================')
-          console.log(error)
-          console.log('--------------------------')
           const errors = error.response.data.errors
           let tempError = {
             notValid: false,
             msg: '',
           }
           errors.forEach((err) => {
-            console.log('+++++++++++++++++++++++++++++')
-            console.log(err.msg)
-            console.log('+++++++++++++++++++++++++++++')
             if (err.path === 'name') {
               tempError.name = {
                 notValid: true,
@@ -116,7 +105,7 @@ const TagAdd = () => {
       <CCol xs={12}>
         <CCard className="m-3 mb-5 p-4 shadow">
           <CCardBody>
-            <h3 className="mb-4 mt-2">New Tag</h3>
+            <h3 className="mb-4 mt-2">Edit Tag</h3>
             <CForm
               className="row g-3 needs-validation"
               noValidate
@@ -139,14 +128,13 @@ const TagAdd = () => {
                 name="categoryId"
                 feedbackInvalid={validationFromBackEnd.categoryId?.msg}
                 invalid={validationFromBackEnd.categoryId?.notValid}
-                value={tagObject.category._id}
+                value={tagObject.categoryId}
                 onChange={handleChange}
                 required
               >
                 <option value="category">Select a Category</option>
                 {categories &&
                   categories.map((category) => {
-                    console.log(category)
                     if (category.name === tagObject.category.name) {
                       return (
                         <option key={category._id} value={category._id} selected>
@@ -178,4 +166,4 @@ const TagAdd = () => {
   )
 }
 
-export default TagAdd
+export default TagEdit

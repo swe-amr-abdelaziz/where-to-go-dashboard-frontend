@@ -36,6 +36,12 @@ const Login = () => {
     setPassword(e.target.value)
   }
 
+  const handleEnter = (e) => {
+    if (e.keyCode === 13) {
+      handleLogin()
+    }
+  }
+
   const handleLogin = async () => {
     setLoading(true)
 
@@ -109,6 +115,7 @@ const Login = () => {
                         placeholder="Email"
                         autoComplete="email"
                         onChange={handleEmailChange}
+                        onKeyDown={handleEnter}
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
@@ -120,12 +127,13 @@ const Login = () => {
                         placeholder="Password"
                         autoComplete="current-password"
                         onChange={handlePasswordChange}
+                        onKeyDown={handleEnter}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
                         <CButton
-                          color="primary"
+                          style={{ 'background-color': '#00BBAA' }}
                           className="px-4"
                           onClick={handleLogin}
                           disabled={loading}

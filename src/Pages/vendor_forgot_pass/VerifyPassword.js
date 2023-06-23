@@ -28,6 +28,13 @@ const Login = () => {
     setSecret(e.target.value)
   }
 
+  const handleEnter = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+      handleVerifyPassword()
+    }
+  }
+
   const handleVerifyPassword = async () => {
     setLoading(true)
 
@@ -76,12 +83,13 @@ const Login = () => {
                         placeholder="Enter the secret key"
                         autoComplete="off"
                         onChange={handleSecretChange}
+                        onKeyDown={handleEnter}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
                         <CButton
-                          color="primary"
+                          style={{ 'background-color': '#00BBAA' }}
                           className="px-4"
                           onClick={handleVerifyPassword}
                           disabled={loading}

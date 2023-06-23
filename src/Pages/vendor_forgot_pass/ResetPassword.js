@@ -32,7 +32,14 @@ const Login = () => {
     setPasswordConfirm(e.target.value)
   }
 
-  const handleLogin = async () => {
+  const handleEnter = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+      handleReset()
+    }
+  }
+
+  const handleReset = async () => {
     setLoading(true)
 
     try {
@@ -79,6 +86,7 @@ const Login = () => {
                         placeholder="New Password"
                         autoComplete="current-password"
                         onChange={handlePasswordChange}
+                        onKeyDown={handleEnter}
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
@@ -90,14 +98,15 @@ const Login = () => {
                         placeholder="Confirm Password"
                         autoComplete="current-password"
                         onChange={handlePasswordConfirmChange}
+                        onKeyDown={handleEnter}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
                         <CButton
-                          color="primary"
+                          style={{ 'background-color': '#00BBAA' }}
                           className="px-4"
-                          onClick={handleLogin}
+                          onClick={handleReset}
                           disabled={loading}
                         >
                           {loading ? 'Loading...' : 'Reset'}

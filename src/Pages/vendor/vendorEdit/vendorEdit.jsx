@@ -158,7 +158,6 @@ const VendorEdit = () => {
       return setValidated(true)
     }
     const data = new FormData(form)
-    console.log(data)
     axiosInstanceFormData
       .patch(`/api/v1/vendors/${id}`, data)
       .then((res) => navigate('/vendors'))

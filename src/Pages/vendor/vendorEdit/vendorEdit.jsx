@@ -12,7 +12,7 @@ import {
   CRow,
 } from '@coreui/react'
 import { useNavigate, useParams } from 'react-router-dom'
-import axiosInstance from 'src/Axios'
+import { axiosInstance, axiosInstanceFormData } from 'src/Axios'
 import axios from 'axios'
 import { Multiselect } from 'multiselect-react-dropdown'
 import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
@@ -158,7 +158,7 @@ const VendorEdit = () => {
       return setValidated(true)
     }
     const data = new FormData(form)
-    axiosInstance
+    axiosInstanceFormData
       .patch(`/api/v1/vendors/${id}`, data)
       .then((res) => navigate('/vendors'))
       .catch((error) => {
@@ -170,80 +170,67 @@ const VendorEdit = () => {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'lastName') {
+          } else if (error.path === 'lastName') {
             tempError.lastName = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'placeName') {
+          } else if (error.path === 'placeName') {
             tempError.placeName = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'category') {
+          } else if (error.path === 'category') {
             tempError.category = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'street') {
+          } else if (error.path === 'street') {
             tempError.street = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'country') {
+          } else if (error.path === 'country') {
             tempError.country = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'state') {
+          } else if (error.path === 'state') {
             tempError.state = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'city') {
+          } else if (error.path === 'city') {
             tempError.city = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'zip') {
+          } else if (error.path === 'zip') {
             tempError.zip = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'phoneNumber') {
+          } else if (error.path === 'phoneNumber') {
             tempError.phoneNumber = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'email') {
+          } else if (error.path === 'email') {
             tempError.email = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'description') {
+          } else if (error.path === 'description') {
             tempError.description = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'thumbnail') {
+          } else if (error.path === 'thumbnail') {
             tempError.thumbnail = {
               notValid: true,
               msg: error.msg,
             }
-          }
-          if (error.path === 'gallery') {
+          } else if (error.path === 'gallery') {
             tempError.gallery = {
               notValid: true,
               msg: error.msg,
@@ -377,7 +364,7 @@ const VendorEdit = () => {
                       ---- Select Country ----
                     </option>
                     {countries.map((country) => (
-                      <option key={country.iso3} value={country.name}>
+                      <option key={country.iso3 + country.name} value={country.name}>
                         {country.name}
                       </option>
                     ))}
@@ -486,7 +473,6 @@ const VendorEdit = () => {
                   feedbackInvalid={
                     validationFromBackEnd.thumbnail?.msg || 'Please provide a valid image.'
                   }
-                  required
                 />
                 {/* <UploadImage
                   name={'thumbnail'}
@@ -507,7 +493,6 @@ const VendorEdit = () => {
                     validationFromBackEnd.gallery?.msg || 'Please provide a valid image.'
                   }
                   multiple
-                  required
                 />
                 {/* <UploadImage
                   name={'gallery'}

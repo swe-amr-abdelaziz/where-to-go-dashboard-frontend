@@ -79,12 +79,6 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Mood',
-    to: '/theme/colors',
-    icon: <TbMoodSmile size={24} style={{ marginRight: '16px' }} />,
-  },
-  {
-    component: CNavItem,
     name: 'Permissions',
     to: '/permissions',
     icon: <LuLock size={24} style={{ marginRight: '16px' }} />,

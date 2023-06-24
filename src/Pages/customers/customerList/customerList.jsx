@@ -73,6 +73,7 @@ import { faCheck, faCircle, faCircleDot, faTimes } from '@fortawesome/free-solid
 import { PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons'
 import { array } from 'prop-types'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
+import { ThreeCircles } from 'react-loader-spinner'
 
 const CustomerList = () => {
   const navigate = useNavigate()
@@ -304,58 +305,78 @@ const CustomerList = () => {
               </div>
             </div>
           </CRow>
-          <DataTable
-            value={customers}
-            paginator
-            rows={10}
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            tableStyle={{ minWidth: '50rem' }}
-            filters={filters}
-          >
-            <Column
-              field="avatar"
-              header=""
-              body={avatarBodyTemplate}
-              style={{ width: '5%' }}
-            ></Column>
-            <Column
-              field="name"
-              header="Name"
-              body={nameBodyTemplate}
-              style={{ width: '30%' }}
-            ></Column>
-            <Column
-              field="phoneNumber"
-              header="Phone"
-              body={phoneBodyTemplate}
-              style={{ width: '15%' }}
-            ></Column>
-            <Column
-              field="email"
-              header="Email"
-              body={emailBodyTemplate}
-              style={{ width: '35%' }}
-            ></Column>
-            <Column
-              field="active"
-              header="Active"
-              body={activeBodyTemplate}
-              bodyClassName="text-center"
-              style={{ width: '5%' }}
-            ></Column>
-            <Column
-              field="banned"
-              header="Banned"
-              body={bannedBodyTemplate}
-              bodyClassName="text-center"
-              style={{ width: '5%' }}
-            ></Column>
-            <Column
-              body={actionsBodyTemplate}
-              bodyClassName="text-center"
-              style={{ width: '5%' }}
-            ></Column>
-          </DataTable>
+
+          {customers.length === 0 ? (
+            <div className="d-flex justify-content-center align-items-center my-5">
+              <ThreeCircles
+                height="100"
+                width="100"
+                color="#4fa94d"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel="three-circles-rotating"
+                outerCircleColor=""
+                innerCircleColor=""
+                middleCircleColor=""
+              />
+            </div>
+          ) : (
+            <>
+              <DataTable
+                value={customers}
+                paginator
+                rows={10}
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                tableStyle={{ minWidth: '50rem' }}
+                filters={filters}
+              >
+                <Column
+                  field="avatar"
+                  header=""
+                  body={avatarBodyTemplate}
+                  style={{ width: '5%' }}
+                ></Column>
+                <Column
+                  field="name"
+                  header="Name"
+                  body={nameBodyTemplate}
+                  style={{ width: '30%' }}
+                ></Column>
+                <Column
+                  field="phoneNumber"
+                  header="Phone"
+                  body={phoneBodyTemplate}
+                  style={{ width: '15%' }}
+                ></Column>
+                <Column
+                  field="email"
+                  header="Email"
+                  body={emailBodyTemplate}
+                  style={{ width: '35%' }}
+                ></Column>
+                <Column
+                  field="active"
+                  header="Active"
+                  body={activeBodyTemplate}
+                  bodyClassName="text-center"
+                  style={{ width: '5%' }}
+                ></Column>
+                <Column
+                  field="banned"
+                  header="Banned"
+                  body={bannedBodyTemplate}
+                  bodyClassName="text-center"
+                  style={{ width: '5%' }}
+                ></Column>
+                <Column
+                  body={actionsBodyTemplate}
+                  bodyClassName="text-center"
+                  style={{ width: '5%' }}
+                ></Column>
+              </DataTable>
+            </>
+          )}
         </CCardBody>
       </CCard>
 

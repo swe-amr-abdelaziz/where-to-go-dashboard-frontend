@@ -54,13 +54,13 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Categories',
-    to: '/theme/colors',
+    to: '/categories',
     icon: <MdOutlineCategory size={24} style={{ marginRight: '16px' }} />,
   },
   {
     component: CNavItem,
     name: 'Tags',
-    to: '/theme/colors',
+    to: '/tags',
     icon: <LuTag size={24} style={{ marginRight: '16px' }} />,
   },
 ]

@@ -37,6 +37,7 @@ import { DataTable } from 'primereact/datatable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
+import { ThreeCircles } from 'react-loader-spinner'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])
@@ -249,36 +250,55 @@ const VendorList = () => {
           </CNavItem>
         </CNav>
 
-        <DataTable
-          value={vendorList}
-          paginator
-          rows={10}
-          rowsPerPageOptions={[5, 10, 25, 50]}
-          tableStyle={{ minWidth: '50rem' }}
-          filters={filters}
-        >
-          <Column field="placeName" header="Place Name" style={{ width: '15%' }}></Column>
-          <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
-          <Column field="email" header="Email" style={{ width: '15%' }}></Column>
-          <Column
-            field="isApproved"
-            body={handleIsApprovedDisplay}
-            header="Approved"
-            style={{ width: '15%' }}
-          ></Column>
-          <Column
-            field="deactivatedAt"
-            body={handleActivateDisplay}
-            header="Activate"
-            style={{ width: '15%' }}
-          ></Column>
-          <Column
-            body={actionsBodyTemplate}
-            //onClick={handleOptionsClick}
-            bodyClassName="text-center"
-            style={{ width: '5%' }}
-          ></Column>
-        </DataTable>
+        {vendorList.length === 1 ? (
+          <div className="d-flex justify-content-center align-items-center my-5">
+            <ThreeCircles
+              height="100"
+              width="100"
+              color="#4fa94d"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+              ariaLabel="three-circles-rotating"
+              outerCircleColor=""
+              innerCircleColor=""
+              middleCircleColor=""
+            />
+          </div>
+        ) : (
+          <>
+            <DataTable
+              value={vendorList}
+              paginator
+              rows={10}
+              rowsPerPageOptions={[5, 10, 25, 50]}
+              tableStyle={{ minWidth: '50rem' }}
+              filters={filters}
+            >
+              <Column field="placeName" header="Place Name" style={{ width: '15%' }}></Column>
+              <Column field="phoneNumber" header="Phone" style={{ width: '15%' }}></Column>
+              <Column field="email" header="Email" style={{ width: '15%' }}></Column>
+              <Column
+                field="isApproved"
+                body={handleIsApprovedDisplay}
+                header="Approved"
+                style={{ width: '15%' }}
+              ></Column>
+              <Column
+                field="deactivatedAt"
+                body={handleActivateDisplay}
+                header="Activate"
+                style={{ width: '15%' }}
+              ></Column>
+              <Column
+                body={actionsBodyTemplate}
+                //onClick={handleOptionsClick}
+                bodyClassName="text-center"
+                style={{ width: '5%' }}
+              ></Column>
+            </DataTable>
+          </>
+        )}
       </CCardBody>
     </CCard>
   )

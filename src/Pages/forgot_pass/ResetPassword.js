@@ -21,19 +21,31 @@ import 'react-toastify/dist/ReactToastify.css'
 
 const Login = () => {
   const [password, setPassword] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value)
   }
+  const handlePasswordConfirmChange = (e) => {
+    setPasswordConfirm(e.target.value)
+  }
 
-  const handleLogin = async () => {
+  const handleEnter = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+      handleReset()
+    }
+  }
+
+  const handleReset = async () => {
     setLoading(true)
 
     try {
       const response = await axios.put('http://localhost:8001/api/v1/auth/employee/resetPassword', {
         newPassword: password,
+        passwordConfirm: passwordConfirm,
       })
 
       if (response.status === 200) {
@@ -74,14 +86,27 @@ const Login = () => {
                         placeholder="New Password"
                         autoComplete="current-password"
                         onChange={handlePasswordChange}
+                        onKeyDown={handleEnter}
+                      />
+                    </CInputGroup>
+                    <CInputGroup className="mb-4">
+                      <CInputGroupText>
+                        <CIcon icon={cilLockLocked} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="password"
+                        placeholder="Confirm Password"
+                        autoComplete="current-password"
+                        onChange={handlePasswordConfirmChange}
+                        onKeyDown={handleEnter}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
                         <CButton
-                          color="primary"
+                          style={{ 'background-color': '#00BBAA' }}
                           className="px-4"
-                          onClick={handleLogin}
+                          onClick={handleReset}
                           disabled={loading}
                         >
                           {loading ? 'Loading...' : 'Reset'}

@@ -14,6 +14,7 @@ import { CButton, CFormLabel, CFormInput } from '@coreui/react'
 
 import { getRoles, deleteRole, updateRole, createRole } from '../../Redux/RolesSlice/rolesSlice'
 import { getPermissions } from '../../Redux/PermissionsSlice/permissionsSlice'
+import { ThreeCircles } from 'react-loader-spinner'
 
 const RolesList = () => {
   const dispatch = useDispatch()
@@ -93,13 +94,13 @@ const RolesList = () => {
       // Handle error
     }
   }
-  if (roles.loading) {
-    return <div>Loading...</div>
-  }
+  // if (roles.loading) {
+  //   return <div>Loading...</div>
+  // }
 
-  if (!roles || roles.length === 0) {
-    return <div>No roles available.</div>
-  }
+  // if (!roles || roles.length === 0) {
+  //   return <div>No roles available.</div>
+  // }
   const ActionsBodyTemplate = (rowData) => {
     const menuRef = useRef(null)
 
@@ -165,20 +166,39 @@ const RolesList = () => {
           Create
         </CButton>
       </div>
-      <DataTable
-        value={roles}
-        paginator
-        rows={10}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        tableStyle={{ minWidth: '50rem' }}
-      >
-        <Column field="name" header="Name" style={{ width: '50%' }}></Column>
-        <Column
-          body={ActionsBodyTemplate}
-          bodyClassName="text-center"
-          style={{ width: '30%' }}
-        ></Column>
-      </DataTable>
+      {roles.length === 0 ? (
+        <div className="d-flex justify-content-center align-items-center my-5">
+          <ThreeCircles
+            height="100"
+            width="100"
+            color="#4fa94d"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+            ariaLabel="three-circles-rotating"
+            outerCircleColor=""
+            innerCircleColor=""
+            middleCircleColor=""
+          />
+        </div>
+      ) : (
+        <>
+          <DataTable
+            value={roles}
+            paginator
+            rows={10}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            tableStyle={{ minWidth: '50rem' }}
+          >
+            <Column field="name" header="Name" style={{ width: '50%' }}></Column>
+            <Column
+              body={ActionsBodyTemplate}
+              bodyClassName="text-center"
+              style={{ width: '30%' }}
+            ></Column>
+          </DataTable>
+        </>
+      )}
       <Dialog
         header="Create Role"
         visible={createVisible}

@@ -28,6 +28,13 @@ const Login = () => {
     setEmail(e.target.value)
   }
 
+  const handleEnter = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+      handleForgotPassword()
+    }
+  }
+
   const handleForgotPassword = async () => {
     setLoading(true)
 
@@ -80,12 +87,13 @@ const Login = () => {
                         placeholder="Email"
                         autoComplete="email"
                         onChange={handleEmailChange}
+                        onKeyDown={handleEnter}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
                         <CButton
-                          color="primary"
+                          style={{ 'background-color': '#00BBAA' }}
                           className="px-4"
                           onClick={handleForgotPassword}
                           disabled={loading}

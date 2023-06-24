@@ -120,7 +120,6 @@ const VendorAdd = () => {
       ...prevFormData,
       [name]: value,
     }))
-    console.log(vendorData.tags)
   }
 
   const getCategories = async () => {
@@ -323,7 +322,9 @@ const VendorAdd = () => {
                   onChange={handleInputChange}
                   required
                 >
-                  <option disabled>Select Category</option>
+                  <option key={'default-SelectCategory'} disabled>
+                    Select Category
+                  </option>
                   {categories.map((cat) => (
                     <option key={cat._id} value={cat._id}>
                       {cat.name}
@@ -339,7 +340,7 @@ const VendorAdd = () => {
                   placeholder="Street"
                   invalid={validationFromBackEnd.street?.notValid}
                   feedbackInvalid={
-                    validationFromBackEnd.street?.msg || 'Please Enter Owner First Name '
+                    validationFromBackEnd.street?.msg || 'Please Provide Place Street '
                   }
                   name={'street'}
                   value={vendorData.street}
@@ -350,15 +351,19 @@ const VendorAdd = () => {
                   <CFormSelect
                     name={'country'}
                     invalid={validationFromBackEnd.country?.notValid}
-                    feedbackInvalid={validationFromBackEnd.country?.msg || 'Please country '}
+                    feedbackInvalid={
+                      validationFromBackEnd.country?.msg || 'Please Provide The Place Country '
+                    }
                     className="me-2"
                     value={vendorData.country}
                     onChange={handleInputChange}
                     required
                   >
-                    <option disabled>---- Select Country ----</option>
+                    <option key={'default-SelectCountry'} disabled>
+                      ---- Select Country ----
+                    </option>
                     {countries.map((country) => (
-                      <option key={country.iso3} value={country.name}>
+                      <option key={country.iso3 + country.name} value={country.name}>
                         {country.name}
                       </option>
                     ))}
@@ -375,7 +380,9 @@ const VendorAdd = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option disabled>Select State</option>
+                    <option key={'default-SelectState'} disabled>
+                      Select State
+                    </option>
                     {states.map((state) => (
                       <option key={state.state_code} value={state.name}>
                         {state.name}
@@ -391,7 +398,9 @@ const VendorAdd = () => {
                     onChange={handleInputChange}
                     className="mx-2"
                   >
-                    <option disabled>Select City</option>
+                    <option key={'default-SelectCity'} disabled>
+                      Select City
+                    </option>
                     {cities.map((city) => (
                       <option key={city} value={city}>
                         {city}
@@ -496,7 +505,7 @@ const VendorAdd = () => {
               <div className="text-end">
                 <CButton
                   className="bg-base"
-                  disabled={vendorData.gallery && vendorData.gallery.length < 3}
+                  // disabled={vendorData.gallery && vendorData.gallery.length < 3}
                   type="submit"
                 >
                   Submit

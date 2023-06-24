@@ -17,6 +17,7 @@ import {
   updatePermission,
   createPermission,
 } from '../../Redux/PermissionsSlice/permissionsSlice'
+import { ThreeCircles } from 'react-loader-spinner'
 
 const PermissionsList = () => {
   const dispatch = useDispatch()
@@ -150,13 +151,13 @@ const PermissionsList = () => {
       }
     })
   }
-  if (permissions.loading) {
-    return <div>Loading...</div>
-  }
+  // if (permissions.loading) {
+  //   return <div>Loading...</div>
+  // }
 
-  if (!permissions || permissions.length === 0) {
-    return <div>No permissions available.</div>
-  }
+  // if (!permissions || permissions.length === 0) {
+  //   return <div>No permissions available.</div>
+  // }
 
   const actionsBodyTemplate = (rowData) => {
     return (
@@ -206,21 +207,40 @@ const PermissionsList = () => {
           Create
         </CButton>
       </div>
-      <DataTable
-        value={permissions}
-        paginator
-        rows={10}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        tableStyle={{ minWidth: '50rem' }}
-      >
-        <Column field="name" header="Name" style={{ width: '50%' }}></Column>
-        <Column field="description" header="Description" style={{ width: '50%' }}></Column>
-        <Column
-          body={actionsBodyTemplate}
-          bodyClassName="text-center"
-          style={{ width: '30%' }}
-        ></Column>
-      </DataTable>
+      {permissions.length === 0 ? (
+        <div className="d-flex justify-content-center align-items-center my-5">
+          <ThreeCircles
+            height="100"
+            width="100"
+            color="#4fa94d"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+            ariaLabel="three-circles-rotating"
+            outerCircleColor=""
+            innerCircleColor=""
+            middleCircleColor=""
+          />
+        </div>
+      ) : (
+        <>
+          <DataTable
+            value={permissions}
+            paginator
+            rows={10}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            tableStyle={{ minWidth: '50rem' }}
+          >
+            <Column field="name" header="Name" style={{ width: '50%' }}></Column>
+            <Column field="description" header="Description" style={{ width: '50%' }}></Column>
+            <Column
+              body={actionsBodyTemplate}
+              bodyClassName="text-center"
+              style={{ width: '30%' }}
+            ></Column>
+          </DataTable>
+        </>
+      )}
       <Dialog
         header="Create Permission"
         visible={createVisible}

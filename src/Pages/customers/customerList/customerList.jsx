@@ -306,7 +306,7 @@ const CustomerList = () => {
             </div>
           </CRow>
 
-          {customers.length === 0 ? (
+          {customers === null ? (
             <div className="d-flex justify-content-center align-items-center my-5">
               <ThreeCircles
                 height="100"

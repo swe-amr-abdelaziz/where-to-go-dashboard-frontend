@@ -186,10 +186,10 @@ const CustomerAdd = () => {
       console.log(formData)
       dispatch(createCustomer(formData)).then((res) => {
         console.log(res.payload)
-        if (!res.payload.errors) {
+        if (!res.payload?.errors) {
           navigate('/customers')
-        } else if (res.payload.errors) {
-          const errors = res.payload.errors
+        } else if (res.payload?.errors) {
+          const errors = res.payload?.errors
           let tempError = {}
           errors.forEach((error) => {
             if (error.path === 'firstName') {
@@ -272,7 +272,7 @@ const CustomerAdd = () => {
             }
           })
           setValidationFromBackEnd(tempError)
-          console.log(res.payload.errors)
+          console.log(res.payload?.errors)
         }
       })
     }
@@ -462,12 +462,10 @@ const CustomerAdd = () => {
                   type="text"
                   placeholder={`eg. ${phoneExample}`}
                   invalid={validationFromBackEnd.phoneNumber?.notValid}
-                  feedbackInvalid={
-                    validationFromBackEnd.phoneNumber?.msg || 'Please Provide Phone Number '
-                  }
+                  feedbackInvalid={`Enter a valid phone number (eg. ${phoneExample})`}
                   name="phoneNumber"
                   id="phoneNumber"
-                  // pattern={phone.regex}
+                  pattern={phone.regex}
                   className="input-group-custom mt-3 mt-md-0"
                 />
               </CInputGroup>

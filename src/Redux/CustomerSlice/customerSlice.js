@@ -164,8 +164,12 @@ const customerSlice = createSlice({
       state.loading = true
     },
     [createCustomer.fulfilled]: (state, action) => {
-      state.customers.push(action.payload)
-      state.loading = false
+      if (state.customers === null) {
+        state.customers = [action.payload]
+      } else {
+        state.customers.push(action.payload)
+        state.loading = false
+      }
     },
     [createCustomer.rejected]: (state, action) => {
       state.error = action.payload

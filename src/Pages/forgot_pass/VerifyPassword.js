@@ -73,7 +73,7 @@ const Login = () => {
                   <CForm>
                     <h1>Check your mail</h1>
                     <p className="text-medium-emphasis">
-                      We send you a secret key, Please check your mail.
+                      We sent you a secret key, Please check your mail.
                     </p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>

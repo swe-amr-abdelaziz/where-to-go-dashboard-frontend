@@ -3,7 +3,7 @@ import { axiosInstance, axiosInstanceFormData } from '../../Axios'
 const URL = '/api/v1/customers'
 
 const initialState = {
-  customers: [],
+  customers: null,
   customer: {},
   loading: false,
   error: 'null',
@@ -43,7 +43,7 @@ export const editCustomer = createAsyncThunk(
   'customers/editCustomer',
   async (customer, thunkAPI) => {
     try {
-      const response = await axiosInstance.patch(`${URL}/${customer.get('id')}`, customer)
+      const response = await axiosInstanceFormData.patch(`${URL}/${customer.get('id')}`, customer)
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)
@@ -164,8 +164,12 @@ const customerSlice = createSlice({
       state.loading = true
     },
     [createCustomer.fulfilled]: (state, action) => {
-      state.customers.push(action.payload)
-      state.loading = false
+      if (state.customers === null) {
+        state.customers = [action.payload]
+      } else {
+        state.customers.push(action.payload)
+        state.loading = false
+      }
     },
     [createCustomer.rejected]: (state, action) => {
       state.error = action.payload

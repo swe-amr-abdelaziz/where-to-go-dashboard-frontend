@@ -38,6 +38,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { ThreeCircles } from 'react-loader-spinner'
+import './vendorList.css'
 
 const VendorList = () => {
   const [vendorList, setVendorList] = useState([])

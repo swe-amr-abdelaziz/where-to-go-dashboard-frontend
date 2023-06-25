@@ -26,7 +26,7 @@ const EmployeeAdd = () => {
   const [validationFromBackEnd, setValidationFromBackEnd] = useState({
     name: {
       notValid: false,
-      msg: 'Please Enter Owner Last Name',
+      msg: 'Please Enter Employee Name',
     },
     email: {
       notValid: false,
@@ -62,7 +62,7 @@ const EmployeeAdd = () => {
     },
     phoneNumer: {
       notValid: false,
-      msg: 'Please Provide Thumbnail Image For The Place',
+      msg: 'Please Provide Valid Phone Number',
     },
     dateOfBirth: {
       notValid: false,

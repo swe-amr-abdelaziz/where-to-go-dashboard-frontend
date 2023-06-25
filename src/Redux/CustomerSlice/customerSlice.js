@@ -3,7 +3,7 @@ import { axiosInstance, axiosInstanceFormData } from '../../Axios'
 const URL = '/api/v1/customers'
 
 const initialState = {
-  customers: [],
+  customers: null,
   customer: {},
   loading: false,
   error: 'null',

@@ -173,7 +173,7 @@ const CustomerAdd = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
     event.stopPropagation()
-    const form = document.getElementById('customerAddForm')
+    const form = event.currentTarget
     const formData = new FormData(form)
     setValidated(true)
 
@@ -183,6 +183,7 @@ const CustomerAdd = () => {
         autoClose: 5000,
       })
     } else if (form.checkValidity() === true) {
+      console.log(formData)
       dispatch(createCustomer(formData)).then((res) => {
         console.log(res.payload)
         if (!res.payload.errors) {

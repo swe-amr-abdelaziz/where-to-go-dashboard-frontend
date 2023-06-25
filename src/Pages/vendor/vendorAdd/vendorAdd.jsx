@@ -13,7 +13,7 @@ import {
 } from '@coreui/react'
 import UploadImage from '../../../components/uploadImage/uploadImage'
 import { useNavigate } from 'react-router-dom'
-import axiosInstance from 'src/Axios'
+import { axiosInstance, axiosInstanceFormData } from 'src/Axios'
 import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import VendorDetails from '../vendorDetails/vendorDetails'
@@ -142,7 +142,7 @@ const VendorAdd = () => {
       event.preventDefault()
       event.stopPropagation()
       const data = new FormData(event.target)
-      axiosInstance
+      axiosInstanceFormData
         .post('/api/v1/vendors', data)
         .then((res) => navigate('/vendors'))
         .catch((error) => {

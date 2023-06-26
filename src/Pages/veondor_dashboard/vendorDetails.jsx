@@ -8,19 +8,15 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
 import TagIcon from '@mui/icons-material/Tag'
 import { formatDistanceToNow } from 'date-fns'
-import { CCard, CButton } from '@coreui/react'
-import { PencilSquare } from 'react-bootstrap-icons'
+import { CCard } from '@coreui/react'
 
 // import { getCategories, getTags, vendorSearch } from '../../Redux/Slices/searchSlice'
-import { getPlace } from '../../Redux/placeSlice'
 import './vendorDetails.css'
 import RiseLoader from 'react-spinners/RiseLoader'
-import { useNavigate, useParams, Link } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import StarIcon from '@mui/icons-material/Star'
-import FavouriteIcon from '../../components/FavouriteIcon/FavouriteIcon'
 // import ShareIcon from '@mui/icons-material/Share'
 import Carousel from 'react-material-ui-carousel'
-import { getReviews, setReviewsVisible } from '../../Redux/reviewSlice'
 
 import AllReviews from '../../components/AllReviews/AllReviews'
 import axiosInstance from 'src/Axios'
@@ -29,7 +25,6 @@ const SearchResults = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   const [id, setId] = useState('')
-  // const { id } = useParams()
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch()
   // const _categories = useSelector((state) => state.search.categories)
@@ -44,7 +39,7 @@ const SearchResults = () => {
   const [tags, setTags] = useState([])
   const [images, setImages] = useState([])
   const [galleryVisible, setGalleryVisible] = useState(false)
-  const reviews = useSelector((state) => state.review?.reviews)
+  const [reviews, setReviews] = useState([])
 
   const override = {
     display: 'block',
@@ -53,27 +48,43 @@ const SearchResults = () => {
 
   useEffect(() => {
     setId(localStorage.getItem('v_id'))
-    dispatch(getPlace(id)).then((data) => {
-      setTags(data.payload.tags)
-      dispatch(getReviews(id))
-      const _gallery = []
-      _gallery.push(data.payload.data?.thumbnail)
-      _gallery.push(...data.payload.data.gallery)
-      setImages(_gallery)
-      setLoading(false)
-    })
+    console.log(id)
+
+    // dispatch(getPlace(id)).then((data) => {
+    //   setTags(data.payload.tags)
+    //   dispatch(getReviews(id))
+    //   const _gallery = []
+    //   _gallery.push(data.payload.data.thumbnail)
+    //   _gallery.push(...data.payload.data.gallery)
+    //   setImages(_gallery)
+    //   setLoading(false)
+    // })
   }, [])
 
-  const gettingPlace = async () => {
-    await axiosInstance.get(`/api/v1/vendors/${id}`).then((res) => {
-      setCurrentPlace(res.data.data)
-    })
-  }
   useEffect(() => {
-    gettingPlace()
-  }, [])
+    if (id) {
+      axiosInstance.get(`/api/v1/auth/vendor/${id}`).then((res) => {
+        setCurrentPlace(res.data.data)
+        setTags(res.data.tags)
+        setLoading(false)
+      })
+      axiosInstance.get(`/api/v1/reviews/${id}`).then((res) => {
+        setReviews(res.data.reviews)
+      })
+    }
+  }, [id])
+
+  // const gettingPlace = async () => {
+  //   await axiosInstance.get(`/api/v1/vendors/${id}`).then((res) => {
+  //     setCurrentPlace(res.data.data)
+  //   })
+  // }
+  // useEffect(() => {
+  //   gettingPlace()
+  // }, [])
   useEffect(() => {
     console.log(currentPlace)
+    console.log(tags)
   }, [currentPlace])
 
   const StyledRating = styled(Rating)({
@@ -99,33 +110,16 @@ const SearchResults = () => {
           />
         ) : (
           <>
-            <div className="d-flex justify-content-between">
-              <Typography variant="h1" className="pb-0">
-                {currentPlace?.placeName}
-              </Typography>
-              <Link to="/vendor/edit">
-                <CButton className="me-2 bg-base d-flex align-items-center">
-                  <PencilSquare className="me-1" />
-                  Edit Profile
-                </CButton>
-              </Link>
-            </div>
-
+            <Typography variant="h3" className="pb-0">
+              {currentPlace?.placeName}
+            </Typography>
             <div className="d-flex justify-content-between align-items-center">
               <div className="card-rating d-flex">
                 <StarIcon fontSize="small" color="primary" className="me-2" />
-                {/* <Typography variant="body">
-                <b>{currentPlace?.avgRate.toFixed(1) || (0).toFixed(1)}</b> &nbsp;
-                <span className="text-muted">({place?.numberOfReviews || 0} reviews)</span>
-              </Typography> */}
-              </div>
-              <div className="d-flex align-items-center">
-                {/* <div className="d-flex align-items-center me-4">
-                <ShareIcon className="me-2" />
-                <Typography variant="body" style={{ fontSize: 20 }}>
-                  Share
+                <Typography variant="body">
+                  <b>{currentPlace?.avgRate.toFixed(1) || (0).toFixed(1)}</b> &nbsp;
+                  <span className="text-muted">({currentPlace?.numberOfReviews || 0} reviews)</span>
                 </Typography>
-              </div> */}
               </div>
             </div>
             <div className="gallery mt-3">
@@ -137,7 +131,7 @@ const SearchResults = () => {
               <img
                 className="gallery-1"
                 src={`http://localhost:8001/api/v1/images/vendors/${
-                  currentPlace.gallery ? currentPlace.gallery?.[0] : ''
+                  currentPlace?.gallery ? currentPlace?.gallery?.[0] : ''
                 }`}
                 alt="gallery-1"
               />
@@ -196,8 +190,8 @@ const SearchResults = () => {
               </>
             )}
             <div className="d-flex flex-column flex-md-row">
-              <div className="overview flex-grow-1">
-                <Typography variant="h2" className="mt-4 mb-0">
+              <div className="overview flex-grow-1 col-12 col-md-8">
+                <Typography variant="h4" className="mt-4 mb-0">
                   Overview
                 </Typography>
                 <div className="d-flex mb-2">
@@ -224,8 +218,8 @@ const SearchResults = () => {
                 </div>
                 <Typography variant="body">{currentPlace?.description}</Typography>
               </div>
-              <div className="tags flex-grow-1">
-                <Typography variant="h2" className="mt-4 mb-0">
+              <div className="tags flex-grow-1 col-12 col-md-4">
+                <Typography variant="h4" className="mt-4 mb-0">
                   Tags
                 </Typography>
                 {tags.map((tag, index) => {
@@ -238,7 +232,7 @@ const SearchResults = () => {
                 })}
               </div>
             </div>
-            {place?.numberOfReviews > 0 ? (
+            {currentPlace?.numberOfReviews > 0 ? (
               <>
                 <hr
                   style={{
@@ -250,10 +244,12 @@ const SearchResults = () => {
                 />
                 <div className="card-rating d-flex">
                   <StarIcon fontSize="small" color="primary" className="me-2 mb-3" />
-                  {/* <Typography variant="body">
-                  <b>{place?.avgRate.toFixed(1) || (0).toFixed(1)}</b> &nbsp;
-                  <span className="text-muted">({place?.numberOfReviews || 0} reviews)</span>
-                </Typography> */}
+                  <Typography variant="body">
+                    <b>{currentPlace?.avgRate.toFixed(1) || (0).toFixed(1)}</b> &nbsp;
+                    <span className="text-muted">
+                      ({currentPlace?.numberOfReviews || 0} reviews)
+                    </span>
+                  </Typography>
                 </div>
                 <div className="reviews-container">
                   {reviews.map((review, index) =>
@@ -293,13 +289,6 @@ const SearchResults = () => {
                   )}
                   {currentPlace?.numberOfReviews > 4 ? (
                     <>
-                      <Button
-                        variant="contained"
-                        color="info"
-                        onClick={() => dispatch(setReviewsVisible(true))}
-                      >
-                        Show all reviews
-                      </Button>
                       <AllReviews />
                     </>
                   ) : (

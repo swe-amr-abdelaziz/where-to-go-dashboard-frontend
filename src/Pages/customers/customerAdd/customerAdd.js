@@ -173,7 +173,7 @@ const CustomerAdd = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
     event.stopPropagation()
-    const form = event.currentTarget
+    const form = document.getElementById('customerAddForm')
     const formData = new FormData(form)
     setValidated(true)
 

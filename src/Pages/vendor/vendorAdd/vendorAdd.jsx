@@ -11,12 +11,10 @@ import {
   CFormSelect,
   CRow,
 } from '@coreui/react'
-import UploadImage from '../../../components/uploadImage/uploadImage'
 import { useNavigate } from 'react-router-dom'
 import { axiosInstance, axiosInstanceFormData } from 'src/Axios'
 import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import VendorDetails from '../vendorDetails/vendorDetails'
 
 const VendorAdd = () => {
   const navigate = useNavigate()

@@ -44,7 +44,7 @@ const Login = () => {
 
     try {
       const response = await axios.put('http://localhost:8001/api/v1/auth/employee/resetPassword', {
-        newPassword: password,
+        password: password,
         passwordConfirm: passwordConfirm,
       })
 

@@ -60,7 +60,7 @@ const EmployeeList = React.lazy(() => import('./Pages/Employee/employeeList/empl
 const EmployeeAdd = React.lazy(() => import('./Pages/Employee/employeeAdd/employeeAdd'))
 const EmployeeEdit = React.lazy(() => import('./Pages/Employee/employeeEdit/employeeEdit'))
 const VendorList = React.lazy(() => import('./Pages/vendor/vendorList/vendorList'))
-const VendorDetails = React.lazy(() => import('./Pages/vendor/vendorDetails/vendorDetails'))
+const VendorDetails = React.lazy(() => import('./Pages/vendor/vendorDetails/PlaceDetails'))
 const Login = React.lazy(() => import('./Pages/login/Login'))
 const VendorEdit = React.lazy(() => import('./Pages/vendor/vendorEdit/vendorEdit'))
 const CategoryList = React.lazy(() => import('./Pages/Category/CategoryList/CategoryList'))

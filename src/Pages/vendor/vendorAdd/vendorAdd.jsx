@@ -11,12 +11,10 @@ import {
   CFormSelect,
   CRow,
 } from '@coreui/react'
-import UploadImage from '../../../components/uploadImage/uploadImage'
 import { useNavigate } from 'react-router-dom'
 import { axiosInstance, axiosInstanceFormData } from 'src/Axios'
 import { getCountries, getStates, getCities } from '../../../Redux/LocationSlice/locationSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import VendorDetails from '../vendorDetails/vendorDetails'
 
 const VendorAdd = () => {
   const navigate = useNavigate()
@@ -318,11 +316,11 @@ const VendorAdd = () => {
                     validationFromBackEnd.category?.msg || 'Please Enter Owner First Name '
                   }
                   className="me-2"
-                  value={vendorData.country}
+                  value={vendorData.category}
                   onChange={handleInputChange}
                   required
                 >
-                  <option key={'default-SelectCategory'} disabled>
+                  <option key={'default-SelectCategory'} disabled selected>
                     Select Category
                   </option>
                   {categories.map((cat) => (
@@ -359,7 +357,7 @@ const VendorAdd = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option key={'default-SelectCountry'} disabled>
+                    <option key={'default-SelectCountry'} disabled selected>
                       ---- Select Country ----
                     </option>
                     {countries.map((country) => (

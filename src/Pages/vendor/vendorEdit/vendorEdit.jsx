@@ -321,7 +321,7 @@ const VendorEdit = () => {
                     validationFromBackEnd.category?.msg || 'Please Enter Owner First Name '
                   }
                   className="me-2"
-                  value={vendorData.country}
+                  value={vendorData.category?.[0]?._id}
                   onChange={handleInputChange}
                   required
                 >

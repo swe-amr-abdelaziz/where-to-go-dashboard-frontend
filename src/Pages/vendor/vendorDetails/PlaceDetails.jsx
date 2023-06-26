@@ -8,28 +8,26 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
 import TagIcon from '@mui/icons-material/Tag'
 import { formatDistanceToNow } from 'date-fns'
-import { CCard, CButton } from '@coreui/react'
-import { PencilSquare } from 'react-bootstrap-icons'
+import { CCard } from '@coreui/react'
 
 // import { getCategories, getTags, vendorSearch } from '../../Redux/Slices/searchSlice'
-import { getPlace } from '../../Redux/placeSlice'
-import './vendorDetails.css'
+import { getPlace } from '../../../Redux/placeSlice'
+import './PlaceDetails.css'
 import RiseLoader from 'react-spinners/RiseLoader'
-import { useNavigate, useParams, Link } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import StarIcon from '@mui/icons-material/Star'
-import FavouriteIcon from '../../components/FavouriteIcon/FavouriteIcon'
+import FavouriteIcon from '../../../components/FavouriteIcon/FavouriteIcon'
 // import ShareIcon from '@mui/icons-material/Share'
 import Carousel from 'react-material-ui-carousel'
-import { getReviews, setReviewsVisible } from '../../Redux/reviewSlice'
+import { getReviews, setReviewsVisible } from '../../../Redux/reviewSlice'
 
-import AllReviews from '../../components/AllReviews/AllReviews'
+import AllReviews from '../../../components/AllReviews/AllReviews'
 import axiosInstance from 'src/Axios'
 
 const SearchResults = () => {
   const navigate = useNavigate()
   const theme = useTheme()
-  const [id, setId] = useState('')
-  // const { id } = useParams()
+  const { id } = useParams()
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch()
   // const _categories = useSelector((state) => state.search.categories)
@@ -50,14 +48,16 @@ const SearchResults = () => {
     display: 'block',
     margin: '30vh auto',
   }
+  useEffect(() => {
+    console.log(place)
+  }, [place])
 
   useEffect(() => {
-    setId(localStorage.getItem('v_id'))
     dispatch(getPlace(id)).then((data) => {
       setTags(data.payload.tags)
       dispatch(getReviews(id))
       const _gallery = []
-      _gallery.push(data.payload.data?.thumbnail)
+      _gallery.push(data.payload.data.thumbnail)
       _gallery.push(...data.payload.data.gallery)
       setImages(_gallery)
       setLoading(false)
@@ -99,18 +99,9 @@ const SearchResults = () => {
           />
         ) : (
           <>
-            <div className="d-flex justify-content-between">
-              <Typography variant="h1" className="pb-0">
-                {currentPlace?.placeName}
-              </Typography>
-              <Link to="/vendor/edit">
-                <CButton className="me-2 bg-base d-flex align-items-center">
-                  <PencilSquare className="me-1" />
-                  Edit Profile
-                </CButton>
-              </Link>
-            </div>
-
+            <Typography variant="h1" className="pb-0">
+              {currentPlace?.placeName}
+            </Typography>
             <div className="d-flex justify-content-between align-items-center">
               <div className="card-rating d-flex">
                 <StarIcon fontSize="small" color="primary" className="me-2" />
@@ -137,7 +128,7 @@ const SearchResults = () => {
               <img
                 className="gallery-1"
                 src={`http://localhost:8001/api/v1/images/vendors/${
-                  currentPlace.gallery ? currentPlace.gallery?.[0] : ''
+                  currentPlace?.gallery ? currentPlace?.gallery?.[0] : ''
                 }`}
                 alt="gallery-1"
               />

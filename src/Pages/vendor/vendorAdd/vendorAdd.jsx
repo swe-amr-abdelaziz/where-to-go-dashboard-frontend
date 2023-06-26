@@ -140,7 +140,6 @@ const VendorAdd = () => {
       event.preventDefault()
       event.stopPropagation()
       const data = new FormData(event.target)
-
       axiosInstanceFormData
         .post('/api/v1/vendors', data)
         .then((res) => navigate('/vendors'))
